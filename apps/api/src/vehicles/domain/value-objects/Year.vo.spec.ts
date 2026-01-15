@@ -5,7 +5,6 @@ import { YearValueObject } from './Year.vo'
 describe('YearValueObject', () => {
   describe('constructor', () => {
     it('should create a valid YearValueObject with a valid year', () => {
-      // TODO(human): Test with 2020
       const year = new YearValueObject(2020)
 
       expect(year.value).toBe(2020)
