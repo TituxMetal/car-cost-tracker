@@ -1,2 +1,5 @@
 export { CreateVehicleUseCase } from './CreateVehicle.uc'
+export { DeleteVehicleUseCase } from './DeleteVehicle.uc'
 export { GetVehicleByUserUseCase } from './GetVehicleByUser.uc'
+export { UpdateMileageUseCase } from './UpdateMileage.uc'
+export { UpdateVehicleUseCase } from './UpdateVehicle.uc'

@@ -47,9 +47,9 @@
 
 - [x] CreateVehicle.uc.ts + tests
 - [x] GetVehicleByUser.uc.ts + tests
-- [ ] UpdateVehicle.uc.ts + tests
-- [ ] UpdateMileage.uc.ts + tests
-- [ ] DeleteVehicle.uc.ts + tests
+- [x] UpdateVehicle.uc.ts + tests
+- [x] UpdateMileage.uc.ts + tests
+- [x] DeleteVehicle.uc.ts + tests
 
 ### Service
 
