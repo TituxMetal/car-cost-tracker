@@ -53,7 +53,7 @@
 
 ### Service
 
-- [ ] Vehicle.service.ts + tests
+- [x] Vehicle.service.ts + tests
 
 ---
 
