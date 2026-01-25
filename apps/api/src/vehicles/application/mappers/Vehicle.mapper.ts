@@ -1,4 +1,4 @@
-import type { FuelType, VehicleEntity } from '~/vehicles/domain/entities'
+import type { VehicleEntity } from '~/vehicles/domain/entities'
 
 import { GetVehicleDto } from '../dtos/GetVehicle.dto'
 
@@ -11,7 +11,7 @@ export class VehicleMapper {
       model: entity.model,
       year: entity.year.value,
       engineType: entity.engineType,
-      fuelType: entity.fuelType as FuelType,
+      fuelType: entity.fuelType,
       vin: entity.vin?.value ?? null,
       licensePlate: entity.licensePlate,
       purchaseDate: entity.purchaseDate,
