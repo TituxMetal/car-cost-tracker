@@ -61,7 +61,6 @@ describe('DeleteVehicleUseCase', () => {
       const vehicle = createTestVehicle()
 
       mockVehicleRepository.existsForUser.mockResolvedValueOnce(true)
-      mockVehicleRepository.findById.mockResolvedValueOnce(vehicle)
       mockVehicleRepository.delete.mockResolvedValueOnce()
 
       await useCase.execute(vehicle.id.value, vehicle.userId)
@@ -70,7 +69,8 @@ describe('DeleteVehicleUseCase', () => {
       const [passedVehicleId, passedUserId] = mockVehicleRepository.existsForUser.mock.calls[0]
       expect(passedVehicleId.value).toBe(vehicle.id.value)
       expect(passedUserId).toBe(vehicle.userId)
-      expect(mockVehicleRepository.delete).toHaveBeenCalledWith(vehicle.id)
+      expect(mockVehicleRepository.findById).not.toHaveBeenCalled()
+      expect(mockVehicleRepository.delete).toHaveBeenCalled()
     })
 
     it('should throw VehicleNotFoundException when vehicle does not exist for user', async () => {

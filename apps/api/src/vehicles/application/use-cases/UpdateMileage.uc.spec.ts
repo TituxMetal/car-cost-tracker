@@ -58,35 +58,32 @@ describe('UpdateMileageUseCase', () => {
 
   describe('execute', () => {
     it('should update mileage successfully when new value is higher', async () => {
-      const vehicle = createTestVehicle({ userId: 'user-456' })
+      const userId = 'user-456'
+      const vehicle = createTestVehicle({ userId })
       const dto: UpdateMileageDto = {
         mileage: 20000
       }
 
-      mockVehicleRepository.existsForUser.mockResolvedValueOnce(true)
       mockVehicleRepository.findById.mockResolvedValueOnce(vehicle)
       mockVehicleRepository.update.mockImplementationOnce(async entity => entity)
 
-      const result = await useCase.execute(vehicle.id.value, vehicle.userId, dto)
+      const result = await useCase.execute(vehicle.id.value, userId, dto)
 
-      expect(mockVehicleRepository.existsForUser).toHaveBeenCalled()
-      const [passedVehicleId, passedUserId] = mockVehicleRepository.existsForUser.mock.calls[0]
-      expect(passedVehicleId.value).toBe(vehicle.id.value)
-      expect(passedUserId).toBe(vehicle.userId)
+      expect(mockVehicleRepository.findById).toHaveBeenCalled()
       expect(mockVehicleRepository.update).toHaveBeenCalled()
       expect(result.mileage).toBe(dto.mileage)
     })
 
     it('should throw error when new mileage is lower than current', async () => {
-      const vehicle = createTestVehicle({ userId: 'user-789' })
+      const userId = 'user-789'
+      const vehicle = createTestVehicle({ userId })
       const dto: UpdateMileageDto = {
         mileage: 10000
       }
 
-      mockVehicleRepository.existsForUser.mockResolvedValueOnce(true)
       mockVehicleRepository.findById.mockResolvedValueOnce(vehicle)
 
-      await expect(useCase.execute(vehicle.id.value, vehicle.userId, dto)).rejects.toThrow(
+      await expect(useCase.execute(vehicle.id.value, userId, dto)).rejects.toThrow(
         'New mileage cannot be lower than current mileage.'
       )
       expect(mockVehicleRepository.update).not.toHaveBeenCalled()
@@ -98,9 +95,22 @@ describe('UpdateMileageUseCase', () => {
         mileage: 25000
       }
 
-      mockVehicleRepository.existsForUser.mockResolvedValueOnce(false)
+      mockVehicleRepository.findById.mockResolvedValueOnce(null)
 
       await expect(useCase.execute(vehicleId, 'user-000', dto)).rejects.toThrow(
+        'Vehicle not found for the user'
+      )
+    })
+
+    it('should throw VehicleNotFoundException when user does not own the vehicle', async () => {
+      const vehicle = createTestVehicle({ userId: 'user-111' })
+      const dto: UpdateMileageDto = {
+        mileage: 25000
+      }
+
+      mockVehicleRepository.findById.mockResolvedValueOnce(vehicle)
+
+      await expect(useCase.execute(vehicle.id.value, 'user-222', dto)).rejects.toThrow(
         'Vehicle not found for the user'
       )
     })
