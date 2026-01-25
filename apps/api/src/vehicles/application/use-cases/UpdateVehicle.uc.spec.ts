@@ -65,8 +65,7 @@ describe('UpdateVehicleUseCase', () => {
         model: 'Civic',
         year: 2022,
         engineType: 'I4',
-        fuelType: FuelType.GASOLINE,
-        mileage: 20000
+        fuelType: FuelType.GASOLINE
       }
 
       mockVehicleRepository.findById.mockResolvedValueOnce(vehicle)
