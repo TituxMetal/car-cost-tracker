@@ -16,27 +16,21 @@ export class UpdateVehicleUseCase {
 
   async execute(vehicleId: string, userId: string, dto: UpdateVehicleDto): Promise<GetVehicleDto> {
     const vehicleIdVO = new VehicleIdValueObject(vehicleId)
-    const existingVehicle = await this.vehicleRepository.existsForUser(vehicleIdVO, userId)
+    const vehicleEntity = await this.vehicleRepository.findById(vehicleIdVO)
 
-    if (!existingVehicle) {
+    if (!vehicleEntity || vehicleEntity.userId !== userId) {
       throw new VehicleNotFoundException('Vehicle not found for the user')
     }
 
-    const vehicleEntity = await this.vehicleRepository.findById(vehicleIdVO)
-
-    if (!vehicleEntity) {
-      throw new VehicleNotFoundException('Vehicle not found')
-    }
-
     vehicleEntity.updateDetails(
-      dto.make ? dto.make : undefined,
-      dto.model ? dto.model : undefined,
-      dto.year ? new YearValueObject(dto.year) : undefined,
-      dto.engineType ? dto.engineType : null,
-      dto.fuelType ? dto.fuelType : null,
-      dto.vin ? new VinValueObject(dto.vin) : null,
-      dto.licensePlate ? dto.licensePlate : null,
-      dto.purchaseDate ? new Date(dto.purchaseDate) : null
+      dto.make !== undefined ? dto.make : undefined,
+      dto.model !== undefined ? dto.model : undefined,
+      dto.year !== undefined ? new YearValueObject(dto.year) : undefined,
+      dto.engineType !== undefined ? dto.engineType : null,
+      dto.fuelType !== undefined ? dto.fuelType : null,
+      dto.vin !== undefined ? new VinValueObject(dto.vin) : null,
+      dto.licensePlate !== undefined ? dto.licensePlate : null,
+      dto.purchaseDate !== undefined ? new Date(dto.purchaseDate) : null
     )
 
     const updatedEntity = await this.vehicleRepository.update(vehicleEntity)

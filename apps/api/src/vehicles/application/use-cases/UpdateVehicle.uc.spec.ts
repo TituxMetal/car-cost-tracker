@@ -58,7 +58,8 @@ describe('UpdateVehicleUseCase', () => {
 
   describe('execute', () => {
     it('should update vehicle successfully when user owns the vehicle', async () => {
-      const vehicle = createTestVehicle({ userId: 'user-456' })
+      const userId = 'user-456'
+      const vehicle = createTestVehicle({ userId })
       const dto: UpdateVehicleDto = {
         make: 'Honda',
         model: 'Civic',
@@ -68,16 +69,12 @@ describe('UpdateVehicleUseCase', () => {
         mileage: 20000
       }
 
-      mockVehicleRepository.existsForUser.mockResolvedValueOnce(true)
       mockVehicleRepository.findById.mockResolvedValueOnce(vehicle)
       mockVehicleRepository.update.mockImplementationOnce(async entity => entity)
 
-      const result = await useCase.execute(vehicle.id.value, 'user-456', dto)
+      const result = await useCase.execute(vehicle.id.value, userId, dto)
 
-      expect(mockVehicleRepository.existsForUser).toHaveBeenCalled()
-      const [passedVehicleId, passedUserId] = mockVehicleRepository.existsForUser.mock.calls[0]
-      expect(passedVehicleId.value).toBe(vehicle.id.value)
-      expect(passedUserId).toBe('user-456')
+      expect(mockVehicleRepository.findById).toHaveBeenCalled()
       expect(result.make).toBe(dto.make!)
       expect(result.model).toBe(dto.model!)
       expect(result.year).toBe(dto.year!)
@@ -86,7 +83,9 @@ describe('UpdateVehicleUseCase', () => {
     })
 
     it('should update partial vehicle fields', async () => {
+      const userId = 'user-789'
       const vehicle = createTestVehicle({
+        userId,
         make: 'Ford',
         model: 'Focus',
         year: new YearValueObject(2018)
@@ -95,16 +94,12 @@ describe('UpdateVehicleUseCase', () => {
         make: 'Chevrolet'
       }
 
-      mockVehicleRepository.existsForUser.mockResolvedValueOnce(true)
       mockVehicleRepository.findById.mockResolvedValueOnce(vehicle)
       mockVehicleRepository.update.mockImplementationOnce(async entity => entity)
 
-      const result = await useCase.execute(vehicle.id.value, 'user-789', dto)
+      const result = await useCase.execute(vehicle.id.value, userId, dto)
 
-      expect(mockVehicleRepository.existsForUser).toHaveBeenCalled()
-      const [passedVehicleId, passedUserId] = mockVehicleRepository.existsForUser.mock.calls[0]
-      expect(passedVehicleId.value).toBe(vehicle.id.value)
-      expect(passedUserId).toBe('user-789')
+      expect(mockVehicleRepository.findById).toHaveBeenCalled()
       expect(result.make).toBe(dto.make!)
       expect(result.model).toBe('Focus') // unchanged
       expect(result.year).toBe(2018) // unchanged
@@ -116,7 +111,7 @@ describe('UpdateVehicleUseCase', () => {
         make: 'Nissan'
       }
 
-      mockVehicleRepository.existsForUser.mockResolvedValueOnce(false)
+      mockVehicleRepository.findById.mockResolvedValueOnce(null)
 
       await expect(useCase.execute(vehicleId, 'user-000', dto)).rejects.toThrow(
         'Vehicle not found for the user'
@@ -129,7 +124,7 @@ describe('UpdateVehicleUseCase', () => {
         make: 'Mazda'
       }
 
-      mockVehicleRepository.existsForUser.mockResolvedValueOnce(false)
+      mockVehicleRepository.findById.mockResolvedValueOnce(vehicle)
 
       await expect(useCase.execute(vehicle.id.value, 'user-222', dto)).rejects.toThrow(
         'Vehicle not found for the user'
