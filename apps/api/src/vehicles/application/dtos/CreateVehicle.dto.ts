@@ -2,6 +2,7 @@ import {
   IsEnum,
   IsInt,
   IsISO8601,
+  IsNotEmpty,
   IsOptional,
   IsString,
   Matches,
@@ -15,10 +16,12 @@ import { VEHICLE_VALIDATION } from '~/vehicles/domain/validation'
 
 export class CreateVehicleDto {
   @IsString()
+  @IsNotEmpty({ message: 'Make cannot be empty' })
   @MaxLength(VEHICLE_VALIDATION.MAKE.MAX_LENGTH, { message: VEHICLE_VALIDATION.MAKE.MESSAGE })
   make!: string
 
   @IsString()
+  @IsNotEmpty({ message: 'Model cannot be empty' })
   @MaxLength(VEHICLE_VALIDATION.MODEL.MAX_LENGTH, { message: VEHICLE_VALIDATION.MODEL.MESSAGE })
   model!: string
 
