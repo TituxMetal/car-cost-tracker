@@ -12,16 +12,10 @@ export class UpdateMileageUseCase {
 
   async execute(vehicleId: string, userId: string, dto: UpdateMileageDto): Promise<GetVehicleDto> {
     const vehicleIdVO = new VehicleIdValueObject(vehicleId)
-    const existingVehicle = await this.vehicleRepository.existsForUser(vehicleIdVO, userId)
-
-    if (!existingVehicle) {
-      throw new VehicleNotFoundException('Vehicle not found for the user')
-    }
-
     const vehicleEntity = await this.vehicleRepository.findById(vehicleIdVO)
 
-    if (!vehicleEntity) {
-      throw new VehicleNotFoundException('Vehicle not found')
+    if (!vehicleEntity || vehicleEntity.userId !== userId) {
+      throw new VehicleNotFoundException('Vehicle not found for the user')
     }
 
     vehicleEntity.updateMileage(new MileageValueObject(dto.mileage))

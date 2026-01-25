@@ -10,11 +10,10 @@ export class DeleteVehicleUseCase {
 
   async execute(vehicleId: string, userId: string): Promise<void> {
     const vehicleIdVO = new VehicleIdValueObject(vehicleId)
-    const existingVehicle = await this.vehicleRepository.existsForUser(vehicleIdVO, userId)
-    const vehicleEntity = await this.vehicleRepository.findById(vehicleIdVO)
+    const existsForUser = await this.vehicleRepository.existsForUser(vehicleIdVO, userId)
 
-    if (!existingVehicle || !vehicleEntity) {
-      throw new VehicleNotFoundException(`Vehicle with ID ${vehicleId} not found.`)
+    if (!existsForUser) {
+      throw new VehicleNotFoundException('Vehicle not found for the user')
     }
 
     await this.vehicleRepository.delete(vehicleIdVO)
