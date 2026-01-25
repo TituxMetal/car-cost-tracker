@@ -23,14 +23,14 @@ export class UpdateVehicleUseCase {
     }
 
     vehicleEntity.updateDetails(
-      dto.make !== undefined ? dto.make : undefined,
-      dto.model !== undefined ? dto.model : undefined,
+      dto.make,
+      dto.model,
       dto.year !== undefined ? new YearValueObject(dto.year) : undefined,
-      dto.engineType !== undefined ? dto.engineType : null,
-      dto.fuelType !== undefined ? dto.fuelType : null,
-      dto.vin !== undefined ? new VinValueObject(dto.vin) : null,
-      dto.licensePlate !== undefined ? dto.licensePlate : null,
-      dto.purchaseDate !== undefined ? new Date(dto.purchaseDate) : null
+      dto.engineType,
+      dto.fuelType,
+      dto.vin !== undefined ? new VinValueObject(dto.vin) : undefined,
+      dto.licensePlate,
+      dto.purchaseDate !== undefined ? new Date(dto.purchaseDate) : undefined
     )
 
     const updatedEntity = await this.vehicleRepository.update(vehicleEntity)

@@ -31,9 +31,9 @@ export class CreateVehicleUseCase {
       new YearValueObject(dto.year),
       dto.engineType ?? null,
       dto.fuelType ?? null,
-      dto.vin ? new VinValueObject(dto.vin) : null,
-      dto.licensePlate ? dto.licensePlate : null,
-      dto.purchaseDate ? new Date(dto.purchaseDate) : null,
+      dto.vin !== undefined ? new VinValueObject(dto.vin) : null,
+      dto.licensePlate ?? null,
+      dto.purchaseDate !== undefined ? new Date(dto.purchaseDate) : null,
       dto.mileage !== undefined ? new MileageValueObject(dto.mileage) : new MileageValueObject(0),
       new Date(),
       new Date()
