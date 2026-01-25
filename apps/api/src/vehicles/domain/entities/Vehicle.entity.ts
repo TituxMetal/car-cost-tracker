@@ -64,7 +64,7 @@ export class VehicleEntity {
       this.model = model
     }
 
-    if (year) {
+    if (year !== undefined) {
       this.year = year
     }
 
