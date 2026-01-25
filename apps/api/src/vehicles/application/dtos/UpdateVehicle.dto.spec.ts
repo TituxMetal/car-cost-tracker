@@ -17,7 +17,6 @@ describe('UpdateVehicleDto', () => {
     expect(dto.vin).toBeUndefined()
     expect(dto.licensePlate).toBeUndefined()
     expect(dto.purchaseDate).toBeUndefined()
-    expect(dto.mileage).toBeUndefined()
   })
 
   it('should create instance with single property', () => {
@@ -40,7 +39,6 @@ describe('UpdateVehicleDto', () => {
     dto.vin = '1HGCM82633A123456'
     dto.licensePlate = 'XYZ-789'
     dto.purchaseDate = '2019-05-20'
-    dto.mileage = 30000
 
     expect(dto).toBeInstanceOf(UpdateVehicleDto)
     expect(dto.make).toBe('Honda')
@@ -51,18 +49,23 @@ describe('UpdateVehicleDto', () => {
     expect(dto.vin).toBe('1HGCM82633A123456')
     expect(dto.licensePlate).toBe('XYZ-789')
     expect(dto.purchaseDate).toBe('2019-05-20')
-    expect(dto.mileage).toBe(30000)
+  })
+
+  it('should not include mileage field (use UpdateMileageDto instead)', () => {
+    const dto = new UpdateVehicleDto()
+
+    expect('mileage' in dto).toBe(false)
   })
 
   it('should be serializable to JSON', () => {
     const dto = new UpdateVehicleDto()
     dto.make = 'Mini'
-    dto.mileage = 75000
+    dto.year = 2020
 
     const json = JSON.stringify(dto)
     const parsed = JSON.parse(json)
 
     expect(parsed.make).toBe('Mini')
-    expect(parsed.mileage).toBe(75000)
+    expect(parsed.year).toBe(2020)
   })
 })
