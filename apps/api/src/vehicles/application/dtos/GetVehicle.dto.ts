@@ -7,7 +7,7 @@ export class GetVehicleDto {
   model!: string
   year!: number
   engineType!: string | null
-  fuelType!: FuelType
+  fuelType!: FuelType | null
   vin!: string | null
   licensePlate!: string | null
   purchaseDate!: Date | null
