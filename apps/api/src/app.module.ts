@@ -5,6 +5,7 @@ import { AuthModule } from '~/auth/Auth.module'
 import { PrismaModule } from '~/shared/infrastructure/database'
 import { SharedModule } from '~/shared/Shared.module'
 import { UsersModule } from '~/users/Users.module'
+import { VehiclesModule } from '~/vehicles/Vehicles.module'
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UsersModule } from '~/users/Users.module'
     SharedModule,
     PrismaModule,
     UsersModule,
+    VehiclesModule,
     AuthModule
   ]
 })
