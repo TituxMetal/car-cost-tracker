@@ -57,11 +57,11 @@
 
 ---
 
-## Phase 4: Infrastructure Layer
+## Phase 4: Infrastructure Layer ✅
 
-- [ ] PrismaVehicle.repository.ts + tests
-- [ ] Vehicle.mapper.ts (infrastructure) + tests
-- [ ] Vehicle.controller.ts + tests
+- [x] PrismaVehicle.repository.ts + tests
+- [x] Vehicle.mapper.ts (infrastructure) + tests
+- [x] Vehicle.controller.ts + tests
 
 ---
 
