@@ -27,7 +27,7 @@ export class PrismaVehicleRepository implements IVehicleRepository {
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-          throw new VehicleAlreadyExistsException('A vehicle with the same VIN already exists.')
+          throw new VehicleAlreadyExistsException('This user already has a registered vehicle.')
         }
       }
 
