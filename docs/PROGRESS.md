@@ -76,32 +76,49 @@
 
 ## Phase 6: Frontend Types & Schemas
 
-- [ ] vehicle.types.ts
-- [ ] vehicle.schema.ts + tests
+- [ ] vehicle.types.ts (Vehicle, FuelType, FUEL_TYPE_LABELS)
+- [ ] vehicle.schema.ts (createVehicle, updateVehicle, updateMileage)
+- [ ] vehicle.schema.spec.ts
 
 ---
 
 ## Phase 7: Frontend API & Store
 
-- [ ] vehicle.service.ts
-- [ ] vehicle.store.ts
+- [ ] vehicle.service.ts (getMyVehicle, create, update, updateMileage, delete)
+- [ ] vehicle.service.spec.ts
+- [ ] vehicle.store.ts (atoms, computed, actions)
+- [ ] vehicle.store.spec.ts
 
 ---
 
-## Phase 8: Frontend Components
+## Phase 8A: Select UI Component + Hook
 
-- [ ] useVehicle.ts hook
-- [ ] VehicleForm.tsx + tests
-- [ ] VehicleProfile.tsx + tests
-- [ ] VehicleEmptyState.tsx
-- [ ] DeleteVehicleDialog.tsx
-- [ ] QuickMileageUpdate.tsx
+- [ ] Select.tsx + Select.spec.tsx (reusable UI component)
+- [ ] Update ui/index.ts barrel export
+- [ ] useVehicle.ts + useVehicle.spec.ts
 
 ---
 
-## Phase 9: Frontend Pages
+## Phase 8B: VehicleForm + VehicleProfile
 
+- [ ] VehicleForm.tsx + VehicleForm.spec.tsx (create/edit modes)
+- [ ] VehicleProfile.tsx + VehicleProfile.spec.tsx (display view)
+
+---
+
+## Phase 8C: EmptyState + DeleteDialog + QuickMileage
+
+- [ ] VehicleEmptyState.tsx + VehicleEmptyState.spec.tsx
+- [ ] DeleteVehicleDialog.tsx + DeleteVehicleDialog.spec.tsx
+- [ ] QuickMileageUpdate.tsx + QuickMileageUpdate.spec.tsx
+
+---
+
+## Phase 9: Container, Pages & Navigation
+
+- [ ] VehicleContainer.tsx + VehicleContainer.spec.tsx
+- [ ] features/vehicles/index.ts (barrel export)
 - [ ] /vehicle/index.astro
 - [ ] /vehicle/create.astro
 - [ ] /vehicle/edit.astro
-- [ ] Update navigation
+- [ ] Update Main.astro navigation
