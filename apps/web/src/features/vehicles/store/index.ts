@@ -1,0 +1,8 @@
+export {
+  $error,
+  $hasVehicle,
+  $isLoading,
+  $vehicle,
+  $vehicleDisplayName,
+  vehicleActions
+} from './vehicle.store'
