@@ -84,8 +84,8 @@
 
 ## Phase 7: Frontend API & Store
 
-- [ ] vehicle.service.ts (getMyVehicle, create, update, updateMileage, delete)
-- [ ] vehicle.service.spec.ts
+- [x] vehicle.service.ts (getMyVehicle, create, update, updateMileage, delete)
+- [x] vehicle.service.spec.ts
 - [ ] vehicle.store.ts (atoms, computed, actions)
 - [ ] vehicle.store.spec.ts
 
