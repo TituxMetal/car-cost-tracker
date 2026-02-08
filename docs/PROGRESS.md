@@ -86,8 +86,8 @@
 
 - [x] vehicle.service.ts (getMyVehicle, create, update, updateMileage, delete)
 - [x] vehicle.service.spec.ts
-- [ ] vehicle.store.ts (atoms, computed, actions)
-- [ ] vehicle.store.spec.ts
+- [x] vehicle.store.ts (atoms, computed, actions)
+- [x] vehicle.store.spec.ts
 
 ---
 
