@@ -91,11 +91,11 @@
 
 ---
 
-## Phase 8A: Select UI Component + Hook
+## Phase 8A: Select UI Component + Hook ✅
 
-- [ ] Select.tsx + Select.spec.tsx (reusable UI component)
-- [ ] Update ui/index.ts barrel export
-- [ ] useVehicle.ts + useVehicle.spec.ts
+- [x] Select.tsx + Select.spec.tsx (reusable UI component)
+- [x] Update ui/index.ts barrel export
+- [x] useVehicle.ts + useVehicle.spec.ts
 
 ---
 
