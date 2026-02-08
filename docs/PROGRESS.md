@@ -76,9 +76,9 @@
 
 ## Phase 6: Frontend Types & Schemas
 
-- [ ] vehicle.types.ts (Vehicle, FuelType, FUEL_TYPE_LABELS)
-- [ ] vehicle.schema.ts (createVehicle, updateVehicle, updateMileage)
-- [ ] vehicle.schema.spec.ts
+- [x] vehicle.types.ts (Vehicle, FuelType, FUEL_TYPE_LABELS)
+- [x] vehicle.schema.ts (createVehicle, updateVehicle, updateMileage)
+- [x] vehicle.schema.spec.ts
 
 ---
 
