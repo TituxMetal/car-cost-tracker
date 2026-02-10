@@ -101,7 +101,7 @@
 
 ## Phase 8B: VehicleForm + VehicleProfile
 
-- [ ] VehicleForm.tsx + VehicleForm.spec.tsx (create/edit modes)
+- [x] VehicleForm.tsx + VehicleForm.spec.tsx (create/edit modes)
 - [ ] VehicleProfile.tsx + VehicleProfile.spec.tsx (display view)
 
 ---
