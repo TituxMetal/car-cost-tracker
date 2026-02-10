@@ -99,10 +99,10 @@
 
 ---
 
-## Phase 8B: VehicleForm + VehicleProfile
+## Phase 8B: VehicleForm + VehicleProfile ✅
 
 - [x] VehicleForm.tsx + VehicleForm.spec.tsx (create/edit modes)
-- [ ] VehicleProfile.tsx + VehicleProfile.spec.tsx (display view)
+- [x] VehicleProfile.tsx + VehicleProfile.spec.tsx (display view)
 
 ---
 
