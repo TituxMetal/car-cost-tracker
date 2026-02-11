@@ -1,4 +1,6 @@
 export { Button } from './Button'
+export { ConfirmDialog } from './ConfirmDialog'
+export type { ConfirmDialogProps } from './ConfirmDialog'
 export { FormWrapper } from './FormWrapper'
 export { Input } from './Input'
 export { Label } from './Label'
