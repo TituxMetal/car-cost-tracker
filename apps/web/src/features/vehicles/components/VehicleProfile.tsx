@@ -2,6 +2,7 @@ import { Button } from '~/components/ui'
 
 import type { Vehicle } from '../types'
 import { FUEL_TYPE_LABELS } from '../types'
+import { formatMileage } from '../utils'
 
 export interface VehicleProfileProps {
   vehicle: Vehicle
@@ -40,7 +41,7 @@ export const VehicleProfile = ({ vehicle, onEdit, onDelete }: VehicleProfileProp
         <dd>{vehicle.purchaseDate ?? '-'}</dd>
 
         <dt>Kilométrage</dt>
-        <dd>{vehicle.mileage > 1 ? `${vehicle.mileage} kms` : `${vehicle.mileage} km`}</dd>
+        <dd>{formatMileage(vehicle.mileage)}</dd>
       </dl>
 
       <section className='mx-auto mt-4 grid w-full max-w-lg items-center justify-end gap-2'>
