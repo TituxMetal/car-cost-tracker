@@ -54,21 +54,18 @@ describe('VehicleContainer', () => {
   })
   describe('loading + empty mode', () => {
     it('should call fetchVehicle on mount', () => {
-      // TODO(human): Verify fetchVehicle is called on mount
       render(<VehicleContainer />)
 
       expect(mockFetchVehicle).toHaveBeenCalledTimes(1)
     })
 
     it('should show loading state when isLoading is true', () => {
-      // TODO(human): Render with isLoading=true, verify loading indicator
       render(<VehicleContainer />)
 
       expect(screen.getByText('Chargement...')).toBeInTheDocument()
     })
 
     it('should show VehicleEmptyState when no vehicle exists', () => {
-      // TODO(human): Render with vehicle=null, verify empty state text
       mockUseVehicle.isLoading = false
       mockUseVehicle.hasVehicle = false
 
