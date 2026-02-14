@@ -178,10 +178,18 @@
 
 - [x] Clean up 3 TODO(human) comments in VehicleContainer.spec.tsx
 
-### 10H: Final check suite + push
+### 10H: Final check suite + push ✅
 
 - [x] All tests pass locally (368 pass, 0 fail)
 - [x] typecheck passes
 - [x] lint passes
 - [x] format passes
-- [ ] CI passes after push
+- [x] CI passes after push
+
+### Future improvements (from Copilot review, low priority)
+
+- [ ] VehicleContainer: add fallback `return null` at end for defensive rendering
+- [ ] VehicleContainer: surface fetch errors to user instead of showing empty state
+- [ ] VehicleContainer: replace `vehicle!.id` non-null assertions with guard clauses
+- [ ] apiRequest: handle empty-body responses (204/205) explicitly instead of catching JSON parse
+      errors
