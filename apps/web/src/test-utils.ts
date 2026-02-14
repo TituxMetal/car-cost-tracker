@@ -18,6 +18,6 @@ afterEach(() => {
 })
 
 // Re-export commonly used testing utilities
-export { cleanup }
-export { fireEvent, render, screen, waitFor } from '@testing-library/react'
+export { fireEvent, render, renderHook, screen, waitFor } from '@testing-library/react'
 export { default as userEvent } from '@testing-library/user-event'
+export { cleanup }

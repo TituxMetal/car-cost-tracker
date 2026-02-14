@@ -2,6 +2,7 @@ import type { Mock } from 'bun:test'
 import { afterEach, beforeEach, describe, expect, it, spyOn } from 'bun:test'
 
 import { api } from '~/lib/apiRequest'
+import { cleanup } from '~/test-utils'
 
 import type { Vehicle } from '../types'
 
@@ -37,6 +38,9 @@ let deleteSpy: Mock<typeof api.delete>
 
 describe('Vehicle Store', () => {
   beforeEach(() => {
+    cleanup()
+    document.body.innerHTML = ''
+
     getSpy = spyOn(api, 'get')
     postSpy = spyOn(api, 'post')
     patchSpy = spyOn(api, 'patch')
