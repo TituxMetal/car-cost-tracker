@@ -1,10 +1,24 @@
-import type { Mock } from 'bun:test'
-import { afterEach, beforeEach, describe, expect, it, spyOn } from 'bun:test'
+import { beforeEach, describe, expect, it, mock } from 'bun:test'
 
-import { api } from '~/lib/apiRequest'
 import { cleanup } from '~/test-utils'
 
 import type { Vehicle } from '../types'
+
+const mockGet = mock(() => Promise.resolve({}))
+const mockPost = mock(() => Promise.resolve({}))
+const mockPatch = mock(() => Promise.resolve({}))
+const mockDelete = mock(() => Promise.resolve({}))
+
+mock.module('~/lib/apiRequest', () => ({
+  api: {
+    get: mockGet,
+    post: mockPost,
+    patch: mockPatch,
+    put: mock(() => Promise.resolve({})),
+    delete: mockDelete
+  },
+  apiRequest: mock(() => Promise.resolve({}))
+}))
 
 import {
   $error,
@@ -31,32 +45,20 @@ const mockVehicle: Vehicle = {
   updatedAt: '2024-01-01'
 }
 
-let getSpy: Mock<typeof api.get>
-let postSpy: Mock<typeof api.post>
-let patchSpy: Mock<typeof api.patch>
-let deleteSpy: Mock<typeof api.delete>
-
 describe('Vehicle Store', () => {
   beforeEach(() => {
     cleanup()
     document.body.innerHTML = ''
 
-    getSpy = spyOn(api, 'get')
-    postSpy = spyOn(api, 'post')
-    patchSpy = spyOn(api, 'patch')
-    deleteSpy = spyOn(api, 'delete')
+    mockGet.mockClear()
+    mockPost.mockClear()
+    mockPatch.mockClear()
+    mockDelete.mockClear()
 
     // Reset store state
     $vehicle.set(null)
     $isLoading.set(false)
     $error.set(null)
-  })
-
-  afterEach(() => {
-    getSpy.mockRestore()
-    postSpy.mockRestore()
-    patchSpy.mockRestore()
-    deleteSpy.mockRestore()
   })
 
   describe('State Atoms', () => {
@@ -103,11 +105,11 @@ describe('Vehicle Store', () => {
       it('should fetch and set vehicle on success', async () => {
         const apiResponse = { data: mockVehicle, success: true }
 
-        getSpy.mockResolvedValueOnce(apiResponse)
+        mockGet.mockResolvedValueOnce(apiResponse)
 
         await vehicleActions.fetchVehicle()
 
-        expect(getSpy).toHaveBeenCalledWith('/vehicles/me')
+        expect(mockGet).toHaveBeenCalledWith('/vehicles/me')
         expect($vehicle.get()).toEqual(mockVehicle)
         expect($error.get()).toBeNull()
       })
@@ -115,11 +117,11 @@ describe('Vehicle Store', () => {
       it('should set vehicle to null when no vehicle exists', async () => {
         const apiResponse = { data: null, success: true }
 
-        getSpy.mockResolvedValueOnce(apiResponse)
+        mockGet.mockResolvedValueOnce(apiResponse)
 
         await vehicleActions.fetchVehicle()
 
-        expect(getSpy).toHaveBeenCalledWith('/vehicles/me')
+        expect(mockGet).toHaveBeenCalledWith('/vehicles/me')
         expect($vehicle.get()).toBeNull()
         expect($error.get()).toBeNull()
       })
@@ -127,11 +129,11 @@ describe('Vehicle Store', () => {
       it('should set error on failure', async () => {
         const errorMessage = 'Failed to fetch vehicle'
 
-        getSpy.mockRejectedValueOnce(new Error(errorMessage))
+        mockGet.mockRejectedValueOnce(new Error(errorMessage))
 
         await vehicleActions.fetchVehicle()
 
-        expect(getSpy).toHaveBeenCalledWith('/vehicles/me')
+        expect(mockGet).toHaveBeenCalledWith('/vehicles/me')
         expect($vehicle.get()).toBeNull()
         expect($error.get()).toBe(errorMessage)
       })
@@ -139,7 +141,7 @@ describe('Vehicle Store', () => {
       it('should manage loading state during fetch', async () => {
         const apiResponse = { data: mockVehicle, success: true }
 
-        getSpy.mockResolvedValueOnce(apiResponse)
+        mockGet.mockResolvedValueOnce(apiResponse)
 
         const fetchPromise = vehicleActions.fetchVehicle()
 
@@ -162,11 +164,11 @@ describe('Vehicle Store', () => {
         const createdVehicle = { ...mockVehicle, ...newVehicleData, id: 'v2' }
         const apiResponse = { data: createdVehicle, success: true }
 
-        postSpy.mockResolvedValueOnce(apiResponse)
+        mockPost.mockResolvedValueOnce(apiResponse)
 
         const result = await vehicleActions.create(newVehicleData)
 
-        expect(postSpy).toHaveBeenCalledWith('/vehicles', newVehicleData)
+        expect(mockPost).toHaveBeenCalledWith('/vehicles', newVehicleData)
         expect($vehicle.get()).toEqual(createdVehicle)
         expect($error.get()).toBeNull()
         expect(result).toEqual(createdVehicle)
@@ -181,11 +183,11 @@ describe('Vehicle Store', () => {
         }
         const errorMessage = 'Failed to create vehicle'
 
-        postSpy.mockRejectedValueOnce(new Error(errorMessage))
+        mockPost.mockRejectedValueOnce(new Error(errorMessage))
 
         await expect(vehicleActions.create(newVehicleData)).rejects.toThrow(errorMessage)
 
-        expect(postSpy).toHaveBeenCalledWith('/vehicles', newVehicleData)
+        expect(mockPost).toHaveBeenCalledWith('/vehicles', newVehicleData)
         expect($error.get()).toBe(errorMessage)
       })
     })
@@ -196,11 +198,11 @@ describe('Vehicle Store', () => {
         const updatedVehicle = { ...mockVehicle, ...updatedData }
         const apiResponse = { data: updatedVehicle, success: true }
 
-        patchSpy.mockResolvedValueOnce(apiResponse)
+        mockPatch.mockResolvedValueOnce(apiResponse)
 
         const result = await vehicleActions.update(mockVehicle.id, updatedData)
 
-        expect(patchSpy).toHaveBeenCalledWith(`/vehicles/${mockVehicle.id}`, updatedData)
+        expect(mockPatch).toHaveBeenCalledWith(`/vehicles/${mockVehicle.id}`, updatedData)
         expect($vehicle.get()).toEqual(updatedVehicle)
         expect($error.get()).toBeNull()
         expect(result).toEqual(updatedVehicle)
@@ -210,13 +212,13 @@ describe('Vehicle Store', () => {
         const updatedData = { make: 'Toyota', model: 'Camry', year: 2022 }
         const errorMessage = 'Failed to update vehicle'
 
-        patchSpy.mockRejectedValueOnce(new Error(errorMessage))
+        mockPatch.mockRejectedValueOnce(new Error(errorMessage))
 
         await expect(vehicleActions.update(mockVehicle.id, updatedData)).rejects.toThrow(
           errorMessage
         )
 
-        expect(patchSpy).toHaveBeenCalledWith(`/vehicles/${mockVehicle.id}`, updatedData)
+        expect(mockPatch).toHaveBeenCalledWith(`/vehicles/${mockVehicle.id}`, updatedData)
         expect($error.get()).toBe(errorMessage)
       })
     })
@@ -227,11 +229,11 @@ describe('Vehicle Store', () => {
         const updatedVehicle = { ...mockVehicle, mileage: mileageData.mileage }
         const apiResponse = { data: updatedVehicle, success: true }
 
-        patchSpy.mockResolvedValueOnce(apiResponse)
+        mockPatch.mockResolvedValueOnce(apiResponse)
 
         const result = await vehicleActions.updateMileage(mockVehicle.id, mileageData)
 
-        expect(patchSpy).toHaveBeenCalledWith(`/vehicles/${mockVehicle.id}/mileage`, mileageData)
+        expect(mockPatch).toHaveBeenCalledWith(`/vehicles/${mockVehicle.id}/mileage`, mileageData)
         expect($vehicle.get()).toEqual(updatedVehicle)
         expect($error.get()).toBeNull()
         expect(result).toEqual(updatedVehicle)
@@ -241,13 +243,13 @@ describe('Vehicle Store', () => {
         const mileageData = { mileage: 55000 }
         const errorMessage = 'Failed to update mileage'
 
-        patchSpy.mockRejectedValueOnce(new Error(errorMessage))
+        mockPatch.mockRejectedValueOnce(new Error(errorMessage))
 
         await expect(vehicleActions.updateMileage(mockVehicle.id, mileageData)).rejects.toThrow(
           errorMessage
         )
 
-        expect(patchSpy).toHaveBeenCalledWith(`/vehicles/${mockVehicle.id}/mileage`, mileageData)
+        expect(mockPatch).toHaveBeenCalledWith(`/vehicles/${mockVehicle.id}/mileage`, mileageData)
         expect($error.get()).toBe(errorMessage)
       })
     })
@@ -256,11 +258,11 @@ describe('Vehicle Store', () => {
       it('should delete vehicle and set state to null on success', async () => {
         const apiResponse = { success: true }
 
-        deleteSpy.mockResolvedValueOnce(apiResponse)
+        mockDelete.mockResolvedValueOnce(apiResponse)
 
         await vehicleActions.remove(mockVehicle.id)
 
-        expect(deleteSpy).toHaveBeenCalledWith(`/vehicles/${mockVehicle.id}`)
+        expect(mockDelete).toHaveBeenCalledWith(`/vehicles/${mockVehicle.id}`)
         expect($vehicle.get()).toBeNull()
         expect($error.get()).toBeNull()
       })
@@ -268,11 +270,11 @@ describe('Vehicle Store', () => {
       it('should set error on deletion failure', async () => {
         const errorMessage = 'Failed to delete vehicle'
 
-        deleteSpy.mockRejectedValueOnce(new Error(errorMessage))
+        mockDelete.mockRejectedValueOnce(new Error(errorMessage))
 
         await expect(vehicleActions.remove(mockVehicle.id)).rejects.toThrow(errorMessage)
 
-        expect(deleteSpy).toHaveBeenCalledWith(`/vehicles/${mockVehicle.id}`)
+        expect(mockDelete).toHaveBeenCalledWith(`/vehicles/${mockVehicle.id}`)
         expect($error.get()).toBe(errorMessage)
       })
     })
