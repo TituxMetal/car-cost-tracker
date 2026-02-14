@@ -32,6 +32,7 @@ export const VehicleContainer = () => {
     defaultValues: {},
     mode: 'onTouched',
     criteriaMode: 'all',
+    shouldUnregister: true,
     resolver: zodResolver(createVehicleSchema)
   })
 
@@ -89,7 +90,6 @@ export const VehicleContainer = () => {
 
   const handleQuickMileageSubmit = async (mileage: UpdateMileageSchema) => {
     await updateMileage(vehicle!.id, mileage)
-    await fetchVehicle()
   }
 
   useEffect(() => {
