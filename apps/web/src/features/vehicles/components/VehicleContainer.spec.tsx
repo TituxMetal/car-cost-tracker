@@ -1,10 +1,11 @@
-import { beforeEach, describe, expect, it, mock } from 'bun:test'
+import { afterEach, beforeEach, describe, expect, it, spyOn } from 'bun:test'
 
 import { cleanup, fireEvent, render, screen, userEvent, waitFor } from '~/test-utils'
 
+import { $error, $isLoading, $vehicle, vehicleActions } from '../store'
 import type { Vehicle } from '../types'
 
-const mockFetchVehicle = mock(() => Promise.resolve())
+import { VehicleContainer } from './VehicleContainer'
 
 const mockVehicle: Vehicle = {
   id: 'v1',
@@ -22,41 +23,43 @@ const mockVehicle: Vehicle = {
   updatedAt: '2024-01-01'
 }
 
-const mockUseVehicle = {
-  vehicle: null as Vehicle | null,
-  isLoading: true,
-  error: null as string | null,
-  hasVehicle: false,
-  vehicleDisplayName: '',
-  fetchVehicle: mockFetchVehicle,
-  createVehicle: mock(() => Promise.resolve()),
-  updateVehicle: mock(() => Promise.resolve()),
-  updateMileage: mock(() => Promise.resolve()),
-  deleteVehicle: mock(() => Promise.resolve()),
-  clearError: mock(() => {})
-}
-
-mock.module('../hooks', () => ({
-  useVehicle: () => mockUseVehicle
-}))
-
-import { VehicleContainer } from './VehicleContainer'
-
 describe('VehicleContainer', () => {
+  let fetchSpy: ReturnType<typeof spyOn>
+  let createSpy: ReturnType<typeof spyOn>
+  let updateSpy: ReturnType<typeof spyOn>
+  let updateMileageSpy: ReturnType<typeof spyOn>
+  let removeSpy: ReturnType<typeof spyOn>
+
   beforeEach(() => {
     cleanup()
-    mockUseVehicle.vehicle = null as Vehicle | null
-    mockUseVehicle.isLoading = true
-    mockUseVehicle.error = null
-    mockUseVehicle.hasVehicle = false
-    mockUseVehicle.vehicleDisplayName = ''
-    mockFetchVehicle.mockClear()
+    document.body.innerHTML = ''
+
+    // Reset store atoms to default loading state
+    $vehicle.set(null)
+    $isLoading.set(true)
+    $error.set(null)
+
+    // Spy on vehicleActions to prevent real API calls
+    fetchSpy = spyOn(vehicleActions, 'fetchVehicle').mockResolvedValue(undefined)
+    createSpy = spyOn(vehicleActions, 'create').mockResolvedValue(mockVehicle)
+    updateSpy = spyOn(vehicleActions, 'update').mockResolvedValue(mockVehicle)
+    updateMileageSpy = spyOn(vehicleActions, 'updateMileage').mockResolvedValue(mockVehicle)
+    removeSpy = spyOn(vehicleActions, 'remove').mockResolvedValue(undefined)
   })
+
+  afterEach(() => {
+    fetchSpy.mockRestore()
+    createSpy.mockRestore()
+    updateSpy.mockRestore()
+    updateMileageSpy.mockRestore()
+    removeSpy.mockRestore()
+  })
+
   describe('loading + empty mode', () => {
     it('should call fetchVehicle on mount', () => {
       render(<VehicleContainer />)
 
-      expect(mockFetchVehicle).toHaveBeenCalledTimes(1)
+      expect(fetchSpy).toHaveBeenCalledTimes(1)
     })
 
     it('should show loading state when isLoading is true', () => {
@@ -66,8 +69,7 @@ describe('VehicleContainer', () => {
     })
 
     it('should show VehicleEmptyState when no vehicle exists', () => {
-      mockUseVehicle.isLoading = false
-      mockUseVehicle.hasVehicle = false
+      $isLoading.set(false)
 
       render(<VehicleContainer />)
 
@@ -77,8 +79,7 @@ describe('VehicleContainer', () => {
 
   describe('create mode', () => {
     it('should display a title in create mode', () => {
-      mockUseVehicle.isLoading = false
-      mockUseVehicle.hasVehicle = false
+      $isLoading.set(false)
 
       render(<VehicleContainer />)
       fireEvent.click(screen.getByText('Ajouter mon véhicule'))
@@ -87,8 +88,7 @@ describe('VehicleContainer', () => {
     })
 
     it('should switch to create form when "Ajouter" is clicked', () => {
-      mockUseVehicle.isLoading = false
-      mockUseVehicle.hasVehicle = false
+      $isLoading.set(false)
 
       render(<VehicleContainer />)
       fireEvent.click(screen.getByText('Ajouter mon véhicule'))
@@ -98,8 +98,7 @@ describe('VehicleContainer', () => {
     })
 
     it('should render all form fields in create mode', () => {
-      mockUseVehicle.isLoading = false
-      mockUseVehicle.hasVehicle = false
+      $isLoading.set(false)
 
       render(<VehicleContainer />)
       fireEvent.click(screen.getByText('Ajouter mon véhicule'))
@@ -116,8 +115,7 @@ describe('VehicleContainer', () => {
     })
 
     it('should return to empty state when cancel is clicked', () => {
-      mockUseVehicle.isLoading = false
-      mockUseVehicle.hasVehicle = false
+      $isLoading.set(false)
 
       render(<VehicleContainer />)
       fireEvent.click(screen.getByText('Ajouter mon véhicule'))
@@ -127,8 +125,7 @@ describe('VehicleContainer', () => {
     })
 
     it('should call createVehicle on form submit', async () => {
-      mockUseVehicle.isLoading = false
-      mockUseVehicle.hasVehicle = false
+      $isLoading.set(false)
 
       const user = userEvent.setup()
       render(<VehicleContainer />)
@@ -146,16 +143,14 @@ describe('VehicleContainer', () => {
 
       fireEvent.click(screen.getByText('Enregistrer'))
 
-      await waitFor(() => expect(mockUseVehicle.createVehicle).toHaveBeenCalled())
+      await waitFor(() => expect(createSpy).toHaveBeenCalled())
     })
   })
 
   describe('view mode', () => {
     it('should display vehicle name as title in view mode', () => {
-      mockUseVehicle.isLoading = false
-      mockUseVehicle.hasVehicle = true
-      mockUseVehicle.vehicle = mockVehicle
-      mockUseVehicle.vehicleDisplayName = 'Mini Cooper S Coupé (2012)'
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
 
       render(<VehicleContainer />)
 
@@ -163,23 +158,20 @@ describe('VehicleContainer', () => {
     })
 
     it('should show VehicleProfile when vehicle exists', () => {
-      mockUseVehicle.isLoading = false
-      mockUseVehicle.hasVehicle = true
-      mockUseVehicle.vehicle = mockVehicle
-      mockUseVehicle.vehicleDisplayName = 'Mini Cooper S Coupé (2012)'
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
 
       render(<VehicleContainer />)
 
-      // expect(screen.getByText('Mini Cooper S Coupé (2012)')).toBeInTheDocument()
       expect(screen.getByText('Marque')).toBeInTheDocument()
       expect(screen.getByText('Modèle')).toBeInTheDocument()
       expect(screen.getByText('Année')).toBeInTheDocument()
     })
 
     it('should show QuickMileageUpdate below the profile', () => {
-      mockUseVehicle.isLoading = false
-      mockUseVehicle.hasVehicle = true
-      mockUseVehicle.vehicle = mockVehicle
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+
       render(<VehicleContainer />)
 
       expect(screen.getByLabelText('Kilométrage')).toBeInTheDocument()
@@ -187,9 +179,8 @@ describe('VehicleContainer', () => {
     })
 
     it('should call updateMileage when mileage form is submitted', async () => {
-      mockUseVehicle.isLoading = false
-      mockUseVehicle.hasVehicle = true
-      mockUseVehicle.vehicle = mockVehicle
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
 
       const user = userEvent.setup()
       render(<VehicleContainer />)
@@ -197,15 +188,14 @@ describe('VehicleContainer', () => {
       await user.type(screen.getByLabelText('Kilométrage'), '92305')
       fireEvent.click(screen.getByText('Mettre à jour'))
 
-      await waitFor(() => expect(mockUseVehicle.updateMileage).toHaveBeenCalled())
+      await waitFor(() => expect(updateMileageSpy).toHaveBeenCalled())
     })
   })
 
   describe('edit mode', () => {
     it('should display vehicle name as title in edit mode', () => {
-      mockUseVehicle.isLoading = false
-      mockUseVehicle.hasVehicle = true
-      mockUseVehicle.vehicle = mockVehicle
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
 
       render(<VehicleContainer />)
       fireEvent.click(screen.getByText('Modifier'))
@@ -214,9 +204,8 @@ describe('VehicleContainer', () => {
     })
 
     it('should switch to edit form when "Modifier" is clicked', () => {
-      mockUseVehicle.isLoading = false
-      mockUseVehicle.hasVehicle = true
-      mockUseVehicle.vehicle = mockVehicle
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
 
       render(<VehicleContainer />)
       fireEvent.click(screen.getByText('Modifier'))
@@ -226,9 +215,8 @@ describe('VehicleContainer', () => {
     })
 
     it('should pre-fill form with vehicle data', () => {
-      mockUseVehicle.isLoading = false
-      mockUseVehicle.hasVehicle = true
-      mockUseVehicle.vehicle = mockVehicle
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
 
       render(<VehicleContainer />)
       fireEvent.click(screen.getByText('Modifier'))
@@ -239,9 +227,8 @@ describe('VehicleContainer', () => {
     })
 
     it('should hide mileage field in edit mode', () => {
-      mockUseVehicle.isLoading = false
-      mockUseVehicle.hasVehicle = true
-      mockUseVehicle.vehicle = mockVehicle
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
 
       render(<VehicleContainer />)
       fireEvent.click(screen.getByText('Modifier'))
@@ -250,9 +237,8 @@ describe('VehicleContainer', () => {
     })
 
     it('should return to view when cancel is clicked', () => {
-      mockUseVehicle.isLoading = false
-      mockUseVehicle.hasVehicle = true
-      mockUseVehicle.vehicle = mockVehicle
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
 
       render(<VehicleContainer />)
       fireEvent.click(screen.getByText('Modifier'))
@@ -264,9 +250,8 @@ describe('VehicleContainer', () => {
     })
 
     it('should call updateVehicle on form submit', async () => {
-      mockUseVehicle.isLoading = false
-      mockUseVehicle.hasVehicle = true
-      mockUseVehicle.vehicle = mockVehicle
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
 
       const user = userEvent.setup()
       render(<VehicleContainer />)
@@ -275,15 +260,14 @@ describe('VehicleContainer', () => {
       await user.type(screen.getByLabelText('Type de moteur'), '1.6l Turbo')
       fireEvent.click(screen.getByText('Enregistrer'))
 
-      await waitFor(() => expect(mockUseVehicle.updateVehicle).toHaveBeenCalled())
+      await waitFor(() => expect(updateSpy).toHaveBeenCalled())
     })
   })
 
   describe('delete flow', () => {
     it('should not show DeleteVehicleDialog initially', () => {
-      mockUseVehicle.isLoading = false
-      mockUseVehicle.hasVehicle = true
-      mockUseVehicle.vehicle = mockVehicle
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
 
       render(<VehicleContainer />)
 
@@ -291,9 +275,8 @@ describe('VehicleContainer', () => {
     })
 
     it('should show DeleteVehicleDialog when "Supprimer" is clicked', () => {
-      mockUseVehicle.isLoading = false
-      mockUseVehicle.hasVehicle = true
-      mockUseVehicle.vehicle = mockVehicle
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
 
       render(<VehicleContainer />)
       fireEvent.click(screen.getByText('Supprimer'))
@@ -302,9 +285,8 @@ describe('VehicleContainer', () => {
     })
 
     it('should hide dialog when cancel is clicked', () => {
-      mockUseVehicle.isLoading = false
-      mockUseVehicle.hasVehicle = true
-      mockUseVehicle.vehicle = mockVehicle
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
 
       render(<VehicleContainer />)
       fireEvent.click(screen.getByText('Supprimer'))
@@ -314,27 +296,23 @@ describe('VehicleContainer', () => {
     })
 
     it('should call deleteVehicle and return to empty on confirm', async () => {
-      mockUseVehicle.isLoading = false
-      mockUseVehicle.hasVehicle = true
-      mockUseVehicle.vehicle = mockVehicle
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
 
       render(<VehicleContainer />)
       fireEvent.click(screen.getByText('Supprimer'))
       const dialogDeleteButton = screen.getAllByText('Supprimer')[1]
       fireEvent.click(dialogDeleteButton)
-      mockUseVehicle.hasVehicle = false
-      mockUseVehicle.vehicle = null
 
-      await waitFor(() => expect(mockUseVehicle.deleteVehicle).toHaveBeenCalled())
+      await waitFor(() => expect(removeSpy).toHaveBeenCalled())
     })
   })
 
   describe('error handling', () => {
     it('should display server error when an action fails', async () => {
-      mockUseVehicle.isLoading = false
-      mockUseVehicle.hasVehicle = true
-      mockUseVehicle.vehicle = mockVehicle
-      mockUseVehicle.updateVehicle = mock(() => Promise.reject(new Error('Update failed')))
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+      updateSpy.mockRejectedValueOnce(new Error('Update failed'))
 
       render(<VehicleContainer />)
       fireEvent.click(screen.getByText('Modifier'))
