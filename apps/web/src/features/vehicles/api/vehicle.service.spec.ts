@@ -62,7 +62,7 @@ describe('vehicle.service', () => {
 
       const result = await getMyVehicle()
 
-      expect(api.get).toHaveBeenCalledWith('/api/vehicles/me')
+      expect(api.get).toHaveBeenCalledWith('/vehicles/me')
       expect(result).toEqual(vehicleData)
     })
 
@@ -74,7 +74,7 @@ describe('vehicle.service', () => {
 
       const result = await getMyVehicle()
 
-      expect(api.get).toHaveBeenCalledWith('/api/vehicles/me')
+      expect(api.get).toHaveBeenCalledWith('/vehicles/me')
       expect(result).toBeNull()
     })
 
@@ -85,7 +85,7 @@ describe('vehicle.service', () => {
       })
 
       await expect(getMyVehicle()).rejects.toThrow('API error')
-      expect(api.get).toHaveBeenCalledWith('/api/vehicles/me')
+      expect(api.get).toHaveBeenCalledWith('/vehicles/me')
     })
   })
 
@@ -121,7 +121,7 @@ describe('vehicle.service', () => {
       const result = await createVehicle(createData)
 
       expect(result).toEqual(mockedVehicle)
-      expect(api.post).toHaveBeenCalledWith('/api/vehicles', createData)
+      expect(api.post).toHaveBeenCalledWith('/vehicles', createData)
     })
 
     it('should throw on failed creation', async () => {
@@ -137,7 +137,7 @@ describe('vehicle.service', () => {
       })
 
       await expect(createVehicle(createData)).rejects.toThrow('Creation failed')
-      expect(api.post).toHaveBeenCalledWith('/api/vehicles', createData)
+      expect(api.post).toHaveBeenCalledWith('/vehicles', createData)
     })
   })
 
@@ -158,7 +158,7 @@ describe('vehicle.service', () => {
 
       const result = await updateVehicle(id, updateData)
 
-      expect(api.patch).toHaveBeenCalledWith(`/api/vehicles/${id}`, updateData)
+      expect(api.patch).toHaveBeenCalledWith(`/vehicles/${id}`, updateData)
       expect(result).toEqual(updatedVehicle)
     })
 
@@ -172,7 +172,7 @@ describe('vehicle.service', () => {
       })
 
       await expect(updateVehicle(id, updateData)).rejects.toThrow('Update failed')
-      expect(api.patch).toHaveBeenCalledWith(`/api/vehicles/${id}`, updateData)
+      expect(api.patch).toHaveBeenCalledWith(`/vehicles/${id}`, updateData)
     })
   })
 
@@ -188,7 +188,7 @@ describe('vehicle.service', () => {
 
       const result = await updateMileage(id, mileageData)
 
-      expect(api.patch).toHaveBeenCalledWith(`/api/vehicles/${id}/mileage`, mileageData)
+      expect(api.patch).toHaveBeenCalledWith(`/vehicles/${id}/mileage`, mileageData)
       expect(result.mileage).toEqual(mileageData.mileage)
     })
 
@@ -202,7 +202,7 @@ describe('vehicle.service', () => {
       })
 
       await expect(updateMileage(id, mileageData)).rejects.toThrow('Mileage update failed')
-      expect(api.patch).toHaveBeenCalledWith(`/api/vehicles/${id}/mileage`, mileageData)
+      expect(api.patch).toHaveBeenCalledWith(`/vehicles/${id}/mileage`, mileageData)
     })
   })
 
@@ -215,7 +215,7 @@ describe('vehicle.service', () => {
       })
 
       await expect(deleteVehicle(id)).resolves.toBeUndefined()
-      expect(api.delete).toHaveBeenCalledWith(`/api/vehicles/${id}`)
+      expect(api.delete).toHaveBeenCalledWith(`/vehicles/${id}`)
     })
 
     it('should throw on failed deletion', async () => {
@@ -227,7 +227,7 @@ describe('vehicle.service', () => {
       })
 
       await expect(deleteVehicle(id)).rejects.toThrow('Deletion failed')
-      expect(api.delete).toHaveBeenCalledWith(`/api/vehicles/${id}`)
+      expect(api.delete).toHaveBeenCalledWith(`/vehicles/${id}`)
     })
   })
 })
