@@ -1,22 +1,6 @@
-import { beforeEach, describe, expect, it, mock, spyOn } from 'bun:test'
+import { beforeEach, describe, expect, it, spyOn } from 'bun:test'
 
 import { cleanup, renderHook } from '~/test-utils'
-
-const mockGet = mock(() => Promise.resolve({}))
-const mockPost = mock(() => Promise.resolve({}))
-const mockPatch = mock(() => Promise.resolve({}))
-const mockDelete = mock(() => Promise.resolve({}))
-
-mock.module('~/lib/apiRequest', () => ({
-  api: {
-    get: mockGet,
-    post: mockPost,
-    patch: mockPatch,
-    put: mock(() => Promise.resolve({})),
-    delete: mockDelete
-  },
-  apiRequest: mock(() => Promise.resolve({}))
-}))
 
 import { $error, $isLoading, $vehicle, vehicleActions } from '../store'
 import type { Vehicle } from '../types'
