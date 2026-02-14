@@ -138,3 +138,50 @@
 ### Step 9E: Container Delete Flow ✅
 
 - [x] VehicleContainer delete flow (4 tests + 1 error handling)
+
+---
+
+## Phase 10: PR Polish — CI Fixes & Code Review Feedback
+
+### 10A: Fix missing explicit cleanup in 4 test files + CI bun version ✅
+
+- [x] Select.spec.tsx — add `beforeEach` with `cleanup()`
+- [x] useVehicle.spec.ts — add `cleanup()` to existing `beforeEach`
+- [x] vehicle.store.spec.ts — add `cleanup()` to existing `beforeEach`
+- [x] user.service.spec.ts — add `cleanup()` to existing `beforeEach`
+- [x] Update CI bun version from 1.3.3 to 1.3.5 (match local)
+
+### 10B: ConfirmDialog unique IDs ✅
+
+- [x] Use `useId()` for `aria-labelledby` and `aria-describedby`
+- [x] Existing tests pass (no spec update needed — tests verify behavior not IDs)
+
+### 10C: vehicle.service.ts falsy data fix ✅
+
+- [x] Change `!response.data` to `response.data == null`
+- [x] Existing tests pass (falsy data not a realistic scenario for Vehicle API)
+
+### 10D: Schema empty string preprocessing — DROPPED
+
+- Reverted: `z.preprocess` breaks `zodResolver` type inference (input types become `unknown`)
+- React Hook Form already handles empty optional fields correctly — theoretical problem, not real
+
+### 10E: VehicleContainer shouldUnregister ✅
+
+- [x] Add `shouldUnregister: true` to useForm options
+
+### 10F: Remove redundant fetchVehicle after mileage update ✅
+
+- [x] Remove `await fetchVehicle()` from handleQuickMileageSubmit
+
+### 10G: Remove leftover TODO comments ✅
+
+- [x] Clean up 3 TODO(human) comments in VehicleContainer.spec.tsx
+
+### 10H: Final check suite + push
+
+- [x] All tests pass locally (368 pass, 0 fail)
+- [x] typecheck passes
+- [x] lint passes
+- [x] format passes
+- [ ] CI passes after push
