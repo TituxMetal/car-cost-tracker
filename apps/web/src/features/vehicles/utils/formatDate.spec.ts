@@ -9,6 +9,12 @@ describe('formatDate', () => {
     expect(formatDate(date)).toBe('01/06/2024')
   })
 
+  it('should return formatted date for date-only string without timezone shift', () => {
+    const date = '2025-07-08'
+
+    expect(formatDate(date)).toBe('08/07/2025')
+  })
+
   it('should return "-" for invalid date string', () => {
     const date = 'invalid-date'
 
