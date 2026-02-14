@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useId } from 'react'
 
 import { Button } from './Button'
 
@@ -19,6 +19,10 @@ export const ConfirmDialog = ({
   onConfirm,
   onCancel
 }: ConfirmDialogProps) => {
+  const dialogId = useId()
+  const titleId = `${dialogId}-title`
+  const descriptionId = `${dialogId}-description`
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -40,15 +44,18 @@ export const ConfirmDialog = ({
     >
       <section
         className='max-w-md rounded-lg bg-zinc-800 p-6'
-        aria-labelledby='confirm-dialog-title'
+        aria-labelledby={titleId}
+        aria-describedby={descriptionId}
         role='dialog'
         aria-modal='true'
         onClick={event => event.stopPropagation()}
       >
-        <h2 id='confirm-dialog-title' className='text-lg font-semibold'>
+        <h2 id={titleId} className='text-lg font-semibold'>
           {title}
         </h2>
-        <p className='mt-2 text-zinc-400'>{message}</p>
+        <p id={descriptionId} className='mt-2 text-zinc-400'>
+          {message}
+        </p>
         <div className='mt-6 flex justify-end gap-2'>
           <Button onClick={onCancel} variant='outline'>
             {cancelLabel}
