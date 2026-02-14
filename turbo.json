@@ -19,7 +19,8 @@
       "cache": false
     },
     "test": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "cache": false
     },
     "test:coverage": {
       "dependsOn": ["^build"],
