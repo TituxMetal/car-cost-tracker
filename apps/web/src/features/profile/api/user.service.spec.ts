@@ -2,6 +2,7 @@ import type { Mock } from 'bun:test'
 import { afterEach, beforeEach, describe, expect, it, spyOn } from 'bun:test'
 
 import { api } from '~/lib/apiRequest'
+import { cleanup } from '~/test-utils'
 import type { User } from '~/types/user.types'
 
 import type { UpdateProfileSchema } from '../schemas/user.schema'
@@ -12,6 +13,8 @@ describe('updateProfile', () => {
   let patchSpy: Mock<typeof api.patch>
 
   beforeEach(() => {
+    cleanup()
+    document.body.innerHTML = ''
     patchSpy = spyOn(api, 'patch')
   })
 
