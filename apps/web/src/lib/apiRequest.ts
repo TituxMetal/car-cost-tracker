@@ -92,7 +92,12 @@ export const apiRequest = async <T>(
       }
     }
 
-    const data = await response.json()
+    let data: T | undefined
+    try {
+      data = await response.json()
+    } catch {
+      // If response is not JSON, ignore parsing error and return empty data
+    }
 
     return {
       success: true,
