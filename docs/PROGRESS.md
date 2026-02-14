@@ -116,9 +116,25 @@
 
 ## Phase 9: Container, Pages & Navigation
 
-- [ ] VehicleContainer.tsx + VehicleContainer.spec.tsx
-- [ ] features/vehicles/index.ts (barrel export)
-- [ ] /vehicle/index.astro
-- [ ] /vehicle/create.astro
-- [ ] /vehicle/edit.astro
-- [ ] Update Main.astro navigation
+### Step 9A: Astro Page + Nav + Container Empty Mode ✅
+
+- [x] /vehicle/index.astro
+- [x] Update Main.astro navigation ("Mon véhicule" link)
+- [x] features/vehicles/index.ts (barrel export)
+- [x] VehicleContainer.tsx loading + empty modes (3 tests)
+
+### Step 9B: Container Create Mode ✅
+
+- [x] VehicleContainer create mode (4 tests)
+
+### Step 9C: Container View Mode ✅
+
+- [x] VehicleContainer view mode + QuickMileageUpdate (3 tests)
+
+### Step 9D: Container Edit Mode ✅
+
+- [x] VehicleContainer edit mode (5 tests)
+
+### Step 9E: Container Delete Flow ✅
+
+- [x] VehicleContainer delete flow (4 tests + 1 error handling)
