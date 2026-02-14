@@ -103,7 +103,7 @@ describe('Vehicle Store', () => {
 
         await vehicleActions.fetchVehicle()
 
-        expect(getSpy).toHaveBeenCalledWith('/api/vehicles/me')
+        expect(getSpy).toHaveBeenCalledWith('/vehicles/me')
         expect($vehicle.get()).toEqual(mockVehicle)
         expect($error.get()).toBeNull()
       })
@@ -115,7 +115,7 @@ describe('Vehicle Store', () => {
 
         await vehicleActions.fetchVehicle()
 
-        expect(getSpy).toHaveBeenCalledWith('/api/vehicles/me')
+        expect(getSpy).toHaveBeenCalledWith('/vehicles/me')
         expect($vehicle.get()).toBeNull()
         expect($error.get()).toBeNull()
       })
@@ -127,7 +127,7 @@ describe('Vehicle Store', () => {
 
         await vehicleActions.fetchVehicle()
 
-        expect(getSpy).toHaveBeenCalledWith('/api/vehicles/me')
+        expect(getSpy).toHaveBeenCalledWith('/vehicles/me')
         expect($vehicle.get()).toBeNull()
         expect($error.get()).toBe(errorMessage)
       })
@@ -162,7 +162,7 @@ describe('Vehicle Store', () => {
 
         const result = await vehicleActions.create(newVehicleData)
 
-        expect(postSpy).toHaveBeenCalledWith('/api/vehicles', newVehicleData)
+        expect(postSpy).toHaveBeenCalledWith('/vehicles', newVehicleData)
         expect($vehicle.get()).toEqual(createdVehicle)
         expect($error.get()).toBeNull()
         expect(result).toEqual(createdVehicle)
@@ -181,7 +181,7 @@ describe('Vehicle Store', () => {
 
         await expect(vehicleActions.create(newVehicleData)).rejects.toThrow(errorMessage)
 
-        expect(postSpy).toHaveBeenCalledWith('/api/vehicles', newVehicleData)
+        expect(postSpy).toHaveBeenCalledWith('/vehicles', newVehicleData)
         expect($error.get()).toBe(errorMessage)
       })
     })
@@ -196,7 +196,7 @@ describe('Vehicle Store', () => {
 
         const result = await vehicleActions.update(mockVehicle.id, updatedData)
 
-        expect(patchSpy).toHaveBeenCalledWith(`/api/vehicles/${mockVehicle.id}`, updatedData)
+        expect(patchSpy).toHaveBeenCalledWith(`/vehicles/${mockVehicle.id}`, updatedData)
         expect($vehicle.get()).toEqual(updatedVehicle)
         expect($error.get()).toBeNull()
         expect(result).toEqual(updatedVehicle)
@@ -212,7 +212,7 @@ describe('Vehicle Store', () => {
           errorMessage
         )
 
-        expect(patchSpy).toHaveBeenCalledWith(`/api/vehicles/${mockVehicle.id}`, updatedData)
+        expect(patchSpy).toHaveBeenCalledWith(`/vehicles/${mockVehicle.id}`, updatedData)
         expect($error.get()).toBe(errorMessage)
       })
     })
@@ -227,10 +227,7 @@ describe('Vehicle Store', () => {
 
         const result = await vehicleActions.updateMileage(mockVehicle.id, mileageData)
 
-        expect(patchSpy).toHaveBeenCalledWith(
-          `/api/vehicles/${mockVehicle.id}/mileage`,
-          mileageData
-        )
+        expect(patchSpy).toHaveBeenCalledWith(`/vehicles/${mockVehicle.id}/mileage`, mileageData)
         expect($vehicle.get()).toEqual(updatedVehicle)
         expect($error.get()).toBeNull()
         expect(result).toEqual(updatedVehicle)
@@ -246,10 +243,7 @@ describe('Vehicle Store', () => {
           errorMessage
         )
 
-        expect(patchSpy).toHaveBeenCalledWith(
-          `/api/vehicles/${mockVehicle.id}/mileage`,
-          mileageData
-        )
+        expect(patchSpy).toHaveBeenCalledWith(`/vehicles/${mockVehicle.id}/mileage`, mileageData)
         expect($error.get()).toBe(errorMessage)
       })
     })
@@ -262,7 +256,7 @@ describe('Vehicle Store', () => {
 
         await vehicleActions.remove(mockVehicle.id)
 
-        expect(deleteSpy).toHaveBeenCalledWith(`/api/vehicles/${mockVehicle.id}`)
+        expect(deleteSpy).toHaveBeenCalledWith(`/vehicles/${mockVehicle.id}`)
         expect($vehicle.get()).toBeNull()
         expect($error.get()).toBeNull()
       })
@@ -274,7 +268,7 @@ describe('Vehicle Store', () => {
 
         await expect(vehicleActions.remove(mockVehicle.id)).rejects.toThrow(errorMessage)
 
-        expect(deleteSpy).toHaveBeenCalledWith(`/api/vehicles/${mockVehicle.id}`)
+        expect(deleteSpy).toHaveBeenCalledWith(`/vehicles/${mockVehicle.id}`)
         expect($error.get()).toBe(errorMessage)
       })
     })
