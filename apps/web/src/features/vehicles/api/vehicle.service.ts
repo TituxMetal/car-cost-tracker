@@ -5,9 +5,10 @@ import type { CreateVehicleSchema, UpdateMileageSchema, UpdateVehicleSchema } fr
 import type { Vehicle } from '../types'
 
 const handleApiResponse = <T>(response: ApiResponse<T>): T => {
-  if (!response.success || !response.data) {
+  if (!response.success || response.data == null) {
     throw new Error(response.message || 'API request failed')
   }
+
   return response.data
 }
 
