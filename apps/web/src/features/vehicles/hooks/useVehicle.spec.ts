@@ -1,5 +1,6 @@
-import { renderHook } from '@testing-library/react'
 import { beforeEach, describe, expect, it, spyOn } from 'bun:test'
+
+import { cleanup, renderHook } from '~/test-utils'
 
 import { $error, $isLoading, $vehicle, vehicleActions } from '../store'
 import type { Vehicle } from '../types'
@@ -24,6 +25,9 @@ const mockVehicle: Vehicle = {
 
 describe('useVehicle', () => {
   beforeEach(() => {
+    cleanup()
+    document.body.innerHTML = ''
+
     // Reset all store atoms to initial state before each test
     $vehicle.set(null)
     $isLoading.set(false)

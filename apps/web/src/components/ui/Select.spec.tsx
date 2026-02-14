@@ -1,6 +1,6 @@
-import { describe, expect, it, mock } from 'bun:test'
+import { beforeEach, describe, expect, it, mock } from 'bun:test'
 
-import { fireEvent, render } from '~/test-utils'
+import { cleanup, fireEvent, render } from '~/test-utils'
 
 import type { SelectOption } from './Select'
 import { Select } from './Select'
@@ -12,6 +12,11 @@ const mockOptions: SelectOption[] = [
 ]
 
 describe('Select', () => {
+  beforeEach(() => {
+    cleanup()
+    document.body.innerHTML = ''
+  })
+
   it('should render all options', () => {
     const { getByText } = render(<Select options={mockOptions} placeholder='Select an option' />)
 
