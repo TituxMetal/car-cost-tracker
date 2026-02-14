@@ -1,25 +1,31 @@
-import type { Mock } from 'bun:test'
-import { afterEach, beforeEach, describe, expect, it, spyOn } from 'bun:test'
+import { beforeEach, describe, expect, it, mock } from 'bun:test'
 
-import { api } from '~/lib/apiRequest'
 import { cleanup } from '~/test-utils'
+import type { ApiResponse } from '~/types/api.types'
 import type { User } from '~/types/user.types'
 
 import type { UpdateProfileSchema } from '../schemas/user.schema'
 
+const mockPatch = mock<() => Promise<ApiResponse>>(() => Promise.resolve({ success: true }))
+
+mock.module('~/lib/apiRequest', () => ({
+  api: {
+    get: mock(() => Promise.resolve({})),
+    post: mock(() => Promise.resolve({})),
+    patch: mockPatch,
+    put: mock(() => Promise.resolve({})),
+    delete: mock(() => Promise.resolve({}))
+  },
+  apiRequest: mock(() => Promise.resolve({}))
+}))
+
 import { updateProfile } from './user.service'
 
 describe('updateProfile', () => {
-  let patchSpy: Mock<typeof api.patch>
-
   beforeEach(() => {
     cleanup()
     document.body.innerHTML = ''
-    patchSpy = spyOn(api, 'patch')
-  })
-
-  afterEach(() => {
-    patchSpy.mockRestore()
+    mockPatch.mockClear()
   })
 
   it('calls api.patch with correct endpoint and data', async () => {
@@ -40,14 +46,14 @@ describe('updateProfile', () => {
       updatedAt: '2024-01-01'
     }
 
-    patchSpy.mockResolvedValueOnce({
+    mockPatch.mockResolvedValueOnce({
       success: true,
       data: mockUser
     })
 
     const result = await updateProfile(data)
 
-    expect(api.patch).toHaveBeenCalledWith('/api/users/me', data)
+    expect(mockPatch).toHaveBeenCalledWith('/api/users/me', data)
     expect(result).toEqual(mockUser)
   })
 
@@ -65,14 +71,14 @@ describe('updateProfile', () => {
       updatedAt: '2024-01-01'
     }
 
-    patchSpy.mockResolvedValueOnce({
+    mockPatch.mockResolvedValueOnce({
       success: true,
       data: mockUser
     })
 
     const result = await updateProfile(data)
 
-    expect(api.patch).toHaveBeenCalledWith('/api/users/me', data)
+    expect(mockPatch).toHaveBeenCalledWith('/api/users/me', data)
     expect(result).toEqual(mockUser)
   })
 
@@ -83,7 +89,7 @@ describe('updateProfile', () => {
       lastName: 'Doe'
     }
 
-    patchSpy.mockResolvedValueOnce({
+    mockPatch.mockResolvedValueOnce({
       success: false,
       message: 'Validation failed'
     })
@@ -98,7 +104,7 @@ describe('updateProfile', () => {
       lastName: 'Doe'
     }
 
-    patchSpy.mockImplementation(() => Promise.reject(new Error('Network error')))
+    mockPatch.mockImplementation(() => Promise.reject(new Error('Network error')))
 
     await expect(updateProfile(data)).rejects.toThrow('Network error')
   })
