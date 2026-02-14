@@ -1,16 +1,10 @@
-import { beforeEach, describe, expect, it, mock } from 'bun:test'
+import { afterEach, beforeEach, describe, expect, it, spyOn } from 'bun:test'
 
+import { api } from '~/lib/apiRequest'
 import { cleanup, fireEvent, render, screen, userEvent, waitFor } from '~/test-utils'
 import type { User } from '~/types'
 
-import { updateProfile } from '../api/user.service'
-
 import { EditProfileContainer } from './EditProfileContainer'
-
-// Mock modules
-mock.module('../api/user.service', () => ({
-  updateProfile: mock(() => {})
-}))
 
 const mockUser: User = {
   id: '1',
@@ -25,10 +19,16 @@ const mockUser: User = {
 }
 
 describe('EditProfileContainer', () => {
+  let patchSpy: ReturnType<typeof spyOn>
+
   beforeEach(() => {
     cleanup()
     document.body.innerHTML = ''
-    mock.restore()
+    patchSpy = spyOn(api, 'patch').mockResolvedValue({ success: true, data: mockUser })
+  })
+
+  afterEach(() => {
+    patchSpy.mockRestore()
   })
 
   describe('Profile View Mode', () => {
@@ -95,8 +95,7 @@ describe('EditProfileContainer', () => {
     })
 
     it('should clear server error when Cancel button is clicked', async () => {
-      const mockUpdateProfile = updateProfile as ReturnType<typeof mock>
-      mockUpdateProfile.mockRejectedValue(new Error('Update failed'))
+      patchSpy.mockResolvedValueOnce({ success: false, message: 'Update failed' })
 
       const user = userEvent.setup()
       render(<EditProfileContainer userData={mockUser} />)
@@ -118,10 +117,9 @@ describe('EditProfileContainer', () => {
 
   describe('Form Submission', () => {
     it('should call updateProfile with form data when submitted', async () => {
-      const mockUpdateProfile = updateProfile as ReturnType<typeof mock>
-      mockUpdateProfile.mockResolvedValue({
-        ...mockUser,
-        firstName: 'Jane'
+      patchSpy.mockResolvedValueOnce({
+        success: true,
+        data: { ...mockUser, firstName: 'Jane' }
       })
 
       const user = userEvent.setup()
@@ -134,7 +132,7 @@ describe('EditProfileContainer', () => {
       fireEvent.click(screen.getByRole('button', { name: /submit/i }))
 
       await waitFor(() => {
-        expect(updateProfile).toHaveBeenCalledWith({
+        expect(patchSpy).toHaveBeenCalledWith('/api/users/me', {
           username: 'testuser',
           firstName: 'Jane',
           lastName: 'Doe'
@@ -144,8 +142,7 @@ describe('EditProfileContainer', () => {
 
     it('should update user data and return to view mode on successful update', async () => {
       const updatedUser = { ...mockUser, firstName: 'Jane' }
-      const mockUpdateProfile = updateProfile as ReturnType<typeof mock>
-      mockUpdateProfile.mockResolvedValue(updatedUser)
+      patchSpy.mockResolvedValueOnce({ success: true, data: updatedUser })
 
       const user = userEvent.setup()
       render(<EditProfileContainer userData={mockUser} />)
@@ -163,8 +160,7 @@ describe('EditProfileContainer', () => {
     })
 
     it('should show error message when update fails', async () => {
-      const mockUpdateProfile = updateProfile as ReturnType<typeof mock>
-      mockUpdateProfile.mockRejectedValue(new Error('Username already exists'))
+      patchSpy.mockResolvedValueOnce({ success: false, message: 'Username already exists' })
 
       const user = userEvent.setup()
       render(<EditProfileContainer userData={mockUser} />)
@@ -179,8 +175,7 @@ describe('EditProfileContainer', () => {
     })
 
     it('should show default error message when no error message is provided', async () => {
-      const mockUpdateProfile = updateProfile as ReturnType<typeof mock>
-      mockUpdateProfile.mockRejectedValue(new Error('Update failed'))
+      patchSpy.mockResolvedValueOnce({ success: false })
 
       const user = userEvent.setup()
       render(<EditProfileContainer userData={mockUser} />)
@@ -190,7 +185,7 @@ describe('EditProfileContainer', () => {
       fireEvent.click(screen.getByRole('button', { name: /submit/i }))
 
       await waitFor(() => {
-        expect(screen.getByText('Update failed')).toBeInTheDocument()
+        expect(screen.getByText('API request failed')).toBeInTheDocument()
       })
     })
   })
