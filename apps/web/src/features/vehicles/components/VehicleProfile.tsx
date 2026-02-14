@@ -2,7 +2,7 @@ import { Button } from '~/components/ui'
 
 import type { Vehicle } from '../types'
 import { FUEL_TYPE_LABELS } from '../types'
-import { formatMileage } from '../utils'
+import { formatDate, formatMileage } from '../utils'
 
 export interface VehicleProfileProps {
   vehicle: Vehicle
@@ -38,13 +38,13 @@ export const VehicleProfile = ({ vehicle, onEdit, onDelete }: VehicleProfileProp
         <dd>{vehicle.licensePlate ?? '-'}</dd>
 
         <dt>Date d'achat</dt>
-        <dd>{vehicle.purchaseDate ?? '-'}</dd>
+        <dd>{vehicle.purchaseDate ? formatDate(vehicle.purchaseDate) : '-'}</dd>
 
         <dt>Kilométrage</dt>
         <dd>{formatMileage(vehicle.mileage)}</dd>
       </dl>
 
-      <section className='mx-auto mt-4 grid w-full max-w-lg items-center justify-end gap-2'>
+      <section className='mx-auto my-6 flex w-full max-w-lg items-center justify-between gap-2'>
         <Button onClick={onEdit}>Modifier</Button>
         <Button onClick={onDelete} variant='destructive'>
           Supprimer

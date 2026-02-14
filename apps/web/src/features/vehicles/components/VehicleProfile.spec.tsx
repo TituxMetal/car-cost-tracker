@@ -54,7 +54,7 @@ describe('VehicleProfile', () => {
     expect(screen.getByText('AB-123-CD')).toBeInTheDocument()
 
     expect(screen.getByText(`Date d'achat`)).toBeInTheDocument()
-    expect(screen.getByText('2020-06-15')).toBeInTheDocument()
+    expect(screen.getByText('15/06/2020')).toBeInTheDocument()
 
     expect(screen.getByText('Kilométrage')).toBeInTheDocument()
     expect(screen.getByText('75000 kms')).toBeInTheDocument()
