@@ -4,6 +4,8 @@ import { YearValueObject } from './Year.vo'
 
 describe('YearValueObject', () => {
   describe('constructor', () => {
+    const currentYear = new Date().getFullYear()
+
     it('should create a valid YearValueObject with a valid year', () => {
       const year = new YearValueObject(2020)
 
@@ -16,18 +18,22 @@ describe('YearValueObject', () => {
       expect(year.value).toBe(1900)
     })
 
-    it('should accept maximum year (2030)', () => {
-      const year = new YearValueObject(2030)
+    it('should accept maximum year to be actual year', () => {
+      const year = new YearValueObject(currentYear)
 
-      expect(year.value).toBe(2030)
+      expect(year.value).toBe(currentYear)
     })
 
     it('should throw an error for year below minimum', () => {
-      expect(() => new YearValueObject(1899)).toThrow('Year must be between 1900 and 2030.')
+      expect(() => new YearValueObject(1899)).toThrow(
+        `Year must be between 1900 and ${currentYear}.`
+      )
     })
 
-    it('should throw an error for year above maximum', () => {
-      expect(() => new YearValueObject(2031)).toThrow('Year must be between 1900 and 2030.')
+    it('should throw an error for year in the future', () => {
+      expect(() => new YearValueObject(currentYear + 1)).toThrow(
+        `Year must be between 1900 and ${currentYear}.`
+      )
     })
 
     it('should throw an error for non-integer value', () => {
