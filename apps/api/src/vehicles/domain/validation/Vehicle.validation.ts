@@ -31,4 +31,4 @@ export const VEHICLE_VALIDATION = {
     MAX_LENGTH: 50,
     MESSAGE: 'Engine type must be at most 50 characters'
   }
-}
+} as const
