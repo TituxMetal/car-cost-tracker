@@ -1,9 +1,11 @@
+import { VEHICLE_VALIDATION as VehicleValidation } from '../validation'
+
 /**
  * Vehicle Year Value Object
  *
  * Validation rules:
  * - Must be a valid integer
- * - Range: 1900 to 2030
+ * - Range: VehicleValidation.YEAR.MIN to current year (dynamically determined)
  */
 export class YearValueObject {
   private readonly _value: number
@@ -13,8 +15,8 @@ export class YearValueObject {
       throw new Error('Year must be an integer.')
     }
 
-    if (value < 1900 || value > 2030) {
-      throw new Error('Year must be between 1900 and 2030.')
+    if (value < VehicleValidation.YEAR.MIN || value > VehicleValidation.YEAR.MAX) {
+      throw new Error(VehicleValidation.YEAR.MESSAGE)
     }
 
     this._value = value
