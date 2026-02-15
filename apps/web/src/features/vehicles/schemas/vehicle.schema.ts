@@ -2,6 +2,8 @@ import { z } from 'zod'
 
 import { FUEL_TYPES } from '../types'
 
+const currentYear = new Date().getFullYear()
+
 export const createVehicleSchema = z.object({
   make: z
     .string({ message: 'La marque est requise' })
@@ -15,7 +17,7 @@ export const createVehicleSchema = z.object({
     .number({ message: `L'année est requise` })
     .int({ message: `L'année doit être un entier` })
     .min(1900, { message: `L'année doit être au moins 1900` })
-    .max(2030, { message: `L'année doit être au plus 2030` }),
+    .max(currentYear, { message: `L'année doit être au plus ${currentYear}` }),
   engineType: z
     .string()
     .max(50, { message: 'Le type de moteur ne doit pas dépasser 50 caractères' })
