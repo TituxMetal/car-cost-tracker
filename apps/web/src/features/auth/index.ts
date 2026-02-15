@@ -9,10 +9,6 @@ export { VerifyEmailContainer } from './components/VerifyEmailContainer'
 // Hooks
 export { useAuth } from './hooks/useAuth'
 
-// Schemas
-export { changePasswordSchema } from './schemas/auth.schema'
-export type { ChangePasswordSchema } from './schemas/auth.schema'
-
 // Types
 export { isValidAuthMode } from './types/auth.types'
 export type { AuthMode } from './types/auth.types'
