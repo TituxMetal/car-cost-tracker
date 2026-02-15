@@ -1,16 +1,7 @@
-import { api } from '~/lib/apiRequest'
-import type { ApiResponse } from '~/types/api.types'
+import { api, handleApiResponse } from '~/lib'
 
 import type { CreateVehicleSchema, UpdateMileageSchema, UpdateVehicleSchema } from '../schemas'
 import type { Vehicle } from '../types'
-
-const handleApiResponse = <T>(response: ApiResponse<T>): T => {
-  if (!response.success || response.data == null) {
-    throw new Error(response.message || 'API request failed')
-  }
-
-  return response.data
-}
 
 export const getMyVehicle = async (): Promise<Vehicle | null> => {
   const response = await api.get<Vehicle | null>('/vehicles/me')
