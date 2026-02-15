@@ -132,7 +132,7 @@ describe('EditProfileContainer', () => {
       fireEvent.click(screen.getByRole('button', { name: /submit/i }))
 
       await waitFor(() => {
-        expect(patchSpy).toHaveBeenCalledWith('/api/users/me', {
+        expect(patchSpy).toHaveBeenCalledWith('/users/me', {
           username: 'testuser',
           firstName: 'Jane',
           lastName: 'Doe'
