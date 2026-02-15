@@ -41,13 +41,13 @@ Multi-user, multi-car version. Allows sharing with family/friends.
 
 ### 1. Authentication
 
-- [ ] User registration (email/password)
-- [ ] User login/logout
-- [ ] Protected routes
+- [x] User registration (email/password)
+- [x] User login/logout
+- [x] Protected routes
 
 ### 2. Vehicle Profile (Single Car)
 
-- [ ] Create a vehicle with full details:
+- [x] Create a vehicle with full details:
   - Make, Model, Year
   - Engine type (e.g., "1.6L Turbo 182ch")
   - Fuel type
@@ -55,8 +55,8 @@ Multi-user, multi-car version. Allows sharing with family/friends.
   - License plate
   - Purchase date
   - Current mileage
-- [ ] Edit vehicle information
-- [ ] Delete vehicle
+- [x] Edit vehicle information
+- [x] Delete vehicle
 
 ### 3. Check Types (Templates)
 
@@ -107,9 +107,9 @@ Everything in MVP Core, plus:
 
 ### 9. Multi-User Support
 
-- [ ] Multiple users can register and use the app
-- [ ] Each user sees only their own vehicles
-- [ ] Basic role system (admin vs user) — optional
+- [x] Multiple users can register and use the app
+- [x] Each user sees only their own vehicles
+- [x] Basic role system (admin vs user) — optional
 
 ### 10. Public Profile (Optional)
 
@@ -214,8 +214,8 @@ Expense
 ### MVP Core (Required)
 
 - [ ] Deployed to a public URL
-- [ ] Auth works (register, login, logout)
-- [ ] Can create and manage ONE vehicle
+- [x] Auth works (register, login, logout)
+- [x] Can create and manage ONE vehicle
 - [ ] Can create check types with intervals
 - [ ] Can log checks and see history
 - [ ] Dashboard shows vehicle status and upcoming checks
