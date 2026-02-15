@@ -86,7 +86,7 @@ export const VehicleContainer = () => {
 
   useEffect(() => {
     fetchVehicle()
-  }, [])
+  }, [fetchVehicle])
 
   const handleQuickMileageSubmit = async (mileage: UpdateMileageSchema) => {
     await updateMileage(vehicle!.id, mileage)

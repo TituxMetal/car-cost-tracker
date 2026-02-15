@@ -1,4 +1,5 @@
 import { useStore } from '@nanostores/react'
+import { useCallback } from 'react'
 
 import type { CreateVehicleSchema, UpdateMileageSchema, UpdateVehicleSchema } from '../schemas'
 import {
@@ -25,22 +26,26 @@ export interface UseVehicleReturn {
   clearError: () => void
 }
 
-export const useVehicle = (): UseVehicleReturn => ({
-  vehicle: useStore($vehicle),
-  isLoading: useStore($isLoading),
-  error: useStore($error),
-  hasVehicle: useStore($hasVehicle),
-  vehicleDisplayName: useStore($vehicleDisplayName),
-  fetchVehicle: async () => {
+export const useVehicle = (): UseVehicleReturn => {
+  const fetchVehicle = useCallback(async () => {
     await vehicleActions.fetchVehicle()
-  },
-  createVehicle: async data => await vehicleActions.create(data),
-  updateVehicle: async (id, data) => await vehicleActions.update(id, data),
-  updateMileage: async (id, data) => await vehicleActions.updateMileage(id, data),
-  deleteVehicle: async id => {
-    await vehicleActions.remove(id)
-  },
-  clearError: () => {
-    vehicleActions.clearError()
+  }, [])
+
+  return {
+    vehicle: useStore($vehicle),
+    isLoading: useStore($isLoading),
+    error: useStore($error),
+    hasVehicle: useStore($hasVehicle),
+    vehicleDisplayName: useStore($vehicleDisplayName),
+    fetchVehicle,
+    createVehicle: async data => await vehicleActions.create(data),
+    updateVehicle: async (id, data) => await vehicleActions.update(id, data),
+    updateMileage: async (id, data) => await vehicleActions.updateMileage(id, data),
+    deleteVehicle: async id => {
+      await vehicleActions.remove(id)
+    },
+    clearError: () => {
+      vehicleActions.clearError()
+    }
   }
-})
+}
