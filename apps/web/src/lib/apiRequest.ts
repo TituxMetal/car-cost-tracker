@@ -61,12 +61,13 @@ const parseErrorResponse = async (response: Response): Promise<string> => {
   }
 }
 
-const createTimeoutController = (timeoutMs: number): AbortController => {
+const createTimeoutController = (
+  timeoutMs: number
+): { controller: AbortController; timeoutId: ReturnType<typeof setTimeout> } => {
   const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
 
-  setTimeout(() => controller.abort(), timeoutMs)
-
-  return controller
+  return { controller, timeoutId }
 }
 
 export const apiRequest = async <T>(
@@ -77,13 +78,9 @@ export const apiRequest = async <T>(
   const timeout = options.timeout || DEFAULT_TIMEOUT
   const headers = prepareHeaders(options)
 
-  let timeoutId: ReturnType<typeof setTimeout> | undefined
+  const { controller, timeoutId } = createTimeoutController(timeout)
 
   try {
-    const controller = createTimeoutController(timeout)
-
-    timeoutId = setTimeout(() => controller.abort(), timeout)
-
     const response = await fetch(url, {
       ...options,
       headers,
@@ -91,7 +88,7 @@ export const apiRequest = async <T>(
       signal: controller.signal
     })
 
-    if (timeoutId) clearTimeout(timeoutId)
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
       const errorMessage = await parseErrorResponse(response)
@@ -116,16 +113,17 @@ export const apiRequest = async <T>(
       status: response.status
     }
   } catch (error) {
-    if (timeoutId) clearTimeout(timeoutId)
-    if (error instanceof Error) {
-      if (error.name === 'AbortError') {
-        return {
-          success: false,
-          message: 'Request timeout',
-          status: 408
-        }
-      }
+    clearTimeout(timeoutId)
 
+    if (error instanceof Error && error.name === 'AbortError') {
+      return {
+        success: false,
+        message: 'Request timeout',
+        status: 408
+      }
+    }
+
+    if (error instanceof Error) {
       return {
         success: false,
         message: error.message,
