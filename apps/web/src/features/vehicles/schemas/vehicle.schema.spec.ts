@@ -96,11 +96,12 @@ describe('createVehicleSchema', () => {
     }
   })
 
-  it('should reject year above 2030', () => {
+  it('should reject year in the future', () => {
+    const currentYear = new Date().getFullYear()
     const invalidVehicle = {
       make: 'Future Car',
       model: 'Concept',
-      year: 2031
+      year: currentYear + 1
     }
 
     const result = createVehicleSchema.safeParse(invalidVehicle)
@@ -108,7 +109,7 @@ describe('createVehicleSchema', () => {
     expect(result.success).toBe(false)
 
     if (!result.success) {
-      expect(result.error.issues[0].message).toBe(`L'année doit être au plus 2030`)
+      expect(result.error.issues[0].message).toBe(`L'année doit être au plus ${currentYear}`)
     }
   })
 
