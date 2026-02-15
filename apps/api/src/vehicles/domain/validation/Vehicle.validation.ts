@@ -1,3 +1,5 @@
+const currentYear = new Date().getFullYear()
+
 export const VEHICLE_VALIDATION = {
   MAKE: {
     MAX_LENGTH: 50,
@@ -9,8 +11,8 @@ export const VEHICLE_VALIDATION = {
   },
   YEAR: {
     MIN: 1900,
-    MAX: 2030,
-    MESSAGE: 'Year must be between 1900 and 2030'
+    MAX: currentYear,
+    MESSAGE: `Year must be between 1900 and ${currentYear}.`
   },
   VIN: {
     LENGTH: 17,
@@ -29,4 +31,4 @@ export const VEHICLE_VALIDATION = {
     MAX_LENGTH: 50,
     MESSAGE: 'Engine type must be at most 50 characters'
   }
-} as const
+}
