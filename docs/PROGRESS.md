@@ -1,192 +1,136 @@
-# Feature 01: Vehicle Profile - Progress
+# Progress Tracking
+
+---
+
+## Feature 02: Check Types - Progress
 
 ## Phase 1: Database Schema ✅
 
-- [x] Add FuelType enum
-- [x] Add Vehicle model to Prisma schema
+- [x] Add CheckType model to Prisma schema
+- [x] Add Vehicle → CheckType relation
 - [x] Run migration
 
 ---
 
-## Phase 2: Domain Layer ✅
+## Phase 2: Domain Layer
 
 ### Value Objects
 
-- [x] VehicleId.vo.ts + tests
-- [x] Vin.vo.ts + tests
-- [x] Year.vo.ts + tests
-- [x] Mileage.vo.ts + tests
+- [x] CheckTypeId.vo.ts + tests
+- [x] CheckTypeName.vo.ts + tests
+- [x] IntervalDays.vo.ts + tests
 
 ### Entity
 
-- [x] Vehicle.entity.ts + tests
+- [x] CheckType.entity.ts + tests
 
-### Repository & Exceptions
+### Validation, Repository & Exceptions
 
-- [x] IVehicleRepository interface
-- [x] VehicleNotFound.exception.ts
-- [x] VehicleAlreadyExists.exception.ts
-- [x] InvalidVehicle.exception.ts
+- [x] CheckType.validation.ts
+- [x] ICheckTypeRepository interface
+- [x] CheckTypeNotFound.exception.ts
+- [x] CheckTypeAlreadyExists.exception.ts
+- [x] InvalidCheckType.exception.ts
 
 ---
 
-## Phase 3: Application Layer ✅
+## Phase 3: Application Layer
 
-### DTOs ✅
+### DTOs
 
-- [x] CreateVehicle.dto.ts + tests
-- [x] UpdateVehicle.dto.ts + tests
-- [x] UpdateMileage.dto.ts + tests
-- [x] GetVehicle.dto.ts + tests
+- [ ] CreateCheckType.dto.ts + tests
+- [ ] UpdateCheckType.dto.ts + tests
+- [ ] GetCheckType.dto.ts + tests
 
-### Mapper ✅
+### Mapper
 
-- [x] Vehicle.mapper.ts + tests
+- [ ] CheckType.mapper.ts + tests
 
 ### Use Cases
 
-- [x] CreateVehicle.uc.ts + tests
-- [x] GetVehicleByUser.uc.ts + tests
-- [x] UpdateVehicle.uc.ts + tests
-- [x] UpdateMileage.uc.ts + tests
-- [x] DeleteVehicle.uc.ts + tests
+- [ ] CreateCheckType.uc.ts + tests
+- [ ] GetCheckTypesByVehicle.uc.ts + tests
+- [ ] GetCheckType.uc.ts + tests
+- [ ] UpdateCheckType.uc.ts + tests
+- [ ] DeleteCheckType.uc.ts + tests
 
 ### Service
 
-- [x] Vehicle.service.ts + tests
+- [ ] CheckType.service.ts + tests
 
 ---
 
-## Phase 4: Infrastructure Layer ✅
+## Phase 4: Infrastructure Layer
 
-- [x] PrismaVehicle.repository.ts + tests
-- [x] Vehicle.mapper.ts (infrastructure) + tests
-- [x] Vehicle.controller.ts + tests
+- [ ] CheckTypeInfra.mapper.ts + tests
+- [ ] PrismaCheckType.repository.ts + tests
+- [ ] CheckType.controller.ts + tests
 
 ---
 
-## Phase 5: Module & Wiring ✅
+## Phase 5: Module & Wiring
 
-- [x] Vehicles.module.ts
-- [x] Update app.module.ts
-- [x] Add validation constants
-- [x] Manual API testing (all 5 endpoints verified)
+- [ ] CheckTypes.module.ts
+- [ ] Update app.module.ts
+- [ ] Manual API testing
 
 ---
 
 ## Phase 6: Frontend Types & Schemas
 
-- [x] vehicle.types.ts (Vehicle, FuelType, FUEL_TYPE_LABELS)
-- [x] vehicle.schema.ts (createVehicle, updateVehicle, updateMileage)
-- [x] vehicle.schema.spec.ts
+- [ ] checkType.types.ts (CheckType, SuggestedCheckType, SUGGESTED_CHECK_TYPES)
+- [ ] checkType.schema.ts + tests
 
 ---
 
 ## Phase 7: Frontend API & Store
 
-- [x] vehicle.service.ts (getMyVehicle, create, update, updateMileage, delete)
-- [x] vehicle.service.spec.ts
-- [x] vehicle.store.ts (atoms, computed, actions)
-- [x] vehicle.store.spec.ts
+- [ ] checkType.service.ts + tests
+- [ ] checkType.store.ts + tests
 
 ---
 
-## Phase 8A: Select UI Component + Hook ✅
+## Phase 8: Hook & Components
 
-- [x] Select.tsx + Select.spec.tsx (reusable UI component)
-- [x] Update ui/index.ts barrel export
-- [x] useVehicle.ts + useVehicle.spec.ts
+### 8A: Hook
 
----
+- [ ] useCheckTypes.ts + tests
 
-## Phase 8B: VehicleForm + VehicleProfile ✅
+### 8B: List & Card
 
-- [x] VehicleForm.tsx + VehicleForm.spec.tsx (create/edit modes)
-- [x] VehicleProfile.tsx + VehicleProfile.spec.tsx (display view)
+- [ ] CheckTypeList.tsx + tests
+- [ ] CheckTypeCard.tsx + tests
 
----
+### 8C: Form
 
-## Phase 8C: EmptyState + DeleteDialog + QuickMileage ✅
+- [ ] CheckTypeForm.tsx + tests
 
-- [x] VehicleEmptyState.tsx + VehicleEmptyState.spec.tsx
-- [x] DeleteVehicleDialog.tsx + DeleteVehicleDialog.spec.tsx
-- [x] QuickMileageUpdate.tsx + QuickMileageUpdate.spec.tsx
+### 8D: Empty State & Suggestions
 
----
+- [ ] CheckTypeEmptyState.tsx + tests
+- [ ] SuggestedCheckTypes.tsx + tests
 
-## Phase 9: Container, Pages & Navigation
+### 8E: Delete Dialog
 
-### Step 9A: Astro Page + Nav + Container Empty Mode ✅
+- [ ] DeleteCheckTypeDialog.tsx + tests
 
-- [x] /vehicle/index.astro
-- [x] Update Main.astro navigation ("Mon véhicule" link)
-- [x] features/vehicles/index.ts (barrel export)
-- [x] VehicleContainer.tsx loading + empty modes (3 tests)
+### 8F: Container
 
-### Step 9B: Container Create Mode ✅
-
-- [x] VehicleContainer create mode (4 tests)
-
-### Step 9C: Container View Mode ✅
-
-- [x] VehicleContainer view mode + QuickMileageUpdate (3 tests)
-
-### Step 9D: Container Edit Mode ✅
-
-- [x] VehicleContainer edit mode (5 tests)
-
-### Step 9E: Container Delete Flow ✅
-
-- [x] VehicleContainer delete flow (4 tests + 1 error handling)
+- [ ] CheckTypeContainer.tsx + tests
 
 ---
 
-## Phase 10: PR Polish — CI Fixes & Code Review Feedback
+## Phase 9: Page & Navigation
 
-### 10A: Fix missing explicit cleanup in 4 test files + CI bun version ✅
+- [ ] /check-types/index.astro
+- [ ] Update Main.astro navigation ("Contrôles" link)
+- [ ] features/check-types/index.ts (barrel export)
 
-- [x] Select.spec.tsx — add `beforeEach` with `cleanup()`
-- [x] useVehicle.spec.ts — add `cleanup()` to existing `beforeEach`
-- [x] vehicle.store.spec.ts — add `cleanup()` to existing `beforeEach`
-- [x] user.service.spec.ts — add `cleanup()` to existing `beforeEach`
-- [x] Update CI bun version from 1.3.3 to 1.3.5 (match local)
+---
 
-### 10B: ConfirmDialog unique IDs ✅
+## Backlog — Future Improvements
 
-- [x] Use `useId()` for `aria-labelledby` and `aria-describedby`
-- [x] Existing tests pass (no spec update needed — tests verify behavior not IDs)
-
-### 10C: vehicle.service.ts falsy data fix ✅
-
-- [x] Change `!response.data` to `response.data == null`
-- [x] Existing tests pass (falsy data not a realistic scenario for Vehicle API)
-
-### 10D: Schema empty string preprocessing — DROPPED
-
-- Reverted: `z.preprocess` breaks `zodResolver` type inference (input types become `unknown`)
-- React Hook Form already handles empty optional fields correctly — theoretical problem, not real
-
-### 10E: VehicleContainer shouldUnregister ✅
-
-- [x] Add `shouldUnregister: true` to useForm options
-
-### 10F: Remove redundant fetchVehicle after mileage update ✅
-
-- [x] Remove `await fetchVehicle()` from handleQuickMileageSubmit
-
-### 10G: Remove leftover TODO comments ✅
-
-- [x] Clean up 3 TODO(human) comments in VehicleContainer.spec.tsx
-
-### 10H: Final check suite + push ✅
-
-- [x] All tests pass locally (368 pass, 0 fail)
-- [x] typecheck passes
-- [x] lint passes
-- [x] format passes
-- [x] CI passes after push
-
-### Future improvements (from Copilot review, low priority)
+### From Feature 01 PR review (low priority)
 
 - [ ] VehicleContainer: add fallback `return null` at end for defensive rendering
 - [ ] VehicleContainer: surface fetch errors to user instead of showing empty state

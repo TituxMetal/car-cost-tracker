@@ -82,7 +82,7 @@ that defines how often the check should be performed.
 
 **Validations:**
 
-- Name is required, non-empty, max 100 characters
+- Name is required, non-empty, min 5 characters, max 100 characters
 - Name must be unique within the vehicle (no duplicate check types)
 - Interval must be a positive integer (minimum 1 day)
 - Description is optional, max 500 characters
