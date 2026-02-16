@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'bun:test'
 
 import { CHECK_TYPE_VALIDATION as checkTypeValidation } from '../validation'
-import { CheckTypeIdValueObject } from '../value-objects/CheckTypeId.vo'
-import { CheckTypeNameValueObject } from '../value-objects/CheckTypeName.vo'
-import { IntervalDaysValueObject } from '../value-objects/IntervalDays.vo'
+import {
+  CheckTypeIdValueObject,
+  CheckTypeNameValueObject,
+  IntervalDaysValueObject
+} from '../value-objects'
 
 import { CheckTypeEntity } from './CheckType.entity'
 

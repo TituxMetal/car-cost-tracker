@@ -1,3 +1,5 @@
+import { randomUUID } from 'crypto'
+
 export class CheckTypeIdValueObject {
   private readonly _value: string
 
@@ -6,11 +8,15 @@ export class CheckTypeIdValueObject {
       throw new Error('CheckTypeId must be a non-empty string')
     }
 
+    if (!this.isValidCheckTypeIdFormat(value)) {
+      throw new Error('CheckTypeId must be a valid UUID')
+    }
+
     this._value = value
   }
 
   static generate(): CheckTypeIdValueObject {
-    return new CheckTypeIdValueObject(crypto.randomUUID())
+    return new CheckTypeIdValueObject(randomUUID())
   }
 
   get value(): string {
@@ -23,5 +29,11 @@ export class CheckTypeIdValueObject {
 
   toString(): string {
     return this._value
+  }
+
+  private isValidCheckTypeIdFormat(value: string): boolean {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+    return uuidRegex.test(value)
   }
 }

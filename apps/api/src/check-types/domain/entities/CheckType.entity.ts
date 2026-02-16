@@ -1,7 +1,9 @@
 import { CHECK_TYPE_VALIDATION as checkTypeValidation } from '../validation'
-import type { CheckTypeIdValueObject } from '../value-objects/CheckTypeId.vo'
-import type { CheckTypeNameValueObject } from '../value-objects/CheckTypeName.vo'
-import type { IntervalDaysValueObject } from '../value-objects/IntervalDays.vo'
+import type {
+  CheckTypeIdValueObject,
+  CheckTypeNameValueObject,
+  IntervalDaysValueObject
+} from '../value-objects'
 
 export class CheckTypeEntity {
   constructor(
