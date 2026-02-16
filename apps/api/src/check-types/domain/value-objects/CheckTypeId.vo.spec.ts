@@ -21,6 +21,12 @@ describe('CheckTypeIdValueObject', () => {
         'CheckTypeId must be a non-empty string'
       )
     })
+
+    it('should throw an error for invalid UUID format', () => {
+      expect(() => new CheckTypeIdValueObject('invalid-uuid')).toThrow(
+        'CheckTypeId must be a valid UUID'
+      )
+    })
   })
 
   describe('generate', () => {
