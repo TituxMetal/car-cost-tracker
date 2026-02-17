@@ -22,9 +22,7 @@ export class CreateCheckTypeUseCase {
     )
 
     if (existingCheckType) {
-      throw new CheckTypeAlreadyExistsException(
-        `Check type with name "${dto.name}" already exists for this vehicle`
-      )
+      throw new CheckTypeAlreadyExistsException(dto.name)
     }
 
     const entity = new CheckTypeEntity(

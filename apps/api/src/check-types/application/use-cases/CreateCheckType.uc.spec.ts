@@ -68,7 +68,7 @@ describe('CreateCheckTypeUseCase', () => {
       mockCheckTypeRepository.existsByNameAndVehicle.mockReturnValueOnce(Promise.resolve(true))
 
       await expect(useCase.execute(dto, vehicleId)).rejects.toThrow(
-        `Check type with name "${dto.name}" already exists for this vehicle`
+        `Check type already exists: ${dto.name}`
       )
 
       expect(mockCheckTypeRepository.existsByNameAndVehicle).toHaveBeenCalledWith(
