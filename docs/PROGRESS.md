@@ -12,7 +12,7 @@
 
 ---
 
-## Phase 2: Domain Layer
+## Phase 2: Domain Layer ✅
 
 ### Value Objects
 
@@ -38,25 +38,25 @@
 
 ### DTOs
 
-- [ ] CreateCheckType.dto.ts + tests
-- [ ] UpdateCheckType.dto.ts + tests
-- [ ] GetCheckType.dto.ts + tests
+- [x] CreateCheckType.dto.ts + tests
+- [x] UpdateCheckType.dto.ts + tests
+- [x] GetCheckType.dto.ts + tests
 
 ### Mapper
 
-- [ ] CheckType.mapper.ts + tests
+- [x] CheckType.mapper.ts + tests
 
 ### Use Cases
 
-- [ ] CreateCheckType.uc.ts + tests
-- [ ] GetCheckTypesByVehicle.uc.ts + tests
-- [ ] GetCheckType.uc.ts + tests
-- [ ] UpdateCheckType.uc.ts + tests
-- [ ] DeleteCheckType.uc.ts + tests
+- [x] CreateCheckType.uc.ts + tests
+- [x] GetCheckTypesByVehicle.uc.ts + tests
+- [x] GetCheckType.uc.ts + tests
+- [x] UpdateCheckType.uc.ts + tests
+- [x] DeleteCheckType.uc.ts + tests
 
 ### Service
 
-- [ ] CheckType.service.ts + tests
+- [x] CheckType.service.ts + tests
 
 ---
 
