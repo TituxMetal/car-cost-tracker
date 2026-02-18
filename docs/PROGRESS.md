@@ -34,7 +34,7 @@
 
 ---
 
-## Phase 3: Application Layer
+## Phase 3: Application Layer ✅
 
 ### DTOs
 
@@ -60,11 +60,11 @@
 
 ---
 
-## Phase 4: Infrastructure Layer
+## Phase 4: Infrastructure Layer ✅
 
-- [ ] CheckTypeInfra.mapper.ts + tests
-- [ ] PrismaCheckType.repository.ts + tests
-- [ ] CheckType.controller.ts + tests
+- [x] CheckTypeInfra.mapper.ts + tests
+- [x] PrismaCheckType.repository.ts + tests
+- [x] CheckType.controller.ts + tests
 
 ---
 
