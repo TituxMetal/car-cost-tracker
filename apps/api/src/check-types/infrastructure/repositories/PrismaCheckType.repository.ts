@@ -25,8 +25,10 @@ export class PrismaCheckTypeRepository implements ICheckTypeRepository {
 
       return CheckTypeInfrastructureMapper.toDomain(prismaCheckType)
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-        throw new CheckTypeAlreadyExistsException(checkType.name.value)
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new CheckTypeAlreadyExistsException(checkType.name.value)
+        }
       }
 
       throw error
@@ -58,8 +60,10 @@ export class PrismaCheckTypeRepository implements ICheckTypeRepository {
 
       return CheckTypeInfrastructureMapper.toDomain(prismaCheckType)
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-        throw new CheckTypeNotFoundException(checkType.id.value)
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new CheckTypeNotFoundException(checkType.id.value)
+        }
       }
 
       throw error
@@ -72,8 +76,10 @@ export class PrismaCheckTypeRepository implements ICheckTypeRepository {
         where: { id: id.value }
       })
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-        throw new CheckTypeNotFoundException(id.value)
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new CheckTypeNotFoundException(id.value)
+        }
       }
 
       throw error
