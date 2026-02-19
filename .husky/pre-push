@@ -1,4 +1,1 @@
-export PATH="$HOME/.bun/bin:$PATH"
-# Skip tests for now - they require Prisma generation which is not done in this environment
-# bun turbo run typecheck test build
-echo "Skipping pre-push checks in agent environment"
+bun turbo run typecheck test build
