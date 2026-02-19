@@ -26,18 +26,6 @@ describe('createCheckTypeSchema', () => {
     expect(result.success).toBe(true)
   })
 
-  it('should accept null description', () => {
-    const validCheckType = {
-      name: 'Oil Level Check',
-      intervalDays: 7,
-      description: null
-    }
-
-    const result = createCheckTypeSchema.safeParse(validCheckType)
-
-    expect(result.success).toBe(true)
-  })
-
   it('should reject missing name', () => {
     const invalidCheckType = {
       intervalDays: 7,

@@ -12,11 +12,18 @@ export const createCheckTypeSchema = z.object({
   description: z
     .string()
     .max(500, { error: 'La description doit comporter au maximum 500 caractères.' })
-    .nullable()
     .optional()
 })
 
-export const updateCheckTypeSchema = createCheckTypeSchema.partial()
+export const updateCheckTypeSchema = createCheckTypeSchema
+  .extend({
+    description: z
+      .string()
+      .max(500, { error: 'La description doit comporter au maximum 500 caractères.' })
+      .nullable()
+      .optional()
+  })
+  .partial()
 
 export type CreateCheckTypeSchema = z.infer<typeof createCheckTypeSchema>
 export type UpdateCheckTypeSchema = z.infer<typeof updateCheckTypeSchema>
