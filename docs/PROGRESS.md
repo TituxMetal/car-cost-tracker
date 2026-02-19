@@ -4,127 +4,74 @@
 
 ## Feature 02: Check Types - Progress
 
-## Phase 1: Database Schema ✅
-
-- [x] Add CheckType model to Prisma schema
-- [x] Add Vehicle → CheckType relation
-- [x] Run migration
+## Phases 1-5: Backend (Complete) ✅
 
 ---
 
-## Phase 2: Domain Layer ✅
+## Phase 6: Page Setup & Types ✅
 
-### Value Objects
-
-- [x] CheckTypeId.vo.ts + tests
-- [x] CheckTypeName.vo.ts + tests
-- [x] IntervalDays.vo.ts + tests
-
-### Entity
-
-- [x] CheckType.entity.ts + tests
-
-### Validation, Repository & Exceptions
-
-- [x] CheckType.validation.ts
-- [x] ICheckTypeRepository interface
-- [x] CheckTypeNotFound.exception.ts
-- [x] CheckTypeAlreadyExists.exception.ts
-- [x] InvalidCheckType.exception.ts
+- [x] checkType.types.ts (CheckType, SuggestedCheckType, SUGGESTED_CHECK_TYPES)
+- [x] types/index.ts barrel
+- [x] /check-types/index.astro (Astro page with auth guard)
+- [x] Update Main.astro navigation ("Contrôles" link)
 
 ---
 
-## Phase 3: Application Layer ✅
+## Phase 7: Validation Schemas ✅
 
-### DTOs
-
-- [x] CreateCheckType.dto.ts + tests
-- [x] UpdateCheckType.dto.ts + tests
-- [x] GetCheckType.dto.ts + tests
-
-### Mapper
-
-- [x] CheckType.mapper.ts + tests
-
-### Use Cases
-
-- [x] CreateCheckType.uc.ts + tests
-- [x] GetCheckTypesByVehicle.uc.ts + tests
-- [x] GetCheckType.uc.ts + tests
-- [x] UpdateCheckType.uc.ts + tests
-- [x] DeleteCheckType.uc.ts + tests
-
-### Service
-
-- [x] CheckType.service.ts + tests
+- [x] checkType.schema.ts + tests
+- [x] schemas/index.ts barrel
 
 ---
 
-## Phase 4: Infrastructure Layer ✅
-
-- [x] CheckTypeInfra.mapper.ts + tests
-- [x] PrismaCheckType.repository.ts + tests
-- [x] CheckType.controller.ts + tests
-
----
-
-## Phase 5: Module & Wiring ✅
-
-- [x] CheckTypes.module.ts
-- [x] Update app.module.ts
-- [x] Manual API testing
-
----
-
-## Phase 6: Frontend Types & Schemas
-
-- [ ] checkType.types.ts (CheckType, SuggestedCheckType, SUGGESTED_CHECK_TYPES)
-- [ ] checkType.schema.ts + tests
-
----
-
-## Phase 7: Frontend API & Store
+## Phase 8: API Service
 
 - [ ] checkType.service.ts + tests
-- [ ] checkType.store.ts + tests
+- [ ] api/index.ts barrel
 
 ---
 
-## Phase 8: Hook & Components
+## Phase 9: State Store
 
-### 8A: Hook
+- [ ] checkType.store.ts + tests
+- [ ] store/index.ts barrel
+
+---
+
+## Phase 10: Hook
 
 - [ ] useCheckTypes.ts + tests
+- [ ] hooks/index.ts barrel
 
-### 8B: List & Card
+---
 
-- [ ] CheckTypeList.tsx + tests
+## Phase 11: Container + List + Card
+
 - [ ] CheckTypeCard.tsx + tests
+- [ ] CheckTypeList.tsx + tests
+- [ ] CheckTypeContainer.tsx + tests
+- [ ] components/index.ts barrel
+- [ ] Update Astro page to mount CheckTypeContainer
 
-### 8C: Form
+---
+
+## Phase 12: Form
 
 - [ ] CheckTypeForm.tsx + tests
 
-### 8D: Empty State & Suggestions
+---
 
-- [ ] CheckTypeEmptyState.tsx + tests
+## Phase 13: Empty State & Suggestions
+
 - [ ] SuggestedCheckTypes.tsx + tests
-
-### 8E: Delete Dialog
-
-- [ ] DeleteCheckTypeDialog.tsx + tests
-
-### 8F: Container
-
-- [ ] CheckTypeContainer.tsx + tests
+- [ ] CheckTypeEmptyState.tsx + tests
 
 ---
 
-## Phase 9: Page & Navigation
+## Phase 14: Delete Dialog & Feature Barrel
 
-- [ ] /check-types/index.astro
-- [ ] Update Main.astro navigation ("Contrôles" link)
-- [ ] features/check-types/index.ts (barrel export)
+- [ ] DeleteCheckTypeDialog.tsx + tests
+- [ ] features/check-types/index.ts (feature barrel)
 
 ---
 
