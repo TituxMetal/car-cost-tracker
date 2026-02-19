@@ -143,17 +143,6 @@ describe('CheckTypeController', () => {
       expect(mockCheckTypeService.createCheckType).toHaveBeenCalledWith(createDto, vehicleId)
       expect(result).toEqual(expectedCheckType)
     })
-
-    it('should throw VehicleNotFoundException when vehicle does not belong to user', async () => {
-      const createDto = new CreateCheckTypeDto()
-      const session = createMockSession(userId)
-
-      mockVehicleService.getVehicleByUser.mockResolvedValue(null)
-
-      await expect(controller.create(session, vehicleId, createDto)).rejects.toThrow(
-        `Vehicle not found: ${vehicleId}`
-      )
-    })
   })
 
   describe('getByVehicle', () => {
@@ -170,16 +159,6 @@ describe('CheckTypeController', () => {
       expect(mockVehicleService.getVehicleByUser).toHaveBeenCalledWith(userId)
       expect(mockCheckTypeService.getCheckTypesByVehicle).toHaveBeenCalledWith(vehicleId)
       expect(result).toEqual(expectedCheckTypes)
-    })
-
-    it('should throw VehicleNotFoundException when vehicle does not belong to user', async () => {
-      const session = createMockSession(userId)
-
-      mockVehicleService.getVehicleByUser.mockResolvedValue(null)
-
-      await expect(controller.getByVehicle(session, vehicleId)).rejects.toThrow(
-        `Vehicle not found: ${vehicleId}`
-      )
     })
   })
 
@@ -200,16 +179,6 @@ describe('CheckTypeController', () => {
         vehicleId
       )
       expect(result).toEqual(expectedCheckType)
-    })
-
-    it('should throw VehicleNotFoundException when vehicle does not belong to user', async () => {
-      const session = createMockSession(userId)
-
-      mockVehicleService.getVehicleByUser.mockResolvedValue(null)
-
-      await expect(controller.getOne(session, vehicleId, 'some-id')).rejects.toThrow(
-        `Vehicle not found: ${vehicleId}`
-      )
     })
   })
 
@@ -233,17 +202,6 @@ describe('CheckTypeController', () => {
       )
       expect(result).toEqual(expectedCheckType)
     })
-
-    it('should throw VehicleNotFoundException when vehicle does not belong to user', async () => {
-      const updateDto = new UpdateCheckTypeDto()
-      const session = createMockSession(userId)
-
-      mockVehicleService.getVehicleByUser.mockResolvedValue(null)
-
-      await expect(controller.update(session, vehicleId, 'some-id', updateDto)).rejects.toThrow(
-        `Vehicle not found: ${vehicleId}`
-      )
-    })
   })
 
   describe('delete', () => {
@@ -259,13 +217,26 @@ describe('CheckTypeController', () => {
       expect(mockVehicleService.getVehicleByUser).toHaveBeenCalledWith(userId)
       expect(mockCheckTypeService.deleteCheckType).toHaveBeenCalledWith('some-id', vehicleId)
     })
+  })
 
-    it('should throw VehicleNotFoundException when vehicle does not belong to user', async () => {
+  describe('verifyVehicleOwnership', () => {
+    it('should throw VehicleNotFoundException when user has no vehicle', async () => {
       const session = createMockSession(userId)
 
       mockVehicleService.getVehicleByUser.mockResolvedValue(null)
 
-      await expect(controller.delete(session, vehicleId, 'some-id')).rejects.toThrow(
+      await expect(controller.getByVehicle(session, vehicleId)).rejects.toThrow(
+        `Vehicle not found: ${vehicleId}`
+      )
+    })
+
+    it('should throw VehicleNotFoundException when vehicle ID does not match', async () => {
+      const session = createMockSession(userId)
+      const wrongVehicle = createMockVehicleDto({ id: 'different-vehicle-id' })
+
+      mockVehicleService.getVehicleByUser.mockResolvedValue(wrongVehicle)
+
+      await expect(controller.getByVehicle(session, vehicleId)).rejects.toThrow(
         `Vehicle not found: ${vehicleId}`
       )
     })
