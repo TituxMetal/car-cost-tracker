@@ -24,24 +24,24 @@
 
 ---
 
-## Phase 8: API Service
+## Phase 8: API Service ✅
 
-- [ ] checkType.service.ts + tests
-- [ ] api/index.ts barrel
-
----
-
-## Phase 9: State Store
-
-- [ ] checkType.store.ts + tests
-- [ ] store/index.ts barrel
+- [x] checkType.service.ts + tests
+- [x] api/index.ts barrel
 
 ---
 
-## Phase 10: Hook
+## Phase 9: State Store ✅
 
-- [ ] useCheckTypes.ts + tests
-- [ ] hooks/index.ts barrel
+- [x] checkType.store.ts + tests
+- [x] store/index.ts barrel
+
+---
+
+## Phase 10: Hook ✅
+
+- [x] useCheckTypes.ts + tests
+- [x] hooks/index.ts barrel
 
 ---
 
