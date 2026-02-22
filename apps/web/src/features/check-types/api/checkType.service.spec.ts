@@ -97,6 +97,18 @@ describe('checkType.service', () => {
       expect(result).toEqual(checkTypeData)
     })
 
+    it('should return null when data is null', async () => {
+      getSpy.mockResolvedValueOnce({
+        success: true,
+        data: null
+      })
+
+      const result = await getCheckType('v1', 'ct1')
+
+      expect(getSpy).toHaveBeenCalledWith('/vehicles/v1/check-types/ct1')
+      expect(result).toBeNull()
+    })
+
     it('should throw on API failure', async () => {
       getSpy.mockResolvedValueOnce({
         success: false,
