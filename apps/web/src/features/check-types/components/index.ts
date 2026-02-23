@@ -1,5 +1,7 @@
 export { CheckTypeCard } from './CheckTypeCard'
 export type { CheckTypeCardProps } from './CheckTypeCard'
 export { CheckTypeContainer } from './CheckTypeContainer'
+export { CheckTypeForm } from './CheckTypeForm'
+export type { CheckTypeFormProps } from './CheckTypeForm'
 export { CheckTypeList } from './CheckTypeList'
 export type { CheckTypeListProps } from './CheckTypeList'
