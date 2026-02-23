@@ -55,8 +55,9 @@
 
 ---
 
-## Phase 12: Form
+## Phase 12: Textarea UI + Form
 
+- [ ] Textarea.tsx + tests (shared UI component)
 - [ ] CheckTypeForm.tsx + tests
 
 ---
