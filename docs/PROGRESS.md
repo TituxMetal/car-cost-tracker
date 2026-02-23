@@ -45,13 +45,13 @@
 
 ---
 
-## Phase 11: Container + List + Card
+## Phase 11: Container + List + Card ✅
 
-- [ ] CheckTypeCard.tsx + tests
-- [ ] CheckTypeList.tsx + tests
-- [ ] CheckTypeContainer.tsx + tests
-- [ ] components/index.ts barrel
-- [ ] Update Astro page to mount CheckTypeContainer
+- [x] CheckTypeCard.tsx + tests
+- [x] CheckTypeList.tsx + tests
+- [x] CheckTypeContainer.tsx + tests
+- [x] components/index.ts barrel
+- [x] Update Astro page to mount CheckTypeContainer
 
 ---
 
