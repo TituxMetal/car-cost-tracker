@@ -78,6 +78,14 @@ describe('Select', () => {
     expect(select).toHaveAttribute('aria-invalid', 'true')
   })
 
+  it('should not set aria-invalid when no error is present', () => {
+    const { getByRole } = render(<Select options={mockOptions} placeholder='Select an option' />)
+
+    const select = getByRole('combobox')
+
+    expect(select).not.toHaveAttribute('aria-invalid')
+  })
+
   it('should call onChange when selection changes', () => {
     const handleChange = mock(() => {})
 
