@@ -13,7 +13,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const inputId = id || `input-${generatedId}`
 
     const baseInputClasses =
-      'w-full rounded-lg border-2 bg-zinc-900 px-3 py-2 text-zinc-300 focus:outline-none'
+      'rounded-lg border-2 bg-zinc-900 px-3 py-2 text-zinc-300 focus:outline-none'
     const errorInputClasses = 'border-red-400 focus:border-red-400'
     const widthClass = fullWidth ? 'w-full' : ''
 
@@ -29,7 +29,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           id={inputId}
           type={type}
           className={`${baseInputClasses} ${error ? errorInputClasses : ''} ${widthClass} ${className}`}
-          aria-invalid={error ? 'true' : 'false'}
+          aria-invalid={error ? 'true' : undefined}
           aria-describedby={error ? `${inputId}-error` : undefined}
           {...props}
         />
