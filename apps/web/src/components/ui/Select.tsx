@@ -37,7 +37,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           ref={ref}
           id={selectId}
           className={`${widthClass} ${baseInputClasses} ${error ? errorInputClasses : ''} ${className}`}
-          aria-invalid={error ? 'true' : 'false'}
+          aria-invalid={error ? 'true' : undefined}
           aria-describedby={error ? `${selectId}-error` : undefined}
           {...props}
         >
