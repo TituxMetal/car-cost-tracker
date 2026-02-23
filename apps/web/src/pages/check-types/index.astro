@@ -1,4 +1,5 @@
 ---
+import { CheckTypeContainer } from '~/features/check-types/components'
 import Main from '~/layouts/Main.astro'
 
 const { user } = Astro.locals
@@ -10,6 +11,6 @@ if (!user) {
 
 <Main title='Contrôles'>
   <section class='container mx-auto px-4 py-8'>
-    <p>Check Types Container Placeholder</p>
+    <CheckTypeContainer client:only='react' />
   </section>
 </Main>
