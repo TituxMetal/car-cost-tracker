@@ -125,13 +125,15 @@ that defines how often the check should be performed.
 - Inline actions (edit, delete) from list
 - Quick interval adjustment (nice-to-have)
 
-## Open Questions
+## Open Questions (Resolved)
 
 1. Should we provide a set of suggested/default check types that users can add with one click?
-   (e.g., "Oil Level - 7 days", "Tire Pressure - 14 days", "Coolant Level - 30 days")
-2. Should the list show the "last performed" and "next due" status for each check type? This
-   requires data from Check Logging feature.
-3. Can interval be 0 (meaning "no recurring schedule")? Or must all checks be recurring?
+   **Yes** — Minimal set: Niveau d'huile (7j), Pression des pneus (14j), Niveau de liquide de
+   refroidissement (30j). Shown in empty state, addable with one click.
+2. Should the list show the "last performed" and "next due" status for each check type? **No** —
+   Check Logging not built yet. Card design accommodates future addition.
+3. Can interval be 0 (meaning "no recurring schedule")? **No** — Backend validates minimum 1 day.
+   All checks are recurring.
 
 ## Out of Scope
 

@@ -62,17 +62,34 @@
 
 ---
 
-## Phase 13: Empty State & Suggestions
+## Phase 13: Form Integration — Create + Edit Flows
 
-- [ ] SuggestedCheckTypes.tsx + tests
-- [ ] CheckTypeEmptyState.tsx + tests
+- [ ] Create flow: wire CheckTypeForm into Container (add button, submit → create, cancel)
+- [ ] Edit flow: wire edit mode (onEdit opens pre-populated form, submit → update, cancel)
+- [ ] CheckTypeContainer.spec.tsx updates for create + edit flows
 
 ---
 
-## Phase 14: Delete Dialog & Feature Barrel
+## Phase 14: Delete Dialog & Wiring
 
 - [ ] DeleteCheckTypeDialog.tsx + tests
+- [ ] Wire delete into Container (onDelete → dialog → remove on confirm)
+- [ ] CheckTypeContainer.spec.tsx updates for delete flow
+
+---
+
+## Phase 15: Empty State & Suggestions
+
+- [ ] SuggestedCheckTypes.tsx + tests
+- [ ] CheckTypeEmptyState.tsx + tests
+- [ ] Wire empty state + suggestions into Container
+
+---
+
+## Phase 16: Feature Barrel & Cleanup
+
 - [ ] features/check-types/index.ts (feature barrel)
+- [ ] Remove stubs/no-ops, verify all barrels up to date
 
 ---
 
