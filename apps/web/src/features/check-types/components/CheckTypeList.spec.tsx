@@ -42,18 +42,13 @@ describe('CheckTypeList', () => {
     expect(cards).toHaveLength(mockCheckTypes.length)
   })
 
-  // Temporary: empty state will be handled by CheckTypeEmptyState (Phase 13)
-  // This test will be removed when the Container delegates empty state rendering
-  it('should render empty message when list is empty', () => {
+  it('should render no cards when list is empty', () => {
     const actions = mock(() => {})
     render(<CheckTypeList checkTypes={[]} onEdit={actions} onDelete={actions} />)
 
     const cards = screen.queryAllByRole('article')
 
     expect(cards).toHaveLength(0)
-    expect(
-      screen.getByText('Aucun type de contrôle trouvé. Veuillez en ajouter un.')
-    ).toBeInTheDocument()
   })
 
   it('should pass onEdit callback to cards', () => {
