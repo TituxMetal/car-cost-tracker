@@ -1,6 +1,8 @@
 export { CheckTypeCard } from './CheckTypeCard'
 export type { CheckTypeCardProps } from './CheckTypeCard'
 export { CheckTypeContainer } from './CheckTypeContainer'
+export { DeleteCheckTypeDialog } from './DeleteCheckTypeDialog'
+export type { DeleteCheckTypeDialogProps } from './DeleteCheckTypeDialog'
 export { CheckTypeForm } from './CheckTypeForm'
 export type { CheckTypeFormProps } from './CheckTypeForm'
 export { CheckTypeList } from './CheckTypeList'
