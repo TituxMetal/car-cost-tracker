@@ -1,3 +1,4 @@
+import { act } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, mock, spyOn } from 'bun:test'
 
 // Direct store imports: bun:test mock.module leaks globally across files,
@@ -9,7 +10,7 @@ import {
   $vehicle,
   vehicleActions
 } from '~/features/vehicles/store'
-import { cleanup, render, screen } from '~/test-utils'
+import { cleanup, fireEvent, render, screen, userEvent, waitFor } from '~/test-utils'
 import * as navigationUtils from '~/utils/navigation'
 
 import { $checkTypes, $error, $isLoading, checkTypeActions } from '../store'
@@ -61,6 +62,9 @@ const mockCheckTypes: CheckType[] = [
 describe('CheckTypeContainer', () => {
   let fetchCheckTypesSpy: ReturnType<typeof spyOn>
   let fetchVehicleSpy: ReturnType<typeof spyOn>
+  let createSpy: ReturnType<typeof spyOn>
+  let updateSpy: ReturnType<typeof spyOn>
+  let removeSpy: ReturnType<typeof spyOn>
 
   beforeEach(() => {
     cleanup()
@@ -74,53 +78,316 @@ describe('CheckTypeContainer', () => {
 
     fetchCheckTypesSpy = spyOn(checkTypeActions, 'fetchByVehicle').mockResolvedValue(undefined)
     fetchVehicleSpy = spyOn(vehicleActions, 'fetchVehicle').mockResolvedValue(undefined)
+    createSpy = spyOn(checkTypeActions, 'create').mockResolvedValue(mockCheckTypes[0])
+    updateSpy = spyOn(checkTypeActions, 'update').mockResolvedValue(mockCheckTypes[0])
+    removeSpy = spyOn(checkTypeActions, 'remove').mockResolvedValue(undefined)
   })
 
   afterEach(() => {
     fetchCheckTypesSpy.mockRestore()
     fetchVehicleSpy.mockRestore()
+    createSpy.mockRestore()
+    updateSpy.mockRestore()
+    removeSpy.mockRestore()
   })
 
-  it('should show loading state', () => {
-    $isVehicleLoading.set(true)
-    render(<CheckTypeContainer />)
+  describe('loading + initial fetch', () => {
+    it('should show loading state', async () => {
+      $isVehicleLoading.set(true)
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
 
-    expect(screen.getByText('Chargement...')).toBeVisible()
+      expect(screen.getByText('Chargement...')).toBeVisible()
+    })
+
+    it('should redirect when no vehicle exists', async () => {
+      $vehicle.set(null)
+      $isVehicleLoading.set(false)
+
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+
+      await waitFor(() => expect(navigationUtils.redirect).toHaveBeenCalledWith('/vehicle'))
+    })
+
+    it('should fetch check types when vehicle is available', async () => {
+      $vehicle.set(mockVehicle)
+
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+
+      expect(fetchCheckTypesSpy).toHaveBeenCalledWith(mockVehicle.id)
+    })
+
+    it('should render check type list when data is loaded', async () => {
+      $vehicle.set(mockVehicle)
+      $checkTypes.set(mockCheckTypes)
+
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+
+      expect(screen.getByText(`Niveau d'huile`)).toBeVisible()
+      expect(screen.getByText('Pression des pneus')).toBeVisible()
+    })
+
+    it('should show add button when no check types exist', async () => {
+      $vehicle.set(mockVehicle)
+      $checkTypes.set([])
+
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+
+      expect(screen.getByRole('button', { name: 'Ajouter un contrôle' })).toBeVisible()
+    })
   })
 
-  it('should redirect when no vehicle exists', () => {
-    $vehicle.set(null)
-    $isVehicleLoading.set(false)
+  describe('create mode', () => {
+    it('should show create form when clicking "Ajouter un contrôle"', async () => {
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+      $checkTypes.set(mockCheckTypes)
 
-    render(<CheckTypeContainer />)
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+      fireEvent.click(screen.getByRole('button', { name: 'Ajouter un contrôle' }))
 
-    expect(navigationUtils.redirect).toHaveBeenCalledWith('/vehicle')
+      expect(screen.getByLabelText('Nom')).toBeVisible()
+      expect(screen.getByLabelText('Intervalle (jours)')).toBeVisible()
+      expect(screen.getByLabelText('Description')).toBeVisible()
+    })
+
+    it('should call create and return to list on form submit', async () => {
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+      $checkTypes.set(mockCheckTypes)
+
+      const user = userEvent.setup()
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+      fireEvent.click(screen.getByRole('button', { name: 'Ajouter un contrôle' }))
+
+      await user.type(screen.getByLabelText('Nom'), 'Test Check Type')
+      await user.type(screen.getByLabelText('Intervalle (jours)'), '30')
+      await user.type(screen.getByLabelText('Description'), 'This is a test check type.')
+
+      fireEvent.click(screen.getByRole('button', { name: 'Enregistrer' }))
+
+      await waitFor(() => {
+        expect(createSpy).toHaveBeenCalledWith(mockVehicle.id, {
+          name: 'Test Check Type',
+          intervalDays: 30,
+          description: 'This is a test check type.'
+        })
+      })
+      expect(screen.getByText(`Niveau d'huile`)).toBeVisible()
+      expect(screen.getByText('Pression des pneus')).toBeVisible()
+    })
+
+    it('should return to list when clicking "Annuler"', async () => {
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+      $checkTypes.set(mockCheckTypes)
+
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+      fireEvent.click(screen.getByRole('button', { name: 'Ajouter un contrôle' }))
+      fireEvent.click(screen.getByRole('button', { name: 'Annuler' }))
+
+      expect(screen.getByText(`Niveau d'huile`)).toBeVisible()
+      expect(screen.getByText('Pression des pneus')).toBeVisible()
+    })
+
+    it('should display server error when create fails', async () => {
+      const errorMessage = 'Failed to create check type'
+      createSpy.mockRejectedValueOnce(new Error(errorMessage))
+
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+      $checkTypes.set(mockCheckTypes)
+
+      const user = userEvent.setup()
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+      fireEvent.click(screen.getByRole('button', { name: 'Ajouter un contrôle' }))
+
+      await user.type(screen.getByLabelText('Nom'), 'Test Check Type')
+      await user.type(screen.getByLabelText('Intervalle (jours)'), '30')
+      await user.type(screen.getByLabelText('Description'), 'This is a test check type.')
+
+      fireEvent.click(screen.getByRole('button', { name: 'Enregistrer' }))
+
+      await waitFor(() => expect(screen.getByText(errorMessage)).toBeVisible())
+    })
   })
 
-  it('should fetch check types when vehicle is available', () => {
-    $vehicle.set(mockVehicle)
+  describe('edit mode', () => {
+    it('should show edit form pre-populated when clicking "Modifier"', async () => {
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+      $checkTypes.set(mockCheckTypes)
 
-    render(<CheckTypeContainer />)
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+      fireEvent.click(screen.getAllByRole('button', { name: 'Modifier' })[0])
 
-    expect(fetchCheckTypesSpy).toHaveBeenCalledWith(mockVehicle.id)
+      expect(screen.getByLabelText('Nom')).toHaveValue(`Niveau d'huile`)
+      expect(screen.getByLabelText('Intervalle (jours)')).toHaveValue(7)
+      expect(screen.getByLabelText('Description')).toHaveValue(`Vérifier le niveau d'huile moteur`)
+    })
+
+    it('should call update on form submit', async () => {
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+      $checkTypes.set(mockCheckTypes)
+
+      const user = userEvent.setup()
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+      fireEvent.click(screen.getAllByRole('button', { name: 'Modifier' })[0])
+      await user.clear(screen.getByLabelText('Nom'))
+      await user.type(screen.getByLabelText('Nom'), 'Updated Check Type')
+      fireEvent.click(screen.getByRole('button', { name: 'Enregistrer' }))
+
+      await waitFor(() => {
+        expect(updateSpy).toHaveBeenCalledWith(mockVehicle.id, mockCheckTypes[0].id, {
+          name: 'Updated Check Type',
+          intervalDays: 7,
+          description: `Vérifier le niveau d'huile moteur`
+        })
+      })
+    })
+
+    it('should return to list when clicking "Annuler" in edit mode', async () => {
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+      $checkTypes.set(mockCheckTypes)
+
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+      fireEvent.click(screen.getAllByRole('button', { name: 'Modifier' })[0])
+      fireEvent.click(screen.getByRole('button', { name: 'Annuler' }))
+
+      expect(screen.getByText(`Niveau d'huile`)).toBeVisible()
+      expect(screen.getByText('Pression des pneus')).toBeVisible()
+    })
+
+    it('should display server error when update fails', async () => {
+      const errorMessage = 'Failed to update check type'
+      updateSpy.mockRejectedValueOnce(new Error(errorMessage))
+
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+      $checkTypes.set(mockCheckTypes)
+
+      const user = userEvent.setup()
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+      fireEvent.click(screen.getAllByRole('button', { name: 'Modifier' })[0])
+      await user.clear(screen.getByLabelText('Nom'))
+      await user.type(screen.getByLabelText('Nom'), 'Updated Check Type')
+      fireEvent.click(screen.getByRole('button', { name: 'Enregistrer' }))
+
+      await waitFor(() => expect(screen.getByText(errorMessage)).toBeVisible())
+    })
   })
 
-  it('should render check type list when data is loaded', () => {
-    $vehicle.set(mockVehicle)
-    $checkTypes.set(mockCheckTypes)
+  describe('delete flow', () => {
+    it('should not show DeleteCheckTypeDialog by default', async () => {
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+      $checkTypes.set(mockCheckTypes)
 
-    render(<CheckTypeContainer />)
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
 
-    expect(screen.getByText(`Niveau d'huile`)).toBeVisible()
-    expect(screen.getByText('Pression des pneus')).toBeVisible()
+      expect(screen.queryByText('Supprimer le type de contrôle')).not.toBeInTheDocument()
+    })
+
+    it('should show confirmation dialog when clicking "Supprimer"', async () => {
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+      $checkTypes.set(mockCheckTypes)
+
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+      fireEvent.click(screen.getAllByRole('button', { name: 'Supprimer' })[0])
+
+      expect(screen.getByText('Supprimer le type de contrôle')).toBeVisible()
+      expect(
+        screen.getByText(
+          `Êtes-vous sûr de vouloir supprimer le type de contrôle "${mockCheckTypes[0].name}" ? Cette action est irréversible.`
+        )
+      ).toBeVisible()
+    })
+
+    it('should call remove and close dialog on confirm', async () => {
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+      $checkTypes.set(mockCheckTypes)
+
+      const user = userEvent.setup()
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+      fireEvent.click(screen.getAllByRole('button', { name: 'Supprimer' })[0])
+      const deleteButtons = screen.getAllByRole('button', { name: 'Supprimer' })
+      await user.click(deleteButtons[deleteButtons.length - 1]) // Click the confirm button in the dialog
+
+      await waitFor(() => {
+        expect(removeSpy).toHaveBeenCalledWith(mockVehicle.id, mockCheckTypes[0].id)
+        expect(screen.queryByText('Supprimer le type de contrôle')).not.toBeInTheDocument()
+      })
+    })
+
+    it('should close dialog without removing on cancel', async () => {
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+      $checkTypes.set(mockCheckTypes)
+
+      const user = userEvent.setup()
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+      fireEvent.click(screen.getAllByRole('button', { name: 'Supprimer' })[0])
+      await user.click(screen.getByRole('button', { name: 'Annuler' }))
+
+      await waitFor(() => {
+        expect(removeSpy).not.toHaveBeenCalled()
+        expect(screen.queryByText('Supprimer le type de contrôle')).not.toBeInTheDocument()
+        expect(screen.getByText(`Niveau d'huile`)).toBeVisible()
+        expect(screen.getByText('Pression des pneus')).toBeVisible()
+      })
+    })
   })
 
-  it('should render empty list when no check types exist', () => {
-    $vehicle.set(mockVehicle)
-    $checkTypes.set([])
+  describe('error handling', () => {
+    it('should display server error when an action fails', async () => {
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+      $checkTypes.set(mockCheckTypes)
+      const errorMessage = 'Server error'
+      updateSpy.mockRejectedValueOnce(new Error(errorMessage))
 
-    render(<CheckTypeContainer />)
+      render(<CheckTypeContainer />)
+      fireEvent.click(screen.getAllByRole('button', { name: 'Modifier' })[0])
+      fireEvent.click(screen.getByRole('button', { name: 'Enregistrer' }))
 
-    expect(screen.getByText('Aucun type de contrôle trouvé. Veuillez en ajouter un.')).toBeVisible()
+      await waitFor(() => expect(screen.getByText(errorMessage)).toBeVisible())
+    })
   })
 })
