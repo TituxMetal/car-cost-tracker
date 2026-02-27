@@ -62,19 +62,19 @@
 
 ---
 
-## Phase 13: Form Integration — Create + Edit Flows
+## Phase 13: Form Integration — Create + Edit Flows ✅
 
-- [ ] Create flow: wire CheckTypeForm into Container (add button, submit → create, cancel)
-- [ ] Edit flow: wire edit mode (onEdit opens pre-populated form, submit → update, cancel)
-- [ ] CheckTypeContainer.spec.tsx updates for create + edit flows
+- [x] Create flow: wire CheckTypeForm into Container (add button, submit → create, cancel)
+- [x] Edit flow: wire edit mode (onEdit opens pre-populated form, submit → update, cancel)
+- [x] CheckTypeContainer.spec.tsx updates for create + edit flows
 
 ---
 
-## Phase 14: Delete Dialog & Wiring
+## Phase 14: Delete Dialog & Wiring ✅
 
-- [ ] DeleteCheckTypeDialog.tsx + tests
-- [ ] Wire delete into Container (onDelete → dialog → remove on confirm)
-- [ ] CheckTypeContainer.spec.tsx updates for delete flow
+- [x] DeleteCheckTypeDialog.tsx + tests
+- [x] Wire delete into Container (onDelete → dialog → remove on confirm)
+- [x] CheckTypeContainer.spec.tsx updates for delete flow
 
 ---
 
