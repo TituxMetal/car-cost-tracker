@@ -133,6 +133,89 @@ interval. Users can view their check history — both overall and filtered by ch
 - History browsing with filtering
 - Delete log action
 
+## UI Reference
+
+### Visual Target
+
+The Spark prototype (`https://github.com/TituxMetal/car-repair-cost-trac`) serves as the **design
+reference only** — its theme, color palette, visual hierarchy, and component quality are the
+standard to match. Refer to the Design System section in MVP.md for available tokens.
+
+### Layout & Structure
+
+- **Log check form:** Radix UI Dialog (modal) centered over the current page, containing a date
+  input (defaulting to today), an optional notes textarea, and submit/cancel buttons. The check type
+  name is displayed as a read-only header for context.
+- **Check history page:** Full-width content area with a filter bar at the top (check type selector)
+  and a chronological list of log cards below. Each card shows the check type name, completed date,
+  notes excerpt, and next due date.
+- **Visual hierarchy:** Filter bar prominent at top, then log entries sorted newest-first. Each log
+  entry is a compact card with date as primary info and notes as secondary.
+- **"Next due" indicators:** Displayed on check type cards (from check types feature) as a badge
+  showing days until due or days overdue.
+
+### UI Components & Patterns
+
+**DaisyUI components used:**
+
+- `btn` — "Log Check" action button (primary/amber), cancel (ghost), delete (error)
+- `card` — each check log entry in the history list
+- `input` — date input for completed date
+- `textarea` — optional notes field
+- `badge` — status indicators: on time (success), due soon (warning), overdue (error)
+- `modal` — log check form dialog (backed by Radix UI Dialog)
+- `alert` — success feedback after logging, error on failure
+- `select` — check type filter in history view (backed by Radix UI Select)
+- `divider` — separating filter area from history list
+- `loading` — spinner during form submission and data fetching
+
+**Radix UI primitives used:**
+
+- Dialog — for the log check form modal and delete confirmation
+- Select — for the check type filter dropdown in history view
+- AlertDialog — for delete log confirmation
+
+**Interactive patterns:**
+
+- Quick log: clicking "Log Check" on a check type card opens the modal pre-filled with that check
+  type
+- Date picker defaults to today but allows backdating
+- Filter: selecting a check type instantly filters the history list
+- Delete: confirmation dialog before removing a log entry
+
+**States:**
+
+- Empty state — "No checks logged yet — log your first check!" with call-to-action
+- Empty filtered state — "No logs for this check type" when filter yields no results
+- Loading state — spinner centered in history list area
+- Error state — alert with error token color and retry action
+- Success feedback — alert confirming "Check logged successfully" with auto-dismiss
+
+### Design Tokens
+
+All styling uses DaisyUI theme tokens referencing the tokens defined in MVP.md Design System:
+
+- **primary (amber):** "Log Check" buttons, active filter highlight, form submit button
+- **neutral (zinc):** Card backgrounds (base-200), card borders, secondary text (dates, notes),
+  history list background
+- **success (emerald):** "On time" status badge, success alert after logging
+- **error (red):** "Overdue" status badge, delete button, delete confirmation, error alerts
+- **warning (amber):** "Due soon" status badge, approaching deadline indicators
+- **base-100/200/300:** Background layering (page → cards → hover states)
+- **base-content:** Primary text (check type name, dates), secondary text (notes)
+
+No hardcoded hex values — all colors through DaisyUI theme tokens.
+
+### Responsiveness
+
+- **Log form modal:** Full-screen sheet on mobile, centered overlay on desktop
+- **History list:** Full-width stacked cards on all breakpoints, comfortable reading width on
+  desktop
+- **Filter bar:** Full-width select on mobile, inline with title on desktop
+- **Log cards:** Single-column, full-width — date and status badge on the same row, notes below
+- **Action buttons:** Stack vertically on mobile, inline on desktop
+- **Spacing:** Reduced padding (p-4) on mobile, standard (p-6) on desktop
+
 ## Open Questions
 
 1. Should users be able to edit a check log after creation (change date or notes)? Or is it

@@ -127,7 +127,8 @@ Everything in MVP Core, plus:
 | ORM                       | Prisma 7.x                                 |
 | Auth                      | Better Auth 1.4.x                          |
 | Frontend                  | Astro 5.x + React 19.x                     |
-| Styling                   | TailwindCSS v4 (dark/zinc theme)           |
+| Styling                   | TailwindCSS v4 + DaisyUI 5.x (plugin)      |
+| Headless Primitives       | Radix UI                                   |
 | Testing                   | Bun test (backend & frontend)              |
 | Linting                   | ESLint 9.x + Prettier 3.x                  |
 | Git Hooks                 | Husky 9.x + CommitLint 20.x                |
@@ -153,6 +154,29 @@ Everything in MVP Core, plus:
 - [ ] TanStack Query (data fetching & caching)
 - [ ] TanStack Form (form management)
 - [ ] Basic role/permissions system (admin vs user)
+
+## Design System
+
+| Aspect              | Choice                        |
+| ------------------- | ----------------------------- |
+| Component Styling   | DaisyUI 5.x (Tailwind plugin) |
+| Headless Primitives | Radix UI                      |
+| Icon Set            | Lucide                        |
+
+**Theme Tokens (Dark Theme):**
+
+| Token   | Value   |
+| ------- | ------- |
+| primary | amber   |
+| neutral | zinc    |
+| success | emerald |
+| error   | red     |
+| warning | amber   |
+
+**Spacing & Typography:** Tailwind defaults.
+
+Feature Shapes reference these tokens in their UI Reference section — never use hardcoded hex
+values.
 
 ## Data Model (High-Level)
 
