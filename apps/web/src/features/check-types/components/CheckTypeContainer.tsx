@@ -9,11 +9,13 @@ import { redirect } from '~/utils/navigation'
 import { useCheckTypes } from '../hooks'
 import type { CreateCheckTypeSchema } from '../schemas'
 import { createCheckTypeSchema } from '../schemas'
-import type { CheckType } from '../types'
+import type { CheckType, SuggestedCheckType } from '../types'
+import { SUGGESTED_CHECK_TYPES } from '../types'
 
 import { CheckTypeForm } from './CheckTypeForm'
 import { CheckTypeList } from './CheckTypeList'
 import { DeleteCheckTypeDialog } from './DeleteCheckTypeDialog'
+import { SuggestedCheckTypes } from './SuggestedCheckTypes'
 
 export const CheckTypeContainer = () => {
   const [mode, setMode] = useState<'loading' | 'list' | 'create' | 'edit'>('loading')
@@ -24,6 +26,7 @@ export const CheckTypeContainer = () => {
   const { vehicle, fetchVehicle, hasVehicle } = useVehicle()
   const {
     checkTypes,
+    hasCheckTypes,
     isLoading: isCheckTypesLoading,
     fetchByVehicle,
     create,
@@ -76,7 +79,6 @@ export const CheckTypeContainer = () => {
       if (mode === 'create') {
         await create(vehicle.id, values)
         form.reset({})
-        await fetchByVehicle(vehicle.id)
         setMode('list')
       }
 
@@ -97,6 +99,20 @@ export const CheckTypeContainer = () => {
     try {
       await remove(vehicle.id, deletingCheckType.id)
       setDeletingCheckType(null)
+    } catch (error) {
+      setServerError(error instanceof Error ? error.message : 'Une erreur est survenue')
+    }
+  }
+
+  const onAddSuggestion = async (suggestion: SuggestedCheckType) => {
+    if (!vehicle) return
+
+    try {
+      await create(vehicle.id, {
+        name: suggestion.name,
+        description: suggestion.description ?? undefined,
+        intervalDays: suggestion.intervalDays
+      })
     } catch (error) {
       setServerError(error instanceof Error ? error.message : 'Une erreur est survenue')
     }
@@ -173,20 +189,31 @@ export const CheckTypeContainer = () => {
     )
   }
 
-  return (
-    <section className='p-4'>
-      <h1 className='mb-4 text-2xl font-bold text-zinc-100'>Types de contrôle</h1>
-      <Button variant='default' className='mb-4' onClick={() => setMode('create')}>
-        Ajouter un contrôle
-      </Button>
-      <CheckTypeList checkTypes={checkTypes} onEdit={onEdit} onDelete={onDelete} />
-      {deletingCheckType && (
-        <DeleteCheckTypeDialog
-          checkTypeName={deletingCheckType.name}
-          onConfirm={handleDeleteConfirm}
-          onCancel={() => setDeletingCheckType(null)}
-        />
-      )}
-    </section>
+  const remainingSuggestions = SUGGESTED_CHECK_TYPES.filter(
+    suggestion => !checkTypes.some(checkType => checkType.name === suggestion.name)
   )
+
+  if (mode === 'list') {
+    return (
+      <section className='p-4'>
+        <h1 className='mb-4 text-2xl font-bold text-zinc-100'>Types de contrôle</h1>
+        <Button variant='default' className='mb-4' onClick={() => setMode('create')}>
+          Ajouter un contrôle
+        </Button>
+        {remainingSuggestions.length > 0 && (
+          <SuggestedCheckTypes suggestions={remainingSuggestions} onAdd={onAddSuggestion} />
+        )}
+        {hasCheckTypes && (
+          <CheckTypeList checkTypes={checkTypes} onEdit={onEdit} onDelete={onDelete} />
+        )}
+        {deletingCheckType && (
+          <DeleteCheckTypeDialog
+            checkTypeName={deletingCheckType.name}
+            onConfirm={handleDeleteConfirm}
+            onCancel={() => setDeletingCheckType(null)}
+          />
+        )}
+      </section>
+    )
+  }
 }

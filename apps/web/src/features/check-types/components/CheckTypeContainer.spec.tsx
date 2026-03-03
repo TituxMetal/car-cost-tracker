@@ -375,6 +375,76 @@ describe('CheckTypeContainer', () => {
     })
   })
 
+  describe('suggested check types', () => {
+    it('should show all suggestions when no check types exist', async () => {
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+      $checkTypes.set([])
+
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+
+      expect(screen.getByText(`Niveau d'huile`)).toBeVisible()
+      expect(screen.getByText('Pression des pneus')).toBeVisible()
+      expect(screen.getByText('Niveau de liquide de refroidissement')).toBeVisible()
+    })
+
+    it('should filter out suggestions that match existing check type names', async () => {
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+      $checkTypes.set(mockCheckTypes)
+
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+
+      const addButtons = screen.getAllByRole('button', { name: '+' })
+      expect(addButtons).toHaveLength(1)
+    })
+
+    it('should not show suggestions when all have been added', async () => {
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+      $checkTypes.set([
+        ...mockCheckTypes,
+        {
+          ...mockCheckTypes[0],
+          id: 'ct-3',
+          name: 'Niveau de liquide de refroidissement',
+          intervalDays: 30
+        }
+      ])
+
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+
+      expect(screen.queryByRole('button', { name: '+' })).not.toBeInTheDocument()
+    })
+
+    it('should call create with suggestion data when clicking add button', async () => {
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+      $checkTypes.set(mockCheckTypes)
+
+      const user = userEvent.setup()
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+      const addButtons = screen.getAllByRole('button', { name: '+' })
+      await user.click(addButtons[0])
+
+      await waitFor(() => {
+        expect(createSpy).toHaveBeenCalledWith(mockVehicle.id, {
+          name: `Niveau de liquide de refroidissement`,
+          description: undefined,
+          intervalDays: 30
+        })
+      })
+    })
+  })
+
   describe('error handling', () => {
     it('should display server error when an action fails', async () => {
       $isLoading.set(false)
