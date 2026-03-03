@@ -78,18 +78,19 @@
 
 ---
 
-## Phase 15: Empty State & Suggestions
+## Phase 15: Empty State & Suggestions ✅
 
-- [ ] SuggestedCheckTypes.tsx + tests
-- [ ] CheckTypeEmptyState.tsx + tests
-- [ ] Wire empty state + suggestions into Container
+- [x] SuggestedCheckTypes.tsx + tests
+- [x] ~~CheckTypeEmptyState.tsx + tests~~ → replaced by SuggestedCheckTypes (suggestions serve as
+      empty state)
+- [x] Wire empty state + suggestions into Container
 
 ---
 
-## Phase 16: Feature Barrel & Cleanup
+## Phase 16: Feature Barrel & Cleanup ✅
 
-- [ ] features/check-types/index.ts (feature barrel)
-- [ ] Remove stubs/no-ops, verify all barrels up to date
+- [x] features/check-types/index.ts (feature barrel)
+- [x] Remove stubs/no-ops, verify all barrels up to date
 
 ---
 
