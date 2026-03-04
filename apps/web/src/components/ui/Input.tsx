@@ -19,7 +19,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className={`${fullWidth ? 'w-full' : ''}`}>
         {label && (
-          <label htmlFor={inputId} className='flex font-medium text-zinc-300'>
+          <label htmlFor={inputId} className='flex font-medium'>
             {label}
           </label>
         )}
