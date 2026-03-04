@@ -16,6 +16,7 @@ describe('Textarea', () => {
     const textarea = getByRole('textbox')
 
     expect(textarea).toBeInTheDocument()
+    expect(textarea).toHaveClass('textarea')
   })
 
   it('should render with a label when provided', () => {
@@ -32,6 +33,8 @@ describe('Textarea', () => {
     const errorMessage = getByText('This field is required')
 
     expect(errorMessage).toBeInTheDocument()
+    expect(errorMessage).toHaveClass('label')
+    expect(errorMessage).toHaveClass('text-error')
   })
 
   it('should set aria-invalid when error is present', () => {
@@ -40,6 +43,7 @@ describe('Textarea', () => {
     const textarea = getByRole('textbox')
 
     expect(textarea).toHaveAttribute('aria-invalid', 'true')
+    expect(textarea).toHaveClass('textarea-error')
   })
 
   it('should link error message via aria-describedby', () => {
