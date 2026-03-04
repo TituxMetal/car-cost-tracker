@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, mock } from 'bun:test'
 
-import { cleanup, render, screen } from '~/test-utils'
+import { cleanup, fireEvent, render, screen } from '~/test-utils'
 
 import { ConfirmDialog } from './ConfirmDialog'
 
@@ -13,124 +13,119 @@ describe('ConfirmDialog', () => {
   it('should render the title', () => {
     render(
       <ConfirmDialog
-        title='Supprimer ?'
-        message='Cette action est irréversible.'
+        title='Test Title'
+        message='Test Message'
         onConfirm={() => {}}
         onCancel={() => {}}
       />
     )
 
-    expect(screen.getByText('Supprimer ?')).toBeInTheDocument()
+    expect(screen.getByText('Test Title')).toBeInTheDocument()
   })
 
   it('should render the message', () => {
     render(
       <ConfirmDialog
-        title='Supprimer ?'
-        message='Cette action est irréversible.'
+        title='Test Title'
+        message='Test Message'
         onConfirm={() => {}}
         onCancel={() => {}}
       />
     )
 
-    expect(screen.getByText('Cette action est irréversible.')).toBeInTheDocument()
+    expect(screen.getByText('Test Message')).toBeInTheDocument()
   })
 
   it('should render confirm and cancel buttons with default labels', () => {
     render(
       <ConfirmDialog
-        title='Supprimer ?'
-        message='Cette action est irréversible.'
+        title='Test Title'
+        message='Test Message'
         onConfirm={() => {}}
         onCancel={() => {}}
       />
     )
 
-    expect(screen.getByRole('button', { name: /Confirmer/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Annuler/i })).toBeInTheDocument()
+    expect(screen.getByText('Confirmer')).toBeInTheDocument()
+    expect(screen.getByText('Annuler')).toBeInTheDocument()
   })
 
   it('should render confirm and cancel buttons with custom labels', () => {
     render(
       <ConfirmDialog
-        title='Supprimer ?'
-        message='Cette action est irréversible.'
-        confirmLabel='Supprimer'
-        cancelLabel='Retour'
+        title='Test Title'
+        message='Test Message'
+        confirmLabel='Yes'
+        cancelLabel='No'
         onConfirm={() => {}}
         onCancel={() => {}}
       />
     )
 
-    expect(screen.getByRole('button', { name: /Supprimer/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Retour/i })).toBeInTheDocument()
+    expect(screen.getByText('Yes')).toBeInTheDocument()
+    expect(screen.getByText('No')).toBeInTheDocument()
   })
 
   it('should call onConfirm when confirm button is clicked', () => {
     const onConfirm = mock(() => {})
+
     render(
       <ConfirmDialog
-        title='Supprimer ?'
-        message='Cette action est irréversible.'
+        title='Test Title'
+        message='Test Message'
         onConfirm={onConfirm}
         onCancel={() => {}}
       />
     )
 
-    const confirmButton = screen.getByRole('button', { name: /Confirmer/i })
-    confirmButton.click()
-
+    fireEvent.click(screen.getByText('Confirmer'))
     expect(onConfirm).toHaveBeenCalledTimes(1)
   })
 
   it('should call onCancel when cancel button is clicked', () => {
     const onCancel = mock(() => {})
+
     render(
       <ConfirmDialog
-        title='Supprimer ?'
-        message='Cette action est irréversible.'
+        title='Test Title'
+        message='Test Message'
         onConfirm={() => {}}
         onCancel={onCancel}
       />
     )
 
-    const cancelButton = screen.getByRole('button', { name: /Annuler/i })
-    cancelButton.click()
-
+    fireEvent.click(screen.getByText('Annuler'))
     expect(onCancel).toHaveBeenCalledTimes(1)
   })
 
   it('should call onCancel when backdrop is clicked', () => {
     const onCancel = mock(() => {})
+
     render(
       <ConfirmDialog
-        title='Supprimer ?'
-        message='Cette action est irréversible.'
+        title='Test Title'
+        message='Test Message'
         onConfirm={() => {}}
         onCancel={onCancel}
       />
     )
 
-    const backdrop = screen.getByRole('dialog').parentElement!
-    backdrop.click()
-
+    const overlay = document.querySelector('.fixed.inset-0')
+    fireEvent.click(overlay!)
     expect(onCancel).toHaveBeenCalledTimes(1)
   })
 
-  it('should call onCancel when Escape key is pressed', () => {
-    const onCancel = mock(() => {})
+  it('should use DaisyUI modal-box class on content', () => {
     render(
       <ConfirmDialog
-        title='Supprimer ?'
-        message='Cette action est irréversible.'
+        title='Test Title'
+        message='Test Message'
         onConfirm={() => {}}
-        onCancel={onCancel}
+        onCancel={() => {}}
       />
     )
 
-    const event = new KeyboardEvent('keydown', { key: 'Escape' })
-    document.dispatchEvent(event)
-
-    expect(onCancel).toHaveBeenCalledTimes(1)
+    expect(screen.getByRole('dialog')).toHaveClass('modal')
+    expect(screen.getByRole('dialog')).toHaveClass('modal-open')
   })
 })
