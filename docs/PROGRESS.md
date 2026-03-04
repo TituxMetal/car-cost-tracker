@@ -24,27 +24,27 @@
 
 ### Block 2: Shared UI Components (Phases 3-7) — `feature/design-system-ui-components`
 
-#### Phase 3: Button Component Migration
+#### Phase 3: Button Component Migration ✅
 
-- [ ] Button.tsx → DaisyUI btn classes + tests
+- [x] Button.tsx → DaisyUI btn classes + tests
 
-#### Phase 4: Input & Label Components
+#### Phase 4: Input & Label Components ✅
 
-- [ ] Input.tsx → DaisyUI input classes + tests
-- [ ] Label.tsx → DaisyUI label classes + tests
+- [x] Input.tsx → DaisyUI input classes + tests
+- [x] Label.tsx → DaisyUI label classes + tests
 
-#### Phase 5: Textarea & Select Components
+#### Phase 5: Textarea & Select Components ✅
 
-- [ ] Textarea.tsx → DaisyUI textarea classes + tests
-- [ ] Select.tsx → DaisyUI select classes + tests
+- [x] Textarea.tsx → DaisyUI textarea classes + tests
+- [x] Select.tsx → DaisyUI select classes + tests
 
-#### Phase 6: FormWrapper Migration
+#### Phase 6: FormWrapper Migration ✅
 
-- [ ] FormWrapper.tsx → DaisyUI alert for errors + tests
+- [x] FormWrapper.tsx → DaisyUI alert for errors + tests
 
-#### Phase 7: ConfirmDialog → Radix UI Dialog
+#### Phase 7: ConfirmDialog → Radix UI Dialog ✅
 
-- [ ] ConfirmDialog.tsx → Radix UI Dialog + DaisyUI modal + tests
+- [x] ConfirmDialog.tsx → Radix UI Dialog + DaisyUI modal + tests
 
 ---
 
