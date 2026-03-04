@@ -115,6 +115,22 @@ describe('ConfirmDialog', () => {
     expect(onCancel).toHaveBeenCalledTimes(1)
   })
 
+  it('should call onCancel when Escape key is pressed', () => {
+    const onCancel = mock(() => {})
+
+    render(
+      <ConfirmDialog
+        title='Test Title'
+        message='Test Message'
+        onConfirm={() => {}}
+        onCancel={onCancel}
+      />
+    )
+
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' })
+    expect(onCancel).toHaveBeenCalledTimes(1)
+  })
+
   it('should use DaisyUI modal-box class on content', () => {
     render(
       <ConfirmDialog
