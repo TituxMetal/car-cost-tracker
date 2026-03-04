@@ -16,6 +16,7 @@ describe('Input', () => {
     const input = getByRole('textbox')
 
     expect(input).toBeInTheDocument()
+    expect(input).toHaveClass('input')
   })
 
   it('should render with a label when provided', () => {
@@ -48,6 +49,8 @@ describe('Input', () => {
     const errorMessage = getByText('Test Error')
 
     expect(errorMessage).toBeInTheDocument()
+    expect(errorMessage).toHaveClass('label')
+    expect(errorMessage).toHaveClass('text-error')
   })
 
   it('should set aria-invalid when error is present', () => {

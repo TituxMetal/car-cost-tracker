@@ -24,7 +24,6 @@ describe('Label', () => {
     const label = getByText('Test Label')
 
     expect(label).toHaveClass('font-medium')
-    expect(label).toHaveClass('text-zinc-300')
   })
 
   it('should show required indicator when required is true', () => {
@@ -35,6 +34,7 @@ describe('Label', () => {
 
     expect(label).toBeInTheDocument()
     expect(requiredIndicator).toBeInTheDocument()
+    expect(requiredIndicator).toHaveClass('text-error')
   })
 
   it('should not show required indicator when required is false', () => {

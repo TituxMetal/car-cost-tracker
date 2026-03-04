@@ -12,9 +12,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const generatedId = useId()
     const inputId = id || `input-${generatedId}`
 
-    const baseInputClasses =
-      'rounded-lg border-2 bg-zinc-900 px-3 py-2 text-zinc-300 focus:outline-none'
-    const errorInputClasses = 'border-red-400 focus:border-red-400'
+    const baseInputClasses = 'input'
+    const errorInputClasses = 'input-error'
     const widthClass = fullWidth ? 'w-full' : ''
 
     return (
@@ -34,7 +33,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {error && (
-          <p id={`${inputId}-error`} className='mt-2 font-semibold text-red-400'>
+          <p id={`${inputId}-error`} className='label text-error'>
             {error}
           </p>
         )}
