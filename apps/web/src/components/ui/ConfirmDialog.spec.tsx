@@ -131,7 +131,7 @@ describe('ConfirmDialog', () => {
     expect(onCancel).toHaveBeenCalledTimes(1)
   })
 
-  it('should use DaisyUI modal-box class on content', () => {
+  it('should use DaisyUI modal classes on dialog', () => {
     render(
       <ConfirmDialog
         title='Test Title'
@@ -141,7 +141,10 @@ describe('ConfirmDialog', () => {
       />
     )
 
-    expect(screen.getByRole('dialog')).toHaveClass('modal')
-    expect(screen.getByRole('dialog')).toHaveClass('modal-open')
+    const dialog = screen.getByRole('dialog')
+    expect(dialog).toHaveClass('modal')
+    expect(dialog).toHaveClass('modal-open')
+    expect(dialog.querySelector('.modal-box')).toBeInTheDocument()
+    expect(dialog.querySelector('.modal-action')).toBeInTheDocument()
   })
 })
