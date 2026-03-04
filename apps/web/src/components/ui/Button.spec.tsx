@@ -23,7 +23,8 @@ describe('Button', () => {
 
     const button = getByRole('button', { name: 'Default' })
 
-    expect(button).toHaveClass('bg-sky-400')
+    expect(button).toHaveClass('btn-primary')
+    expect(button).toHaveClass('btn')
   })
 
   it('should apply outline variant styling', () => {
@@ -31,7 +32,8 @@ describe('Button', () => {
 
     const button = getByRole('button', { name: 'Outline' })
 
-    expect(button).toHaveClass('border-zinc-700')
+    expect(button).toHaveClass('btn-outline')
+    expect(button).toHaveClass('btn')
   })
 
   it('should apply ghost variant styling', () => {
@@ -39,7 +41,8 @@ describe('Button', () => {
 
     const button = getByRole('button', { name: 'Ghost' })
 
-    expect(button).toHaveClass('hover:bg-zinc-800')
+    expect(button).toHaveClass('btn-ghost')
+    expect(button).toHaveClass('btn')
   })
 
   it('should apply destructive variant styling', () => {
@@ -47,7 +50,8 @@ describe('Button', () => {
 
     const button = getByRole('button', { name: 'Destructive' })
 
-    expect(button).toHaveClass('bg-red-900')
+    expect(button).toHaveClass('btn-error')
+    expect(button).toHaveClass('btn')
   })
 
   it('should be disabled when disabled prop is true', () => {
