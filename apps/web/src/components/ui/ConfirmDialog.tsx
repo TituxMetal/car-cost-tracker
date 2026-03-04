@@ -1,4 +1,4 @@
-import { useEffect, useId } from 'react'
+import * as Dialog from '@radix-ui/react-dialog'
 
 import { Button } from './Button'
 
@@ -18,53 +18,32 @@ export const ConfirmDialog = ({
   cancelLabel = 'Annuler',
   onConfirm,
   onCancel
-}: ConfirmDialogProps) => {
-  const dialogId = useId()
-  const titleId = `${dialogId}-title`
-  const descriptionId = `${dialogId}-description`
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onCancel()
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [onCancel])
-
-  return (
-    <div
-      className='fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/70'
-      onClick={onCancel}
-    >
-      <section
-        className='max-w-md rounded-lg bg-zinc-800 p-6'
-        aria-labelledby={titleId}
-        aria-describedby={descriptionId}
-        role='dialog'
-        aria-modal='true'
-        onClick={event => event.stopPropagation()}
+}: ConfirmDialogProps) => (
+  <Dialog.Root
+    open={true}
+    onOpenChange={open => {
+      if (!open) onCancel()
+    }}
+  >
+    <Dialog.Portal>
+      <Dialog.Overlay className='bg-opacity-50 fixed inset-0 bg-black' onClick={onCancel} />
+      <Dialog.Content
+        className='modal modal-open'
+        onInteractOutside={event => event.preventDefault()}
       >
-        <h2 id={titleId} className='text-lg font-semibold'>
-          {title}
-        </h2>
-        <p id={descriptionId} className='mt-2 text-zinc-400'>
-          {message}
-        </p>
-        <div className='mt-6 flex justify-end gap-2'>
-          <Button onClick={onCancel} variant='outline'>
-            {cancelLabel}
-          </Button>
-          <Button onClick={onConfirm} variant='destructive'>
-            {confirmLabel}
-          </Button>
+        <div className='modal-box'>
+          <Dialog.Title className='text-lg font-bold'>{title}</Dialog.Title>
+          <Dialog.Description className='py-4'>{message}</Dialog.Description>
+          <div className='modal-action'>
+            <Button variant='outline' onClick={onCancel}>
+              {cancelLabel}
+            </Button>
+            <Button variant='destructive' onClick={onConfirm}>
+              {confirmLabel}
+            </Button>
+          </div>
         </div>
-      </section>
-    </div>
-  )
-}
+      </Dialog.Content>
+    </Dialog.Portal>
+  </Dialog.Root>
+)
