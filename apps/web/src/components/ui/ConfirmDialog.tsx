@@ -26,7 +26,7 @@ export const ConfirmDialog = ({
     }}
   >
     <Dialog.Portal>
-      <Dialog.Overlay className='bg-opacity-50 fixed inset-0 bg-black' onClick={onCancel} />
+      <Dialog.Overlay className='fixed inset-0 bg-black/50' onClick={onCancel} />
       <Dialog.Content
         className='modal modal-open'
         onInteractOutside={event => event.preventDefault()}
