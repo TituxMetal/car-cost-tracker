@@ -16,7 +16,7 @@ export const FormWrapper = ({
 }: FormWrapperProps) => (
   <form onSubmit={onSubmit} className={className} role='form'>
     {error && (
-      <p className='rounded-md bg-red-800/80 p-3 font-bold text-red-300' role='alert'>
+      <p className='alert alert-error' role='alert'>
         {error}
       </p>
     )}

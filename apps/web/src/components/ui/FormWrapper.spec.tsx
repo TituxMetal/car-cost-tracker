@@ -48,9 +48,7 @@ describe('FormWrapper', () => {
     )
 
     expect(screen.getByText(errorMessage)).toBeInTheDocument()
-    expect(screen.getByRole('alert')).toHaveClass(
-      'rounded-md bg-red-800/80 p-3 font-bold text-red-300'
-    )
+    expect(screen.getByRole('alert')).toHaveClass('alert alert-error')
   })
 
   it('should not display error message when error is null', () => {
