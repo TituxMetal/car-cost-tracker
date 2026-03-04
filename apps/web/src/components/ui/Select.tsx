@@ -22,14 +22,14 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
     const generatedId = useId()
     const selectId = id || `select-${generatedId}`
 
-    const baseInputClasses = 'rounded-lg border-2 bg-zinc-900 px-3 py-2 text-zinc-300'
-    const errorInputClasses = 'border-red-400 focus:border-red-400'
+    const baseInputClasses = 'select'
+    const errorInputClasses = 'select-error'
     const widthClass = fullWidth ? 'w-full' : ''
 
     return (
       <div className={`${widthClass}`}>
         {label && (
-          <label htmlFor={selectId} className='flex font-medium text-zinc-300'>
+          <label htmlFor={selectId} className='flex font-medium'>
             {label}
           </label>
         )}
@@ -53,7 +53,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           ))}
         </select>
         {error && (
-          <p id={`${selectId}-error`} className='mt-2 font-semibold text-red-400'>
+          <p id={`${selectId}-error`} className='label text-error'>
             {error}
           </p>
         )}

@@ -18,11 +18,16 @@ describe('Select', () => {
   })
 
   it('should render all options', () => {
-    const { getByText } = render(<Select options={mockOptions} placeholder='Select an option' />)
+    const { getByText, getByRole } = render(
+      <Select options={mockOptions} placeholder='Select an option' />
+    )
 
     mockOptions.forEach(option => {
       expect(getByText(option.label)).toBeInTheDocument()
     })
+
+    const select = getByRole('combobox')
+    expect(select).toHaveClass('select')
   })
 
   it('should render with a label when provided', () => {
@@ -76,6 +81,7 @@ describe('Select', () => {
     const select = getByRole('combobox')
 
     expect(select).toHaveAttribute('aria-invalid', 'true')
+    expect(select).toHaveClass('select-error')
   })
 
   it('should not set aria-invalid when no error is present', () => {
