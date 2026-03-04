@@ -52,7 +52,7 @@
   }
 
   body {
-    @apply flex min-h-screen flex-col font-sans antialiased;
+    @apply bg-base-100 text-base-content flex min-h-screen flex-col font-sans antialiased;
     margin: 0;
     padding: 0;
   }
