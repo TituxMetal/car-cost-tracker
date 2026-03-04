@@ -8,16 +8,17 @@
 
 #### Phase 1: Package Installation & Configuration
 
-- [ ] Install DaisyUI 5.x, Radix UI Dialog, Radix UI AlertDialog, Lucide React
-- [ ] Configure @plugin "daisyui" in globals.css
-- [ ] Remove astro-icon integration from astro.config.mjs
-- [ ] Verify app loads without errors
+- [x] Install DaisyUI 5.x, Radix UI Dialog, Radix UI AlertDialog, Lucide React
+- [x] Configure @plugin "daisyui" in globals.css
+- [ ] ~~Remove astro-icon integration from astro.config.mjs~~ (deferred to Phase 8/17 — integration
+      required while Icon component still in use)
+- [x] Verify app loads without errors
 
 #### Phase 2: Custom Theme & Global Styles
 
-- [ ] Configure custom "cartracker" theme (dim base + amber primary)
-- [ ] Update base styles to use DaisyUI theme tokens
-- [ ] Visual sanity check
+- [x] Configure custom "cartracker" theme (dim base + amber primary)
+- [x] Update base styles to use DaisyUI theme tokens
+- [x] Visual sanity check
 
 ---
 
