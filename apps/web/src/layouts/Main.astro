@@ -1,5 +1,8 @@
 ---
-import { Icon } from 'astro-icon/components'
+import CoffeeIcon from '~/assets/icons/CoffeeIcon.astro'
+import CopyLeftIcon from '~/assets/icons/CopyLeftIcon.astro'
+import HeartIcon from '~/assets/icons/HeartIcon.astro'
+import MenuIcon from '~/assets/icons/MenuIcon.astro'
 import '~/styles/globals.css'
 
 const isProduction = import.meta.env.PROD
@@ -28,14 +31,12 @@ const { user } = Astro.locals
     }
   </head>
   <body class='min-h-screen'>
-    <header
-      class='flex items-center justify-between bg-indigo-700/80 p-6 font-semibold text-zinc-100'
-    >
-      <nav class='mx-auto flex w-full max-w-7xl gap-4'>
-        <ul class='flex w-full items-center gap-4'>
-          <li>
-            <a href='/'>Home</a>
-          </li>
+    <div class='navbar bg-base-300'>
+      <nav class='mx-auto flex w-full max-w-7xl items-center gap-4'>
+        <div class='flex-none'>
+          <a href='/' class='btn btn-ghost text-lg'>Home</a>
+        </div>
+        <ul class='menu menu-horizontal hidden flex-1 gap-1 lg:flex'>
           {
             user ? (
               <>
@@ -50,52 +51,78 @@ const { user } = Astro.locals
                 <li>
                   <a href='/check-types'>Contrôles</a>
                 </li>
-                <li>
-                  <a href='/auth/logout'>Logout</a>
-                </li>
               </>
-            ) : (
-              <li>
-                <a href='/auth'>Login</a>
-              </li>
-            )
+            ) : null
           }
         </ul>
+        <div class='hidden flex-none lg:flex'>
+          {
+            user ? (
+              <a href='/auth/logout' class='btn btn-ghost'>
+                Logout
+              </a>
+            ) : (
+              <a href='/auth' class='btn btn-ghost'>
+                Login
+              </a>
+            )
+          }
+        </div>
+        <div class='flex flex-1 justify-end lg:hidden'>
+          <details class='dropdown dropdown-end'>
+            <summary class='btn btn-ghost'>
+              <MenuIcon />
+            </summary>
+            <ul class='dropdown-content menu bg-base-200 rounded-box z-10 w-52 p-2 shadow'>
+              {
+                user ? (
+                  <>
+                    <li>
+                      <a href='/profile'>
+                        {user.username.charAt(0).toUpperCase() + user.username.slice(1)}
+                      </a>
+                    </li>
+                    <li>
+                      <a href='/vehicle'>Mon véhicule</a>
+                    </li>
+                    <li>
+                      <a href='/check-types'>Contrôles</a>
+                    </li>
+                    <li>
+                      <a href='/auth/logout'>Logout</a>
+                    </li>
+                  </>
+                ) : (
+                  <li>
+                    <a href='/auth'>Login</a>
+                  </li>
+                )
+              }
+            </ul>
+          </details>
+        </div>
       </nav>
-    </header>
+    </div>
     <main class='mx-auto flex w-full max-w-7xl flex-1 flex-col py-6'>
       <slot />
     </main>
-    <footer
-      class='flex flex-col items-center justify-center gap-2 bg-indigo-700/80 p-6 text-amber-200'
-    >
-      <p class='flex items-center justify-center gap-1 font-semibold'>
-        <Icon
-          name='copy-left'
-          aria-label='copy left icon'
-          title='copy left'
-          class='inline size-4 text-amber-200'
-        />
-        {new Date().getFullYear()} Fullstack Nest + Astro.
-      </p>
-      <p>
-        Built by <a
-          class='font-semibold text-amber-300 hover:text-amber-200 hover:underline'
-          href='https://github.com/TituxMetal'
-          target='_blank'
-          rel='noopener noreferrer'>Lgdweb</a
-        > with <Icon
-          name='heart'
-          aria-label='heart icon'
-          title='love'
-          class='inline size-6 text-red-600/80'
-        /> and lots of <Icon
-          name='coffee'
-          title='coffee'
-          aria-label='coffee icon'
-          class='inline size-6 text-amber-600/80'
-        />.
-      </p>
+    <footer class='footer footer-center bg-base-300 text-base-content p-6'>
+      <div>
+        <p class='flex items-center justify-center gap-1 font-semibold'>
+          <CopyLeftIcon class='inline size-4' />
+          {new Date().getFullYear()} Fullstack Nest + Astro.
+        </p>
+        <p>
+          Built by <a
+            class='link link-primary font-semibold'
+            href='https://github.com/TituxMetal'
+            target='_blank'
+            rel='noopener noreferrer'>Lgdweb</a
+          > with <HeartIcon class='text-error inline size-6' /> and lots of <CoffeeIcon
+            class='text-warning inline size-6'
+          />.
+        </p>
+      </div>
     </footer>
   </body>
 </html>
