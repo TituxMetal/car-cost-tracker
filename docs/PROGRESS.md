@@ -10,8 +10,7 @@
 
 - [x] Install DaisyUI 5.x, Radix UI Dialog, Radix UI AlertDialog, Lucide React
 - [x] Configure @plugin "daisyui" in globals.css
-- [ ] ~~Remove astro-icon integration from astro.config.mjs~~ (deferred to Phase 8/17 — integration
-      required while Icon component still in use)
+- [x] Remove astro-icon integration from astro.config.mjs (done in Phase 8)
 - [x] Verify app loads without errors
 
 #### Phase 2: Custom Theme & Global Styles
@@ -50,11 +49,11 @@
 
 ### Block 3: Layouts (Phase 8) — `feature/design-system-layouts`
 
-#### Phase 8: Layout Migration
+#### Phase 8: Layout Migration ✅
 
-- [ ] Main.astro → DaisyUI navbar + responsive menu
-- [ ] AdminLayout.astro → shared navbar, admin sub-nav
-- [ ] Layout icon replacement (inline SVGs or Lucide)
+- [x] Main.astro → DaisyUI navbar + responsive menu
+- [x] AdminLayout.astro → shared navbar, admin sub-nav
+- [x] Layout icon replacement (inline SVGs or Lucide)
 
 ---
 
