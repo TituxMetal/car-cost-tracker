@@ -31,7 +31,7 @@ const { user } = Astro.locals
     }
   </head>
   <body class='min-h-screen'>
-    <div class='navbar bg-base-300'>
+    <header class='navbar bg-base-300'>
       <nav class='mx-auto flex w-full max-w-7xl items-center gap-4'>
         <div class='flex-none'>
           <a href='/' class='btn btn-ghost text-lg'>Home</a>
@@ -51,6 +51,11 @@ const { user } = Astro.locals
                 <li>
                   <a href='/check-types'>Contrôles</a>
                 </li>
+                {user.role === 'admin' && (
+                  <li>
+                    <a href='/admin'>Admin</a>
+                  </li>
+                )}
               </>
             ) : null
           }
@@ -70,7 +75,7 @@ const { user } = Astro.locals
         </div>
         <div class='flex flex-1 justify-end lg:hidden'>
           <details class='dropdown dropdown-end'>
-            <summary class='btn btn-ghost'>
+            <summary class='btn btn-ghost' aria-label='Open main menu'>
               <MenuIcon />
             </summary>
             <ul class='dropdown-content menu bg-base-200 rounded-box z-10 w-52 p-2 shadow'>
@@ -88,6 +93,11 @@ const { user } = Astro.locals
                     <li>
                       <a href='/check-types'>Contrôles</a>
                     </li>
+                    {user.role === 'admin' && (
+                      <li>
+                        <a href='/admin'>Admin</a>
+                      </li>
+                    )}
                     <li>
                       <a href='/auth/logout'>Logout</a>
                     </li>
@@ -102,7 +112,7 @@ const { user } = Astro.locals
           </details>
         </div>
       </nav>
-    </div>
+    </header>
     <main class='mx-auto flex w-full max-w-7xl flex-1 flex-col py-6'>
       <slot />
     </main>
