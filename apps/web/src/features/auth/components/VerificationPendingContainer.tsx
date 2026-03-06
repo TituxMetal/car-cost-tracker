@@ -43,10 +43,16 @@ export const VerificationPendingContainer = ({ email }: VerificationPendingConta
         </p>
 
         {resendStatus === 'success' && (
-          <p className='alert alert-success mb-4'>Verification email sent! Check your inbox.</p>
+          <p role='status' className='alert alert-success mb-4'>
+            Verification email sent! Check your inbox.
+          </p>
         )}
 
-        {resendStatus === 'error' && <p className='alert alert-error mb-4'>{errorMessage}</p>}
+        {resendStatus === 'error' && (
+          <p role='alert' className='alert alert-error mb-4'>
+            {errorMessage}
+          </p>
+        )}
 
         <div className='flex flex-col gap-3'>
           {email && (
