@@ -57,21 +57,21 @@
 
 ---
 
-### Block 4: Auth Feature (Phases 9-10) — `feature/design-system-auth`
+### Block 4: Auth Feature (Phases 9-10) — `feature/design-system-auth` ✅
 
-#### Phase 9: Auth Feature — Login & Signup
+#### Phase 9: Auth Feature — Login & Signup ✅
 
-- [ ] LoginForm.tsx + tests
-- [ ] SignupForm.tsx + tests
+- [x] LoginForm.tsx + tests (no changes needed — uses shared Input)
+- [x] SignupForm.tsx + tests (no changes needed — uses shared Input)
 
-#### Phase 10: Auth Feature — Remaining Screens
+#### Phase 10: Auth Feature — Remaining Screens ✅
 
-- [ ] AuthContainer.tsx + tests
-- [ ] ForgotPasswordContainer.tsx + tests
-- [ ] ResetPasswordContainer.tsx + tests
-- [ ] VerifyEmailContainer.tsx + tests
-- [ ] VerificationPendingContainer.tsx + tests
-- [ ] SessionList.tsx + tests
+- [x] AuthContainer.tsx + tests
+- [x] ForgotPasswordContainer.tsx + tests
+- [x] ResetPasswordContainer.tsx + tests
+- [x] VerifyEmailContainer.tsx + tests
+- [x] VerificationPendingContainer.tsx + tests
+- [x] SessionList.tsx + tests
 
 ---
 
