@@ -104,7 +104,11 @@ export const SessionList = () => {
           </div>
         </header>
 
-        {error && <p className='text-error mt-4'>{error}</p>}
+        {error && (
+          <p role='alert' className='text-error mt-4'>
+            {error}
+          </p>
+        )}
 
         {sessions.length === 0 ? (
           <p className='text-base-content/70 mt-4'>No active sessions found.</p>
