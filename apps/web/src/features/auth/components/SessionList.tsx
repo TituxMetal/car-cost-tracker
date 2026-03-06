@@ -78,69 +78,73 @@ export const SessionList = () => {
 
   if (isLoading) {
     return (
-      <section className='rounded-lg bg-zinc-800 p-6'>
-        <h2 className='text-lg font-bold text-zinc-100'>Active Sessions</h2>
-        <p className='mt-4 text-zinc-400'>Loading sessions...</p>
+      <section className='card bg-base-200'>
+        <div className='card-body'>
+          <h2 className='text-lg font-bold'>Active Sessions</h2>
+          <p className='text-base-content/70 mt-4'>Loading sessions...</p>
+        </div>
       </section>
     )
   }
 
   return (
-    <section className='rounded-lg bg-zinc-800 p-6'>
-      <header className='flex items-center justify-between'>
-        <h2 className='text-lg font-bold text-zinc-100'>Active Sessions</h2>
-        <div className='flex gap-2'>
-          {sessions.length > 1 && (
-            <Button variant='outline' onClick={handleRevokeOtherSessions}>
-              Log out other devices
+    <section className='card bg-base-200'>
+      <div className='card-body'>
+        <header className='flex items-center justify-between'>
+          <h2 className='text-lg font-bold'>Active Sessions</h2>
+          <div className='flex gap-2'>
+            {sessions.length > 1 && (
+              <Button variant='outline' onClick={handleRevokeOtherSessions}>
+                Log out other devices
+              </Button>
+            )}
+            <Button variant='destructive' onClick={handleRevokeAllSessions}>
+              Log out everywhere
             </Button>
-          )}
-          <Button variant='destructive' onClick={handleRevokeAllSessions}>
-            Log out everywhere
-          </Button>
-        </div>
-      </header>
+          </div>
+        </header>
 
-      {error && <p className='mt-4 text-red-400'>{error}</p>}
+        {error && <p className='text-error mt-4'>{error}</p>}
 
-      {sessions.length === 0 ? (
-        <p className='mt-4 text-zinc-400'>No active sessions found.</p>
-      ) : (
-        <ul className='mt-4 space-y-3'>
-          {sessions.map(session => {
-            const isCurrent = session.token === currentToken
+        {sessions.length === 0 ? (
+          <p className='text-base-content/70 mt-4'>No active sessions found.</p>
+        ) : (
+          <ul className='mt-4 space-y-3'>
+            {sessions.map(session => {
+              const isCurrent = session.token === currentToken
 
-            return (
-              <li
-                key={session.id}
-                className={`flex items-center justify-between rounded-lg border p-4 ${
-                  isCurrent ? 'border-sky-400 bg-zinc-700' : 'border-zinc-700'
-                }`}
-              >
-                <div>
-                  <p className='text-zinc-100'>
-                    {session.userAgent ?? 'Unknown device'}
-                    {isCurrent && (
-                      <span className='ml-2 rounded bg-sky-400 px-2 py-0.5 text-xs font-medium text-zinc-900'>
-                        Current
-                      </span>
-                    )}
-                  </p>
-                  <p className='text-sm text-zinc-400'>
-                    {session.ipAddress ?? 'Unknown IP'} · Created{' '}
-                    {new Date(session.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-                {!isCurrent && (
-                  <Button variant='ghost' onClick={() => handleRevokeSession(session.token)}>
-                    Revoke
-                  </Button>
-                )}
-              </li>
-            )
-          })}
-        </ul>
-      )}
+              return (
+                <li
+                  key={session.id}
+                  className={`flex items-center justify-between rounded-lg border p-4 ${
+                    isCurrent ? 'border-primary bg-base-300' : 'border-base-content/20'
+                  }`}
+                >
+                  <div>
+                    <p>
+                      {session.userAgent ?? 'Unknown device'}
+                      {isCurrent && <span className='badge badge-primary ml-2'>Current</span>}
+                    </p>
+                    <p className='text-base-content/70 text-sm'>
+                      {session.ipAddress ?? 'Unknown IP'} · Created{' '}
+                      {new Date(session.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                  {!isCurrent && (
+                    <Button
+                      variant='ghost'
+                      className='border-base-content/20 border'
+                      onClick={() => handleRevokeSession(session.token)}
+                    >
+                      Revoke
+                    </Button>
+                  )}
+                </li>
+              )
+            })}
+          </ul>
+        )}
+      </div>
     </section>
   )
 }

@@ -68,13 +68,13 @@ export const AuthContainer = ({ mode = 'login', redirectPath }: AuthContainerPro
 
           <a
             href={routes.auth.getOppositeModeUrl('login')}
-            className='font-semibold text-amber-200 hover:text-amber-300'
+            className='link link-primary font-semibold'
           >
             Need an account?
           </a>
         </div>
         <div className='text-center'>
-          <a href='/auth/forgot-password' className='text-sm text-zinc-400 hover:text-zinc-300'>
+          <a href='/auth/forgot-password' className='link link-hover text-sm'>
             Forgot your password?
           </a>
         </div>
@@ -96,7 +96,7 @@ export const AuthContainer = ({ mode = 'login', redirectPath }: AuthContainerPro
 
         <a
           href={routes.auth.getOppositeModeUrl('signup')}
-          className='font-semibold text-amber-200 hover:text-amber-300'
+          className='link link-primary font-semibold'
         >
           Already have an account?
         </a>
