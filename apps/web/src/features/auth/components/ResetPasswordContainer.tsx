@@ -41,25 +41,31 @@ export const ResetPasswordContainer = ({ token }: ResetPasswordContainerProps) =
 
   if (!token) {
     return (
-      <div className='mx-auto max-w-md rounded-lg bg-zinc-800/50 p-6 text-center'>
-        <h2 className='mb-4 text-2xl font-bold text-red-400'>Invalid Reset Link</h2>
-        <p className='mb-6 text-zinc-300'>This password reset link is invalid or has expired.</p>
-        <Button as='a' href='/auth/forgot-password'>
-          Request New Link
-        </Button>
-      </div>
+      <section className='card bg-base-200 mx-auto max-w-md text-center'>
+        <div className='card-body'>
+          <h2 className='text-error mb-4 text-2xl font-bold'>Invalid Reset Link</h2>
+          <p className='text-base-content/70 mb-6'>
+            This password reset link is invalid or has expired.
+          </p>
+          <Button as='a' href='/auth/forgot-password'>
+            Request New Link
+          </Button>
+        </div>
+      </section>
     )
   }
 
   if (status === 'success') {
     return (
-      <div className='mx-auto max-w-md rounded-lg bg-zinc-800/50 p-6 text-center'>
-        <h2 className='mb-4 text-2xl font-bold text-zinc-100'>Password Reset</h2>
-        <p className='mb-6 text-zinc-300'>Your password has been successfully reset.</p>
-        <Button as='a' href='/auth?mode=login'>
-          Go to Login
-        </Button>
-      </div>
+      <section className='card bg-base-200 mx-auto max-w-md text-center'>
+        <div className='card-body'>
+          <h2 className='mb-4 text-2xl font-bold'>Password Reset</h2>
+          <p className='text-base-content/70 mb-6'>Your password has been successfully reset.</p>
+          <Button as='a' href='/auth?mode=login'>
+            Go to Login
+          </Button>
+        </div>
+      </section>
     )
   }
 
@@ -85,7 +91,7 @@ export const ResetPasswordContainer = ({ token }: ResetPasswordContainerProps) =
         <Button type='submit' disabled={form.formState.isSubmitting}>
           {form.formState.isSubmitting ? 'Resetting...' : 'Reset Password'}
         </Button>
-        <a href='/auth?mode=login' className='font-semibold text-amber-200 hover:text-amber-300'>
+        <a href='/auth?mode=login' className='link link-primary font-semibold'>
           Back to Login
         </a>
       </div>

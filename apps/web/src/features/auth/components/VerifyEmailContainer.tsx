@@ -34,46 +34,52 @@ export const VerifyEmailContainer = ({ token }: VerifyEmailContainerProps) => {
   if (status === 'verifying') {
     return (
       <div className='mx-auto max-w-md text-center'>
-        <p className='text-lg text-zinc-300'>Verifying your email...</p>
+        <p className='text-base-content/70 text-lg'>Verifying your email...</p>
       </div>
     )
   }
 
   if (status === 'success') {
     return (
-      <div className='mx-auto max-w-md rounded-lg bg-green-900/50 p-6 text-center'>
-        <h2 className='mb-4 text-2xl font-bold text-green-400'>Email Verified!</h2>
-        <p className='mb-6 text-zinc-300'>
-          Your email has been successfully verified. You can now log in to your account.
-        </p>
-        <Button as='a' href='/auth?mode=login'>
-          Go to Login
-        </Button>
-      </div>
+      <section className='card bg-base-200 mx-auto max-w-md text-center'>
+        <div className='card-body'>
+          <h2 className='text-success mb-4 text-2xl font-bold'>Email Verified!</h2>
+          <p className='text-base-content/70 mb-6'>
+            Your email has been successfully verified. You can now log in to your account.
+          </p>
+          <Button as='a' href='/auth?mode=login'>
+            Go to Login
+          </Button>
+        </div>
+      </section>
     )
   }
 
   if (status === 'error') {
     return (
-      <div className='mx-auto max-w-md rounded-lg bg-red-900/50 p-6 text-center'>
-        <h2 className='mb-4 text-2xl font-bold text-red-400'>Verification Failed</h2>
-        <p className='mb-6 text-zinc-300'>{errorMessage}</p>
-        <Button as='a' href='/auth/verification-pending'>
-          Request New Link
-        </Button>
-      </div>
+      <section className='card bg-base-200 mx-auto max-w-md text-center'>
+        <div className='card-body'>
+          <h2 className='text-error mb-4 text-2xl font-bold'>Verification Failed</h2>
+          <p className='text-base-content/70 mb-6'>{errorMessage}</p>
+          <Button as='a' href='/auth/verification-pending'>
+            Request New Link
+          </Button>
+        </div>
+      </section>
     )
   }
 
   return (
-    <div className='mx-auto max-w-md rounded-lg bg-yellow-900/50 p-6 text-center'>
-      <h2 className='mb-4 text-2xl font-bold text-yellow-400'>Invalid Link</h2>
-      <p className='mb-6 text-zinc-300'>
-        This verification link is invalid. Please check your email for the correct link.
-      </p>
-      <Button as='a' href='/auth?mode=login'>
-        Go to Login
-      </Button>
-    </div>
+    <section className='card bg-base-200 mx-auto max-w-md text-center'>
+      <div className='card-body'>
+        <h2 className='text-warning mb-4 text-2xl font-bold'>Invalid Link</h2>
+        <p className='text-base-content/70 mb-6'>
+          This verification link is invalid. Please check your email for the correct link.
+        </p>
+        <Button as='a' href='/auth?mode=login'>
+          Go to Login
+        </Button>
+      </div>
+    </section>
   )
 }
