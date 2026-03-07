@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { ClipboardPlus, ListChecks, PencilLine, PlusCircle } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -145,47 +146,45 @@ export const CheckTypeContainer = () => {
 
   if (mode === 'create') {
     return (
-      <>
-        <h1 className='mb-8 text-center text-4xl font-bold text-zinc-100'>
+      <section className='mx-auto max-w-lg p-6'>
+        <h1 className='text-base-content mb-8 flex items-center justify-center gap-3 text-center text-4xl font-bold'>
+          <PlusCircle size={32} className='text-primary' />
           Ajouter un type de contrôle
         </h1>
-        <FormWrapper
-          onSubmit={handleSubmit}
-          error={serverError}
-          className='mx-auto mt-6 grid w-full max-w-lg gap-4'
-        >
-          <CheckTypeForm form={form} />
-          <section className='flex items-center justify-between'>
-            <Button type='button' variant='destructive' onClick={onCancel}>
-              Annuler
-            </Button>
-            <Button type='submit'>Enregistrer</Button>
-          </section>
-        </FormWrapper>
-      </>
+        <article className='card bg-base-200'>
+          <FormWrapper onSubmit={handleSubmit} error={serverError} className='card-body gap-4'>
+            <CheckTypeForm form={form} />
+            <footer className='card-actions mt-2 justify-between'>
+              <Button type='button' variant='destructive' onClick={onCancel}>
+                Annuler
+              </Button>
+              <Button type='submit'>Enregistrer</Button>
+            </footer>
+          </FormWrapper>
+        </article>
+      </section>
     )
   }
 
   if (mode === 'edit') {
     return (
-      <>
-        <h1 className='mb-8 text-center text-4xl font-bold text-zinc-100'>
+      <section className='mx-auto max-w-lg p-6'>
+        <h1 className='text-base-content mb-8 flex items-center justify-center gap-3 text-center text-4xl font-bold'>
+          <PencilLine size={32} className='text-primary' />
           Modifier le type de contrôle
         </h1>
-        <FormWrapper
-          onSubmit={handleSubmit}
-          error={serverError}
-          className='mx-auto mt-6 grid w-full max-w-lg gap-4'
-        >
-          <CheckTypeForm form={form} />
-          <section className='flex items-center justify-between'>
-            <Button type='button' variant='destructive' onClick={onCancel}>
-              Annuler
-            </Button>
-            <Button type='submit'>Enregistrer</Button>
-          </section>
-        </FormWrapper>
-      </>
+        <article className='card bg-base-200'>
+          <FormWrapper onSubmit={handleSubmit} error={serverError} className='card-body gap-4'>
+            <CheckTypeForm form={form} />
+            <footer className='card-actions mt-2 justify-between'>
+              <Button type='button' variant='destructive' onClick={onCancel}>
+                Annuler
+              </Button>
+              <Button type='submit'>Enregistrer</Button>
+            </footer>
+          </FormWrapper>
+        </article>
+      </section>
     )
   }
 
@@ -195,16 +194,29 @@ export const CheckTypeContainer = () => {
 
   if (mode === 'list') {
     return (
-      <section className='p-4'>
-        <h1 className='mb-4 text-2xl font-bold text-zinc-100'>Types de contrôle</h1>
-        <Button variant='default' className='mb-4' onClick={() => setMode('create')}>
-          Ajouter un contrôle
-        </Button>
+      <section className='mx-auto max-w-4xl p-6'>
+        <header className='mb-6 flex items-center justify-between'>
+          <h1 className='text-base-content flex items-center gap-2 text-2xl font-bold'>
+            <ListChecks size={24} className='text-primary' />
+            Types de contrôle
+          </h1>
+          <Button onClick={() => setMode('create')}>Ajouter un contrôle</Button>
+        </header>
         {remainingSuggestions.length > 0 && (
           <SuggestedCheckTypes suggestions={remainingSuggestions} onAdd={onAddSuggestion} />
         )}
+        {remainingSuggestions.length > 0 && hasCheckTypes && <hr className='divider my-4' />}
         {hasCheckTypes && (
           <CheckTypeList checkTypes={checkTypes} onEdit={onEdit} onDelete={onDelete} />
+        )}
+        {!hasCheckTypes && (
+          <section className='flex flex-col items-center gap-3 py-16 text-center'>
+            <ClipboardPlus size={48} className='text-base-content/30' />
+            <p className='text-base-content/50 text-lg font-medium'>Aucun type de contrôle</p>
+            <p className='text-base-content/40 max-w-sm text-sm'>
+              Ajoutez votre premier contrôle ou utilisez les suggestions rapides ci-dessus
+            </p>
+          </section>
         )}
         {deletingCheckType && (
           <DeleteCheckTypeDialog
