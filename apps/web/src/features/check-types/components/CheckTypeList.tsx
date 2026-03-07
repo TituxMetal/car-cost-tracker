@@ -9,7 +9,7 @@ export interface CheckTypeListProps {
 }
 
 export const CheckTypeList = ({ checkTypes, onEdit, onDelete }: CheckTypeListProps) => (
-  <section className='grid gap-2'>
+  <section className='grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3'>
     {checkTypes.map(checkType => (
       <CheckTypeCard key={checkType.id} checkType={checkType} onEdit={onEdit} onDelete={onDelete} />
     ))}
