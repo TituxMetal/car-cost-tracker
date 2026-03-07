@@ -93,17 +93,17 @@
 
 ### Block 6: Check Types Feature (Phases 13-14) — `feature/design-system-check-types`
 
-#### Phase 13: Check Types — Card, List & Suggestions
+#### Phase 13: Check Types — Card, List & Suggestions ✅
 
-- [ ] CheckTypeCard.tsx + tests
-- [ ] CheckTypeList.tsx + tests
-- [ ] SuggestedCheckTypes.tsx + tests
+- [x] CheckTypeCard.tsx + tests (card card-body bg-base-200, badge badge-neutral for interval)
+- [x] CheckTypeList.tsx + tests (grid gap-4)
+- [x] SuggestedCheckTypes.tsx + tests (card card-body card-compact bg-base-300, badge-sm)
 
-#### Phase 14: Check Types — Form, Container & Dialog
+#### Phase 14: Check Types — Form, Container & Dialog ✅
 
-- [ ] CheckTypeForm.tsx + tests
-- [ ] CheckTypeContainer.tsx + tests
-- [ ] DeleteCheckTypeDialog.tsx + tests
+- [x] CheckTypeForm.tsx + tests (no changes needed — uses shared Input/Textarea)
+- [x] CheckTypeContainer.tsx + tests (text-zinc-100 → text-base-content)
+- [x] DeleteCheckTypeDialog.tsx + tests (no changes needed — uses shared ConfirmDialog)
 
 ---
 
