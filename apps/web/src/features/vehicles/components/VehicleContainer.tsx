@@ -109,11 +109,13 @@ export const VehicleContainer = () => {
   if (mode === 'create') {
     return (
       <>
-        <h1 className='mb-8 text-center text-4xl font-bold text-zinc-100'>Ajouter mon véhicule</h1>
+        <h1 className='text-base-content mb-8 text-center text-4xl font-bold'>
+          Ajouter mon véhicule
+        </h1>
         <FormWrapper
           onSubmit={handleSubmit}
           error={serverError}
-          className='mx-auto mt-6 grid w-full max-w-lg gap-4'
+          className='mx-auto mt-6 grid w-full max-w-2xl gap-4'
         >
           <VehicleForm form={form} showMileage={true} />
           <section className='flex items-center justify-between'>
@@ -130,7 +132,7 @@ export const VehicleContainer = () => {
   if (mode === 'view' && vehicle) {
     return (
       <>
-        <h1 className='mb-8 text-center text-4xl font-bold text-zinc-100'>
+        <h1 className='text-base-content mb-8 text-center text-4xl font-bold'>
           {vehicle.make} {vehicle.model} ({vehicle.year})
         </h1>
         <VehicleProfile
@@ -153,13 +155,13 @@ export const VehicleContainer = () => {
   if (mode === 'edit' && vehicle) {
     return (
       <>
-        <h1 className='mb-8 text-center text-4xl font-bold text-zinc-100'>
+        <h1 className='text-base-content mb-8 text-center text-4xl font-bold'>
           Modifier {vehicle.make} {vehicle.model} ({vehicle.year})
         </h1>
         <FormWrapper
           onSubmit={handleSubmit}
           error={serverError}
-          className='mx-auto mt-6 grid w-full max-w-lg gap-4'
+          className='mx-auto mt-6 grid w-full max-w-2xl gap-4'
         >
           <VehicleForm form={form} showMileage={false} />
           <section className='flex items-center justify-between'>

@@ -15,7 +15,7 @@ export const VehicleProfile = ({ vehicle, onEdit, onDelete }: VehicleProfileProp
 
   return (
     <>
-      <dl className='mx-auto mt-6 grid w-full max-w-lg grid-cols-2 gap-x-8 gap-y-2' role='list'>
+      <dl className='mx-auto mt-6 grid w-full max-w-2xl grid-cols-2 gap-x-8 gap-y-2' role='list'>
         <dt>Marque</dt>
         <dd>{vehicle.make}</dd>
 
@@ -44,7 +44,7 @@ export const VehicleProfile = ({ vehicle, onEdit, onDelete }: VehicleProfileProp
         <dd>{formatMileage(vehicle.mileage)}</dd>
       </dl>
 
-      <section className='mx-auto my-6 flex w-full max-w-lg items-center justify-between gap-2'>
+      <section className='mx-auto my-6 flex w-full max-w-2xl items-center justify-between gap-2'>
         <Button onClick={onEdit}>Modifier</Button>
         <Button onClick={onDelete} variant='destructive'>
           Supprimer
