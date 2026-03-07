@@ -34,7 +34,7 @@ describe('Label', () => {
 
     expect(label).toBeInTheDocument()
     expect(requiredIndicator).toBeInTheDocument()
-    expect(requiredIndicator).toHaveClass('text-error')
+    expect(requiredIndicator).toHaveAttribute('aria-hidden', 'true')
   })
 
   it('should not show required indicator when required is false', () => {
@@ -70,5 +70,21 @@ describe('Label', () => {
     const label = getByText('Test Label')
 
     expect(label).toHaveAttribute('for', 'test-id')
+  })
+
+  it('should apply text-error class when error is true', () => {
+    const { getByText } = render(<Label error>Test Label</Label>)
+
+    const label = getByText('Test Label')
+
+    expect(label).toHaveClass('text-error')
+  })
+
+  it('should not apply text-error class when error is false', () => {
+    const { getByText } = render(<Label>Test Label</Label>)
+
+    const label = getByText('Test Label')
+
+    expect(label).not.toHaveClass('text-error')
   })
 })
