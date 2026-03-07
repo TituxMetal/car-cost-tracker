@@ -77,17 +77,17 @@
 
 ### Block 5: Vehicle Feature (Phases 11-12) — `feature/design-system-vehicles`
 
-#### Phase 11: Vehicle Feature — Form & Profile
+#### Phase 11: Vehicle Feature — Form & Profile ✅
 
-- [ ] VehicleForm.tsx + tests
-- [ ] VehicleProfile.tsx + tests
+- [x] VehicleForm.tsx + tests (no changes needed — uses shared Input/Select)
+- [x] VehicleProfile.tsx + tests (no changes needed — uses shared Button)
 
-#### Phase 12: Vehicle Feature — Container & Remaining
+#### Phase 12: Vehicle Feature — Container & Remaining ✅
 
-- [ ] VehicleContainer.tsx + tests
-- [ ] VehicleEmptyState.tsx + tests
-- [ ] QuickMileageUpdate.tsx + tests
-- [ ] DeleteVehicleDialog.tsx + tests
+- [x] VehicleContainer.tsx + tests (text-zinc-100 → text-base-content)
+- [x] VehicleEmptyState.tsx + tests (no changes needed — uses shared Button)
+- [x] QuickMileageUpdate.tsx + tests (no changes needed — uses shared Input/Button)
+- [x] DeleteVehicleDialog.tsx + tests (no changes needed — uses shared ConfirmDialog)
 
 ---
 
