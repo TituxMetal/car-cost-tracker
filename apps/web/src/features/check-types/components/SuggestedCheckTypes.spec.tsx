@@ -34,11 +34,17 @@ describe('SuggestedCheckTypes', () => {
     expect(screen.getByText('Tous les 30 jours')).toBeInTheDocument()
   })
 
+  it('should render the section header', () => {
+    render(<SuggestedCheckTypes suggestions={suggestions} onAdd={mock(() => {})} />)
+
+    expect(screen.getByText('Suggestions rapides')).toBeInTheDocument()
+  })
+
   it('should call onAdd with the correct suggestion when add button is clicked', () => {
     const onAdd = mock(() => {})
 
     render(<SuggestedCheckTypes suggestions={suggestions} onAdd={onAdd} />)
-    const addButton = screen.getAllByRole('button', { name: '+' })[0]
+    const addButton = screen.getByRole('button', { name: /Niveau d'huile/ })
     addButton.click()
 
     expect(onAdd).toHaveBeenCalledWith(suggestions[0])

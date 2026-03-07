@@ -1,3 +1,5 @@
+import { Plus, Sparkles } from 'lucide-react'
+
 import { Button } from '~/components/ui'
 
 import type { SuggestedCheckType } from '../types'
@@ -10,19 +12,28 @@ export interface SuggestedCheckTypesProps {
 export const SuggestedCheckTypes = ({ suggestions, onAdd }: SuggestedCheckTypesProps) => {
   const formatInterval = (interval: number) => `Tous les ${interval} jours`
   return (
-    <section className='mx-auto my-6 flex items-center gap-4'>
-      {suggestions.map(suggestion => (
-        <article
-          key={suggestion.name}
-          className='rounded-lg border border-zinc-700 bg-zinc-800 p-4'
-        >
-          <h2 className='text-zinc-100'>{suggestion.name}</h2>
-          <p className='text-zinc-300'>{formatInterval(suggestion.intervalDays)}</p>
-          <footer className='mx-auto my-6 flex w-full max-w-lg items-center justify-center gap-2'>
-            <Button onClick={() => onAdd(suggestion)}>+</Button>
-          </footer>
-        </article>
-      ))}
+    <section className='mb-6'>
+      <h2 className='text-base-content/80 mb-3 flex items-center gap-2 text-sm font-medium'>
+        <Sparkles size={16} className='text-primary/70' />
+        Suggestions rapides
+      </h2>
+      <nav className='flex flex-wrap gap-2'>
+        {suggestions.map(suggestion => (
+          <Button
+            key={suggestion.name}
+            variant='outline'
+            className='btn-sm hover:border-primary/50 gap-1.5 transition-all duration-150 hover:scale-[1.02]'
+            onClick={() => onAdd(suggestion)}
+          >
+            <span className='sr-only'>+</span>
+            <Plus size={14} className='text-primary' />
+            <span>{suggestion.name}</span>
+            <span className='badge badge-primary badge-sm'>
+              {formatInterval(suggestion.intervalDays)}
+            </span>
+          </Button>
+        ))}
+      </nav>
     </section>
   )
 }
