@@ -55,9 +55,9 @@ describe('VehicleForm', () => {
   it('should render all 9 form fields with French labels when showMileage is true', () => {
     render(<TestWrapper showMileage />)
 
-    expect(screen.getByLabelText('Marque')).toBeInTheDocument()
-    expect(screen.getByLabelText('Modèle')).toBeInTheDocument()
-    expect(screen.getByLabelText('Année')).toBeInTheDocument()
+    expect(screen.getByLabelText('Marque', { exact: false })).toBeInTheDocument()
+    expect(screen.getByLabelText('Modèle', { exact: false })).toBeInTheDocument()
+    expect(screen.getByLabelText('Année', { exact: false })).toBeInTheDocument()
     expect(screen.getByLabelText('Type de moteur')).toBeInTheDocument()
     expect(screen.getByLabelText('Carburant')).toBeInTheDocument()
     expect(screen.getByLabelText('VIN')).toBeInTheDocument()
@@ -69,9 +69,9 @@ describe('VehicleForm', () => {
   it('should render 8 fields without Kilométrage when showMileage is false', () => {
     render(<TestWrapper showMileage={false} />)
 
-    expect(screen.getByLabelText('Marque')).toBeInTheDocument()
-    expect(screen.getByLabelText('Modèle')).toBeInTheDocument()
-    expect(screen.getByLabelText('Année')).toBeInTheDocument()
+    expect(screen.getByLabelText('Marque', { exact: false })).toBeInTheDocument()
+    expect(screen.getByLabelText('Modèle', { exact: false })).toBeInTheDocument()
+    expect(screen.getByLabelText('Année', { exact: false })).toBeInTheDocument()
     expect(screen.getByLabelText('Type de moteur')).toBeInTheDocument()
     expect(screen.getByLabelText('Carburant')).toBeInTheDocument()
     expect(screen.getByLabelText('VIN')).toBeInTheDocument()
@@ -83,11 +83,11 @@ describe('VehicleForm', () => {
   it('should render fields with correct input types', () => {
     render(<TestWrapper showMileage />)
 
-    expect(screen.getByLabelText('Année')).toHaveAttribute('type', 'number')
+    expect(screen.getByLabelText('Année', { exact: false })).toHaveAttribute('type', 'number')
     expect(screen.getByLabelText("Date d'achat")).toHaveAttribute('type', 'date')
     expect(screen.getByLabelText('Kilométrage')).toHaveAttribute('type', 'number')
-    expect(screen.getByLabelText('Marque')).toHaveAttribute('type', 'text')
-    expect(screen.getByLabelText('Modèle')).toHaveAttribute('type', 'text')
+    expect(screen.getByLabelText('Marque', { exact: false })).toHaveAttribute('type', 'text')
+    expect(screen.getByLabelText('Modèle', { exact: false })).toHaveAttribute('type', 'text')
     expect(screen.getByLabelText('Type de moteur')).toHaveAttribute('type', 'text')
     expect(screen.getByLabelText('VIN')).toHaveAttribute('type', 'text')
     expect(screen.getByLabelText("Plaque d'immatriculation")).toHaveAttribute('type', 'text')
@@ -118,9 +118,9 @@ describe('VehicleForm', () => {
   it('should register form fields with correct names', () => {
     render(<TestWrapper showMileage />)
 
-    expect(screen.getByLabelText('Marque')).toHaveAttribute('name', 'make')
-    expect(screen.getByLabelText('Modèle')).toHaveAttribute('name', 'model')
-    expect(screen.getByLabelText('Année')).toHaveAttribute('name', 'year')
+    expect(screen.getByLabelText('Marque', { exact: false })).toHaveAttribute('name', 'make')
+    expect(screen.getByLabelText('Modèle', { exact: false })).toHaveAttribute('name', 'model')
+    expect(screen.getByLabelText('Année', { exact: false })).toHaveAttribute('name', 'year')
     expect(screen.getByLabelText('Type de moteur')).toHaveAttribute('name', 'engineType')
     expect(screen.getByLabelText('Carburant')).toHaveAttribute('name', 'fuelType')
     expect(screen.getByLabelText('VIN')).toHaveAttribute('name', 'vin')

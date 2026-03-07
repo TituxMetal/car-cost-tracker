@@ -14,49 +14,72 @@ export interface VehicleFormProps {
 
 export const VehicleForm = ({ form, showMileage = true }: VehicleFormProps) => (
   <>
-    <Input label='Marque' {...form.register('make')} error={form.formState.errors.make?.message} />
-    <Input
-      label='Modèle'
-      {...form.register('model')}
-      error={form.formState.errors.model?.message}
-    />
-    <Input
-      label='Année'
-      type='number'
-      {...form.register('year', { valueAsNumber: true })}
-      error={form.formState.errors.year?.message}
-    />
-    <Input
-      label='Type de moteur'
-      {...form.register('engineType')}
-      error={form.formState.errors.engineType?.message}
-    />
-    <Select
-      label='Carburant'
-      options={fuelTypeOptions}
-      placeholder='Sélectionner'
-      {...form.register('fuelType')}
-      error={form.formState.errors.fuelType?.message}
-    />
-    <Input label='VIN' {...form.register('vin')} error={form.formState.errors.vin?.message} />
-    <Input
-      label="Plaque d'immatriculation"
-      {...form.register('licensePlate')}
-      error={form.formState.errors.licensePlate?.message}
-    />
-    <Input
-      label="Date d'achat"
-      type='date'
-      {...form.register('purchaseDate')}
-      error={form.formState.errors.purchaseDate?.message}
-    />
-    {showMileage && (
+    <fieldset className='fieldset grid grid-cols-1 gap-4 md:grid-cols-2'>
+      <legend className='fieldset-legend'>Identité du véhicule</legend>
       <Input
-        label='Kilométrage'
-        type='number'
-        {...form.register('mileage', { valueAsNumber: true })}
-        error={form.formState.errors.mileage?.message}
+        label='Marque'
+        required
+        {...form.register('make')}
+        error={form.formState.errors.make?.message}
       />
+      <Input
+        label='Modèle'
+        required
+        {...form.register('model')}
+        error={form.formState.errors.model?.message}
+      />
+    </fieldset>
+
+    <fieldset className='fieldset grid grid-cols-1 gap-4 md:grid-cols-3'>
+      <legend className='fieldset-legend'>Caractéristiques techniques</legend>
+      <Input
+        label='Année'
+        type='number'
+        required
+        {...form.register('year', { valueAsNumber: true })}
+        error={form.formState.errors.year?.message}
+      />
+      <Input
+        label='Type de moteur'
+        {...form.register('engineType')}
+        error={form.formState.errors.engineType?.message}
+      />
+      <Select
+        label='Carburant'
+        options={fuelTypeOptions}
+        placeholder='Sélectionner'
+        {...form.register('fuelType')}
+        error={form.formState.errors.fuelType?.message}
+      />
+    </fieldset>
+
+    <Input label='VIN' {...form.register('vin')} error={form.formState.errors.vin?.message} />
+
+    <fieldset className='fieldset grid grid-cols-1 gap-4 md:grid-cols-2'>
+      <legend className='fieldset-legend'>Informations administratives</legend>
+      <Input
+        label="Plaque d'immatriculation"
+        {...form.register('licensePlate')}
+        error={form.formState.errors.licensePlate?.message}
+      />
+      <Input
+        label="Date d'achat"
+        type='date'
+        {...form.register('purchaseDate')}
+        error={form.formState.errors.purchaseDate?.message}
+      />
+    </fieldset>
+
+    {showMileage && (
+      <fieldset className='fieldset'>
+        <legend className='fieldset-legend'>Usage</legend>
+        <Input
+          label='Kilométrage'
+          type='number'
+          {...form.register('mileage', { valueAsNumber: true })}
+          error={form.formState.errors.mileage?.message}
+        />
+      </fieldset>
     )}
   </>
 )
