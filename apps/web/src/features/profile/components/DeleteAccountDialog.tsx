@@ -65,7 +65,6 @@ export const DeleteAccountDialog = ({ isOpen, onClose }: DeleteAccountDialogProp
           onChange={e => setConfirmText(e.target.value)}
           placeholder='Type DELETE to confirm'
           className='mt-2'
-          fullWidth
         />
 
         {error && <p className='mt-2 text-red-400'>{error}</p>}
