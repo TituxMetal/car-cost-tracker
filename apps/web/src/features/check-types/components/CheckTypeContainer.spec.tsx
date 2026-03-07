@@ -399,7 +399,7 @@ describe('CheckTypeContainer', () => {
         render(<CheckTypeContainer />)
       })
 
-      const addButtons = screen.getAllByRole('button', { name: '+' })
+      const addButtons = screen.getAllByRole('button', { name: /^\+/ })
       expect(addButtons).toHaveLength(1)
     })
 
@@ -420,7 +420,7 @@ describe('CheckTypeContainer', () => {
         render(<CheckTypeContainer />)
       })
 
-      expect(screen.queryByRole('button', { name: '+' })).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /^\+/ })).not.toBeInTheDocument()
     })
 
     it('should call create with suggestion data when clicking add button', async () => {
@@ -432,13 +432,13 @@ describe('CheckTypeContainer', () => {
       await act(async () => {
         render(<CheckTypeContainer />)
       })
-      const addButtons = screen.getAllByRole('button', { name: '+' })
+      const addButtons = screen.getAllByRole('button', { name: /^\+/ })
       await user.click(addButtons[0])
 
       await waitFor(() => {
         expect(createSpy).toHaveBeenCalledWith(mockVehicle.id, {
           name: `Niveau de liquide de refroidissement`,
-          description: undefined,
+          description: 'Vérifier le niveau entre les repères min et max, moteur froid',
           intervalDays: 30
         })
       })
