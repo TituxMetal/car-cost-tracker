@@ -104,14 +104,22 @@ describe('Select', () => {
     expect(handleChange).toHaveBeenCalledTimes(1)
   })
 
-  it('should apply fullWidth class when fullWidth is true', () => {
-    const { getByRole } = render(
-      <Select options={mockOptions} placeholder='Select an option' fullWidth />
-    )
+  it('should apply w-full by default', () => {
+    const { getByRole } = render(<Select options={mockOptions} placeholder='Select an option' />)
 
     const select = getByRole('combobox')
 
     expect(select).toHaveClass('w-full')
+  })
+
+  it('should not apply w-full when fullWidth is false', () => {
+    const { getByRole } = render(
+      <Select options={mockOptions} placeholder='Select an option' fullWidth={false} />
+    )
+
+    const select = getByRole('combobox')
+
+    expect(select).not.toHaveClass('w-full')
   })
 
   it('should forward ref to select element', () => {

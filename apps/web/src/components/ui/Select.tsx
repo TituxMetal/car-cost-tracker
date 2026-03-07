@@ -1,6 +1,8 @@
 import type { SelectHTMLAttributes } from 'react'
 import React, { useId } from 'react'
 
+import { Label } from './Label'
+
 export interface SelectOption {
   value: string
   label: string
@@ -16,28 +18,37 @@ export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 
 export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   (
-    { label, error, options, placeholder, className = '', fullWidth = false, id, ...props },
+    {
+      label,
+      error,
+      options,
+      placeholder,
+      className = '',
+      fullWidth = true,
+      id,
+      required,
+      ...props
+    },
     ref
   ) => {
     const generatedId = useId()
     const selectId = id || `select-${generatedId}`
 
-    const baseInputClasses = 'select'
-    const errorInputClasses = 'select-error'
     const widthClass = fullWidth ? 'w-full' : ''
 
     return (
-      <div className={`${widthClass}`}>
+      <div className={`${widthClass} min-w-0`}>
         {label && (
-          <label htmlFor={selectId} className='flex font-medium'>
+          <Label htmlFor={selectId} error={!!error} required={required}>
             {label}
-          </label>
+          </Label>
         )}
         <select
           ref={ref}
           id={selectId}
-          className={`${widthClass} ${baseInputClasses} ${error ? errorInputClasses : ''} ${className}`}
+          className={`select ${widthClass} ${error ? 'select-error text-error' : ''} ${className}`}
           aria-invalid={error ? 'true' : undefined}
+          required={required}
           aria-describedby={error ? `${selectId}-error` : undefined}
           {...props}
         >
@@ -53,7 +64,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           ))}
         </select>
         {error && (
-          <p id={`${selectId}-error`} className='label text-error'>
+          <p id={`${selectId}-error`} className='text-error text-sm'>
             {error}
           </p>
         )}

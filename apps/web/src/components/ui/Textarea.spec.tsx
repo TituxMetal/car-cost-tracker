@@ -33,7 +33,7 @@ describe('Textarea', () => {
     const errorMessage = getByText('This field is required')
 
     expect(errorMessage).toBeInTheDocument()
-    expect(errorMessage).toHaveClass('label')
+    expect(errorMessage).toHaveClass('text-sm')
     expect(errorMessage).toHaveClass('text-error')
   })
 
@@ -55,12 +55,20 @@ describe('Textarea', () => {
     expect(textarea).toHaveAttribute('aria-describedby', errorMessage.id)
   })
 
-  it('should apply fullWidth class when fullWidth is true', () => {
-    const { getByRole } = render(<Textarea fullWidth />)
+  it('should apply w-full by default', () => {
+    const { getByRole } = render(<Textarea />)
 
     const textarea = getByRole('textbox')
 
     expect(textarea).toHaveClass('w-full')
+  })
+
+  it('should not apply w-full when fullWidth is false', () => {
+    const { getByRole } = render(<Textarea fullWidth={false} />)
+
+    const textarea = getByRole('textbox')
+
+    expect(textarea).not.toHaveClass('w-full')
   })
 
   it('should use default rows of 3', () => {
