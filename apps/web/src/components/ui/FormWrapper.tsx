@@ -14,7 +14,7 @@ export const FormWrapper = ({
   error,
   className = 'mx-auto mt-6 grid w-full max-w-md gap-4'
 }: FormWrapperProps) => (
-  <form onSubmit={onSubmit} className={className} role='form'>
+  <form onSubmit={onSubmit} className={className} role='form' noValidate>
     {error && (
       <p className='alert alert-error' role='alert'>
         {error}

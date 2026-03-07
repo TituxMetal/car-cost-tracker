@@ -15,7 +15,7 @@ export interface VehicleFormProps {
 export const VehicleForm = ({ form, showMileage = true }: VehicleFormProps) => (
   <>
     <fieldset className='fieldset grid grid-cols-1 gap-4 md:grid-cols-2'>
-      <legend className='fieldset-legend'>Identité du véhicule</legend>
+      <legend className='fieldset-legend col-span-full'>Identité du véhicule</legend>
       <Input
         label='Marque'
         required
@@ -31,7 +31,7 @@ export const VehicleForm = ({ form, showMileage = true }: VehicleFormProps) => (
     </fieldset>
 
     <fieldset className='fieldset grid grid-cols-1 gap-4 md:grid-cols-3'>
-      <legend className='fieldset-legend'>Caractéristiques techniques</legend>
+      <legend className='fieldset-legend col-span-full'>Caractéristiques techniques</legend>
       <Input
         label='Année'
         type='number'
@@ -56,7 +56,7 @@ export const VehicleForm = ({ form, showMileage = true }: VehicleFormProps) => (
     <Input label='VIN' {...form.register('vin')} error={form.formState.errors.vin?.message} />
 
     <fieldset className='fieldset grid grid-cols-1 gap-4 md:grid-cols-2'>
-      <legend className='fieldset-legend'>Informations administratives</legend>
+      <legend className='fieldset-legend col-span-full'>Informations administratives</legend>
       <Input
         label="Plaque d'immatriculation"
         {...form.register('licensePlate')}
@@ -72,7 +72,7 @@ export const VehicleForm = ({ form, showMileage = true }: VehicleFormProps) => (
 
     {showMileage && (
       <fieldset className='fieldset'>
-        <legend className='fieldset-legend'>Usage</legend>
+        <legend className='fieldset-legend col-span-full'>Usage</legend>
         <Input
           label='Kilométrage'
           type='number'

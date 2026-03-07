@@ -79,8 +79,8 @@
 
 #### Phase 11: Vehicle Feature — Form & Profile ✅
 
-- [x] VehicleForm.tsx + tests (no changes needed — uses shared Input/Select)
-- [x] VehicleProfile.tsx + tests (no changes needed — uses shared Button)
+- [x] VehicleForm.tsx + tests (fieldset grouping, responsive grid, required props)
+- [x] VehicleProfile.tsx + tests (max-w-lg → max-w-2xl)
 
 #### Phase 12: Vehicle Feature — Container & Remaining ✅
 
