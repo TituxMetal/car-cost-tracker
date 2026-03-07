@@ -49,7 +49,7 @@ describe('Input', () => {
     const errorMessage = getByText('Test Error')
 
     expect(errorMessage).toBeInTheDocument()
-    expect(errorMessage).toHaveClass('label')
+    expect(errorMessage).toHaveClass('text-sm')
     expect(errorMessage).toHaveClass('text-error')
   })
 
@@ -78,12 +78,20 @@ describe('Input', () => {
     expect(input).toHaveAttribute('aria-describedby', errorMessage.id)
   })
 
-  it('should apply fullWidth class when fullWidth is true', () => {
-    const { getByRole } = render(<Input fullWidth />)
+  it('should apply w-full by default', () => {
+    const { getByRole } = render(<Input />)
 
     const input = getByRole('textbox')
 
     expect(input).toHaveClass('w-full')
+  })
+
+  it('should not apply w-full when fullWidth is false', () => {
+    const { getByRole } = render(<Input fullWidth={false} />)
+
+    const input = getByRole('textbox')
+
+    expect(input).not.toHaveClass('w-full')
   })
 
   it('should forward ref to input element', () => {

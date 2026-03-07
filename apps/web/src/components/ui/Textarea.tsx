@@ -1,6 +1,8 @@
 import type { TextareaHTMLAttributes } from 'react'
 import React, { useId } from 'react'
 
+import { Label } from './Label'
+
 export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string
   error?: string
@@ -9,32 +11,31 @@ export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElemen
 }
 
 export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ label, error, className = '', fullWidth = false, id, rows = 3, ...rest }, ref) => {
+  ({ label, error, className = '', fullWidth = true, id, rows = 3, required, ...rest }, ref) => {
     const generatedId = useId()
     const textareaId = id || `textarea-${generatedId}`
     const errorId = `${textareaId}-error`
-    const baseClasses = 'textarea'
-    const errorClasses = 'textarea-error'
     const widthClass = fullWidth ? 'w-full' : ''
 
     return (
-      <div className={`${widthClass}`}>
+      <div className={`${widthClass} min-w-0`}>
         {label && (
-          <label htmlFor={textareaId} className='flex font-medium'>
+          <Label htmlFor={textareaId} error={!!error} required={required}>
             {label}
-          </label>
+          </Label>
         )}
         <textarea
           id={textareaId}
-          className={`${baseClasses} ${error ? errorClasses : ''} ${widthClass} ${className}`}
+          className={`textarea ${widthClass} ${error ? 'textarea-error text-error' : ''} ${className}`}
           rows={rows}
           aria-invalid={error ? 'true' : undefined}
+          required={required}
           aria-describedby={error ? errorId : undefined}
           ref={ref}
           {...rest}
         />
         {error && (
-          <p id={errorId} className='label text-error'>
+          <p id={errorId} className='text-error text-sm'>
             {error}
           </p>
         )}
