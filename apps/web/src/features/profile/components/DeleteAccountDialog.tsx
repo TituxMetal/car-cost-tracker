@@ -44,11 +44,14 @@ export const DeleteAccountDialog = ({ isOpen, onClose }: DeleteAccountDialogProp
     <Dialog.Root
       open={isOpen}
       onOpenChange={open => {
-        if (!open) onClose()
+        if (!open && !isDeleting) onClose()
       }}
     >
       <Dialog.Portal>
-        <Dialog.Overlay className='bg-neutral/50 fixed inset-0' onClick={onClose} />
+        <Dialog.Overlay
+          className='bg-neutral/50 fixed inset-0'
+          onClick={() => !isDeleting && onClose()}
+        />
         <Dialog.Content
           className='modal modal-open'
           onInteractOutside={event => event.preventDefault()}
