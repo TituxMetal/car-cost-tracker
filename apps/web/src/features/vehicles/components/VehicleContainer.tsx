@@ -99,7 +99,7 @@ export const VehicleContainer = () => {
   }, [isLoading, hasVehicle])
 
   if (mode === 'loading') {
-    return <p>Chargement...</p>
+    return <p className='text-base-content/70'>Chargement...</p>
   }
 
   if (mode === 'empty') {
@@ -112,19 +112,17 @@ export const VehicleContainer = () => {
         <h1 className='text-base-content mb-8 text-center text-4xl font-bold'>
           Ajouter mon véhicule
         </h1>
-        <FormWrapper
-          onSubmit={handleSubmit}
-          error={serverError}
-          className='mx-auto mt-6 grid w-full max-w-2xl gap-4'
-        >
-          <VehicleForm form={form} showMileage={true} />
-          <section className='flex items-center justify-between'>
-            <Button type='button' variant='destructive' onClick={onCancel}>
-              Annuler
-            </Button>
-            <Button type='submit'>Enregistrer</Button>
-          </section>
-        </FormWrapper>
+        <article className='card bg-base-200 mx-auto max-w-2xl'>
+          <FormWrapper onSubmit={handleSubmit} error={serverError} className='card-body gap-4'>
+            <VehicleForm form={form} showMileage={true} />
+            <section className='card-actions justify-between'>
+              <Button type='button' variant='destructive' onClick={onCancel}>
+                Annuler
+              </Button>
+              <Button type='submit'>Enregistrer</Button>
+            </section>
+          </FormWrapper>
+        </article>
       </>
     )
   }
@@ -135,12 +133,17 @@ export const VehicleContainer = () => {
         <h1 className='text-base-content mb-8 text-center text-4xl font-bold'>
           {vehicle.make} {vehicle.model} ({vehicle.year})
         </h1>
-        <VehicleProfile
-          vehicle={vehicle}
-          onEdit={onEdit}
-          onDelete={() => setShowDeleteDialog(true)}
-        />
-        <QuickMileageUpdate currentMileage={vehicle.mileage} onSubmit={handleQuickMileageSubmit} />
+        <div className='mx-auto flex max-w-2xl flex-col gap-6'>
+          <VehicleProfile
+            vehicle={vehicle}
+            onEdit={onEdit}
+            onDelete={() => setShowDeleteDialog(true)}
+          />
+          <QuickMileageUpdate
+            currentMileage={vehicle.mileage}
+            onSubmit={handleQuickMileageSubmit}
+          />
+        </div>
         {showDeleteDialog && (
           <DeleteVehicleDialog
             vehicleName={`${vehicle.make} ${vehicle.model} (${vehicle.year})`}
@@ -158,19 +161,17 @@ export const VehicleContainer = () => {
         <h1 className='text-base-content mb-8 text-center text-4xl font-bold'>
           Modifier {vehicle.make} {vehicle.model} ({vehicle.year})
         </h1>
-        <FormWrapper
-          onSubmit={handleSubmit}
-          error={serverError}
-          className='mx-auto mt-6 grid w-full max-w-2xl gap-4'
-        >
-          <VehicleForm form={form} showMileage={false} />
-          <section className='flex items-center justify-between'>
-            <Button type='button' variant='destructive' onClick={onCancel}>
-              Annuler
-            </Button>
-            <Button type='submit'>Enregistrer</Button>
-          </section>
-        </FormWrapper>
+        <article className='card bg-base-200 mx-auto max-w-2xl'>
+          <FormWrapper onSubmit={handleSubmit} error={serverError} className='card-body gap-4'>
+            <VehicleForm form={form} showMileage={false} />
+            <section className='card-actions justify-between'>
+              <Button type='button' variant='destructive' onClick={onCancel}>
+                Annuler
+              </Button>
+              <Button type='submit'>Enregistrer</Button>
+            </section>
+          </FormWrapper>
+        </article>
       </>
     )
   }
