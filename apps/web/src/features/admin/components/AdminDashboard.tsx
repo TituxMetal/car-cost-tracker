@@ -41,30 +41,38 @@ export const AdminDashboard = () => {
   }, [])
 
   if (isLoading) {
-    return <p className='text-zinc-400'>Loading stats...</p>
+    return <p className='text-base-content/70'>Loading stats...</p>
   }
 
   if (error) {
-    return <p className='text-red-400'>{error}</p>
+    return <p className='text-error'>{error}</p>
   }
 
   return (
     <section className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
-      <article className='rounded-lg bg-zinc-800 p-6'>
-        <p className='text-3xl font-bold text-zinc-100'>{stats.total}</p>
-        <p className='text-zinc-400'>Total Users</p>
+      <article className='card bg-base-200'>
+        <div className='card-body'>
+          <p className='text-base-content text-3xl font-bold'>{stats.total}</p>
+          <p className='text-base-content/70'>Total Users</p>
+        </div>
       </article>
-      <article className='rounded-lg bg-zinc-800 p-6'>
-        <p className='text-3xl font-bold text-sky-400'>{stats.admins}</p>
-        <p className='text-zinc-400'>Admins</p>
+      <article className='card bg-base-200'>
+        <div className='card-body'>
+          <p className='text-info text-3xl font-bold'>{stats.admins}</p>
+          <p className='text-base-content/70'>Admins</p>
+        </div>
       </article>
-      <article className='rounded-lg bg-zinc-800 p-6'>
-        <p className='text-3xl font-bold text-emerald-400'>{stats.verified}</p>
-        <p className='text-zinc-400'>Verified</p>
+      <article className='card bg-base-200'>
+        <div className='card-body'>
+          <p className='text-success text-3xl font-bold'>{stats.verified}</p>
+          <p className='text-base-content/70'>Verified</p>
+        </div>
       </article>
-      <article className='rounded-lg bg-zinc-800 p-6'>
-        <p className='text-3xl font-bold text-red-400'>{stats.banned}</p>
-        <p className='text-zinc-400'>Banned</p>
+      <article className='card bg-base-200'>
+        <div className='card-body'>
+          <p className='text-error text-3xl font-bold'>{stats.banned}</p>
+          <p className='text-base-content/70'>Banned</p>
+        </div>
       </article>
     </section>
   )

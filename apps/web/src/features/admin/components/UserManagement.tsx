@@ -103,90 +103,86 @@ export const UserManagement = ({ user: initialUser }: Props) => {
   }
 
   return (
-    <section className='space-y-6'>
-      {error && <p className='rounded bg-red-400/20 p-3 text-red-400'>{error}</p>}
-      {success && <p className='rounded bg-emerald-400/20 p-3 text-emerald-400'>{success}</p>}
+    <section className='flex flex-col gap-6'>
+      {error && <p className='alert alert-error'>{error}</p>}
+      {success && <p className='alert alert-success'>{success}</p>}
 
-      <article className='rounded-lg bg-zinc-800 p-6'>
-        <h2 className='mb-4 text-xl font-bold text-zinc-100'>User Details</h2>
-        <dl className='grid gap-3 sm:grid-cols-2'>
-          <div>
-            <dt className='text-sm text-zinc-400'>Username</dt>
-            <dd className='text-zinc-100'>{user.username}</dd>
-          </div>
-          <div>
-            <dt className='text-sm text-zinc-400'>Email</dt>
-            <dd className='text-zinc-100'>{user.email}</dd>
-          </div>
-          <div>
-            <dt className='text-sm text-zinc-400'>Role</dt>
-            <dd>
-              <span
-                className={`rounded px-2 py-1 text-xs font-medium ${
-                  user.role === 'admin' ? 'bg-sky-400 text-zinc-900' : 'bg-zinc-600 text-zinc-100'
-                }`}
-              >
-                {user.role}
-              </span>
-            </dd>
-          </div>
-          <div>
-            <dt className='text-sm text-zinc-400'>Status</dt>
-            <dd>
-              {user.banned ? (
-                <span className='rounded bg-red-400 px-2 py-1 text-xs font-medium text-zinc-900'>
-                  Banned
-                </span>
-              ) : user.emailVerified ? (
-                <span className='rounded bg-emerald-400 px-2 py-1 text-xs font-medium text-zinc-900'>
-                  Verified
-                </span>
-              ) : (
-                <span className='rounded bg-amber-400 px-2 py-1 text-xs font-medium text-zinc-900'>
-                  Unverified
-                </span>
-              )}
-            </dd>
-          </div>
-          <div>
-            <dt className='text-sm text-zinc-400'>Created</dt>
-            <dd className='text-zinc-100'>{new Date(user.createdAt).toLocaleDateString()}</dd>
-          </div>
-          {user.banned && user.banReason && (
+      <article className='card bg-base-200'>
+        <div className='card-body gap-4'>
+          <h2 className='card-title'>User Details</h2>
+          <dl className='grid gap-3 sm:grid-cols-2'>
             <div>
-              <dt className='text-sm text-zinc-400'>Ban Reason</dt>
-              <dd className='text-zinc-100'>{user.banReason}</dd>
+              <dt className='text-base-content/70 text-sm'>Username</dt>
+              <dd className='text-base-content'>{user.username}</dd>
             </div>
-          )}
-        </dl>
+            <div>
+              <dt className='text-base-content/70 text-sm'>Email</dt>
+              <dd className='text-base-content'>{user.email}</dd>
+            </div>
+            <div>
+              <dt className='text-base-content/70 text-sm'>Role</dt>
+              <dd>
+                <span
+                  className={`badge ${user.role === 'admin' ? 'badge-primary' : 'badge-neutral'}`}
+                >
+                  {user.role}
+                </span>
+              </dd>
+            </div>
+            <div>
+              <dt className='text-base-content/70 text-sm'>Status</dt>
+              <dd>
+                {user.banned ? (
+                  <span className='badge badge-error'>Banned</span>
+                ) : user.emailVerified ? (
+                  <span className='badge badge-success'>Verified</span>
+                ) : (
+                  <span className='badge badge-warning'>Unverified</span>
+                )}
+              </dd>
+            </div>
+            <div>
+              <dt className='text-base-content/70 text-sm'>Created</dt>
+              <dd className='text-base-content'>{new Date(user.createdAt).toLocaleDateString()}</dd>
+            </div>
+            {user.banned && user.banReason && (
+              <div>
+                <dt className='text-base-content/70 text-sm'>Ban Reason</dt>
+                <dd className='text-base-content'>{user.banReason}</dd>
+              </div>
+            )}
+          </dl>
+        </div>
       </article>
 
-      <article className='rounded-lg bg-zinc-800 p-6'>
-        <h2 className='mb-4 text-xl font-bold text-zinc-100'>Actions</h2>
-        <div className='flex flex-wrap gap-3'>
-          {user.role === 'user' ? (
-            <Button onClick={() => handleSetRole('admin')} disabled={isLoading}>
-              Promote to Admin
-            </Button>
-          ) : (
-            <Button variant='outline' onClick={() => handleSetRole('user')} disabled={isLoading}>
-              Demote to User
-            </Button>
-          )}
+      <article className='card bg-base-200'>
+        <div className='card-body gap-4'>
+          <h2 className='card-title'>Actions</h2>
+          <div className='flex flex-wrap gap-3'>
+            {user.role === 'user' ? (
+              <Button onClick={() => handleSetRole('admin')} disabled={isLoading}>
+                Promote to Admin
+              </Button>
+            ) : (
+              <Button variant='outline' onClick={() => handleSetRole('user')} disabled={isLoading}>
+                Demote to User
+              </Button>
+            )}
 
-          {user.banned ? (
-            <Button variant='outline' onClick={handleUnban} disabled={isLoading}>
-              Unban User
-            </Button>
-          ) : (
-            <Button variant='destructive' onClick={handleBan} disabled={isLoading}>
-              Ban User
-            </Button>
-          )}
+            {user.banned ? (
+              <Button variant='outline' onClick={handleUnban} disabled={isLoading}>
+                Unban User
+              </Button>
+            ) : (
+              <Button variant='destructive' onClick={handleBan} disabled={isLoading}>
+                Ban User
+              </Button>
+            )}
 
-          <Button variant='destructive' onClick={handleDelete} disabled={isLoading}>
-            Delete User
-          </Button>
+            <Button variant='destructive' onClick={handleDelete} disabled={isLoading}>
+              Delete User
+            </Button>
+          </div>
         </div>
       </article>
     </section>

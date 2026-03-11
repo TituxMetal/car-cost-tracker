@@ -54,15 +54,15 @@ export const UserDetailContainer = ({ userId }: Props) => {
   }, [userId])
 
   if (isLoading) {
-    return <p className='text-zinc-400'>Loading user...</p>
+    return <p className='text-base-content/70'>Loading user...</p>
   }
 
   if (error) {
-    return <p className='text-red-400'>{error}</p>
+    return <p className='text-error'>{error}</p>
   }
 
   if (!user) {
-    return <p className='text-zinc-400'>User not found</p>
+    return <p className='text-base-content/70'>User not found</p>
   }
 
   return <UserManagement user={user} />
