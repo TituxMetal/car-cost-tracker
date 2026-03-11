@@ -18,16 +18,19 @@ export const QuickMileageUpdate = ({ currentMileage, onSubmit }: QuickMileageUpd
     defaultValues: { mileage: currentMileage }
   })
   return (
-    <FormWrapper onSubmit={form.handleSubmit(onSubmit)}>
-      <p>Kilométrage actuel : {formatMileage(currentMileage)}</p>
+    <article className='card bg-base-200'>
+      <FormWrapper onSubmit={form.handleSubmit(onSubmit)} className='card-body gap-4'>
+        <h2 className='card-title'>Mise à jour du kilométrage</h2>
+        <p className='text-base-content/70'>Kilométrage actuel : {formatMileage(currentMileage)}</p>
 
-      <Input
-        type='number'
-        label='Kilométrage'
-        {...form.register('mileage', { valueAsNumber: true })}
-        error={form.formState.errors.mileage?.message}
-      />
-      <Button type='submit'>Mettre à jour</Button>
-    </FormWrapper>
+        <Input
+          type='number'
+          label='Kilométrage'
+          {...form.register('mileage', { valueAsNumber: true })}
+          error={form.formState.errors.mileage?.message}
+        />
+        <Button type='submit'>Mettre à jour</Button>
+      </FormWrapper>
+    </article>
   )
 }

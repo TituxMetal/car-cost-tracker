@@ -14,42 +14,46 @@ export const VehicleProfile = ({ vehicle, onEdit, onDelete }: VehicleProfileProp
   const fuelTypeLabel = vehicle.fuelType ? FUEL_TYPE_LABELS[vehicle.fuelType] : '-'
 
   return (
-    <>
-      <dl className='mx-auto mt-6 grid w-full max-w-2xl grid-cols-2 gap-x-8 gap-y-2' role='list'>
-        <dt>Marque</dt>
-        <dd>{vehicle.make}</dd>
+    <article className='card bg-base-200'>
+      <section className='card-body gap-4'>
+        <dl className='grid grid-cols-2 gap-x-8 gap-y-1' role='list'>
+          <dt className='text-base-content/70 text-sm'>Marque</dt>
+          <dd className='text-base-content mb-3 font-medium'>{vehicle.make}</dd>
 
-        <dt>Modèle</dt>
-        <dd>{vehicle.model}</dd>
+          <dt className='text-base-content/70 text-sm'>Modèle</dt>
+          <dd className='text-base-content mb-3 font-medium'>{vehicle.model}</dd>
 
-        <dt>Année</dt>
-        <dd>{vehicle.year}</dd>
+          <dt className='text-base-content/70 text-sm'>Année</dt>
+          <dd className='text-base-content mb-3 font-medium'>{vehicle.year}</dd>
 
-        <dt>Type de moteur</dt>
-        <dd>{vehicle.engineType ?? '-'}</dd>
+          <dt className='text-base-content/70 text-sm'>Type de moteur</dt>
+          <dd className='text-base-content mb-3 font-medium'>{vehicle.engineType ?? '-'}</dd>
 
-        <dt>Type de carburant</dt>
-        <dd>{fuelTypeLabel}</dd>
+          <dt className='text-base-content/70 text-sm'>Type de carburant</dt>
+          <dd className='text-base-content mb-3 font-medium'>{fuelTypeLabel}</dd>
 
-        <dt>VIN</dt>
-        <dd>{vehicle.vin ?? '-'}</dd>
+          <dt className='text-base-content/70 text-sm'>VIN</dt>
+          <dd className='text-base-content mb-3 font-medium'>{vehicle.vin ?? '-'}</dd>
 
-        <dt>Plaque d'immatriculation</dt>
-        <dd>{vehicle.licensePlate ?? '-'}</dd>
+          <dt className='text-base-content/70 text-sm'>Plaque d'immatriculation</dt>
+          <dd className='text-base-content mb-3 font-medium'>{vehicle.licensePlate ?? '-'}</dd>
 
-        <dt>Date d'achat</dt>
-        <dd>{vehicle.purchaseDate ? formatDate(vehicle.purchaseDate) : '-'}</dd>
+          <dt className='text-base-content/70 text-sm'>Date d'achat</dt>
+          <dd className='text-base-content mb-3 font-medium'>
+            {vehicle.purchaseDate ? formatDate(vehicle.purchaseDate) : '-'}
+          </dd>
 
-        <dt>Kilométrage</dt>
-        <dd>{formatMileage(vehicle.mileage)}</dd>
-      </dl>
+          <dt className='text-base-content/70 text-sm'>Kilométrage</dt>
+          <dd className='text-base-content mb-3 font-medium'>{formatMileage(vehicle.mileage)}</dd>
+        </dl>
 
-      <section className='mx-auto my-6 flex w-full max-w-2xl items-center justify-between gap-2'>
-        <Button onClick={onEdit}>Modifier</Button>
-        <Button onClick={onDelete} variant='destructive'>
-          Supprimer
-        </Button>
+        <section className='card-actions justify-between'>
+          <Button onClick={onEdit}>Modifier</Button>
+          <Button onClick={onDelete} variant='destructive'>
+            Supprimer
+          </Button>
+        </section>
       </section>
-    </>
+    </article>
   )
 }
