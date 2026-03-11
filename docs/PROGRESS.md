@@ -107,30 +107,30 @@
 
 ---
 
-### Block 7: Profile, Admin & Cleanup (Phases 15-17) — `feature/design-system-profile-admin`
+### Block 7: Profile, Admin & Cleanup (Phases 15-17) — `feature/design-system-profile-admin` ✅
 
-#### Phase 15: Profile Feature
+#### Phase 15: Profile Feature ✅
 
-- [ ] ProfileView.tsx + tests
-- [ ] EditProfileForm.tsx + tests
-- [ ] EditProfileContainer.tsx + tests
-- [ ] ChangePasswordForm.tsx + tests
-- [ ] DeleteAccountSection.tsx + tests
-- [ ] DeleteAccountDialog.tsx + tests
+- [x] ProfileView.tsx + tests (card bg-base-200, semantic colors, page layout fix)
+- [x] EditProfileForm.tsx + tests (no changes needed — uses shared Input)
+- [x] EditProfileContainer.tsx + tests (card bg-base-200 + card-body wrapper)
+- [x] ChangePasswordForm.tsx + tests (card bg-base-200, alert alert-success)
+- [x] DeleteAccountSection.tsx + tests (card border-error, semantic colors)
+- [x] DeleteAccountDialog.tsx + tests (Radix UI Dialog + DaisyUI modal)
 
-#### Phase 16: Admin Feature
+#### Phase 16: Admin Feature ✅
 
-- [ ] AdminDashboard.tsx + tests
-- [ ] UserList.tsx + tests
-- [ ] UserManagement.tsx + tests
-- [ ] UserDetailContainer.tsx + tests
+- [x] AdminDashboard.tsx + tests (card bg-base-200 stat cards, semantic colors)
+- [x] UserList.tsx + tests (table table-zebra, badge badge-primary/success/error/warning)
+- [x] UserManagement.tsx + tests (card bg-base-200, badges, alert alert-error/success)
+- [x] UserDetailContainer.tsx + tests (semantic loading/error colors)
 
-#### Phase 17: Icon Cleanup & Final Verification
+#### Phase 17: Icon Cleanup & Final Verification ✅
 
-- [ ] Verify all react-icons replaced with Lucide
-- [ ] Remove react-icons and astro-icon packages
-- [ ] Clean up astro.config.mjs
-- [ ] Final automated checks (test, typecheck, lint, format)
+- [x] Verify all react-icons replaced with Lucide (none remaining)
+- [x] Remove react-icons and astro-icon packages
+- [x] Clean up astro.config.mjs (already clean from Phase 8)
+- [x] Final automated checks (521 tests pass, typecheck, lint, format)
 - [ ] Manual visual review of all screens
 
 ---
