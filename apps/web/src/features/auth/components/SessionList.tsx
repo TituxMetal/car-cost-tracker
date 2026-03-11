@@ -105,7 +105,7 @@ export const SessionList = () => {
         </header>
 
         {error && (
-          <p role='alert' className='text-error mt-4'>
+          <p role='alert' className='alert alert-error'>
             {error}
           </p>
         )}
