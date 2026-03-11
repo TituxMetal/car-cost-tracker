@@ -13,12 +13,17 @@ const userData = user as User
 ---
 
 <Main title='Profile'>
-  <section class='container mx-auto px-4 py-8'>
-    <h1 class='mb-8 text-center text-4xl font-bold text-zinc-100'>Welcome {userData.username}</h1>
-    <nav class='mb-8 flex justify-center gap-4 text-sky-400'>
-      <a href='/profile/sessions' class='hover:underline'>Manage Sessions</a>
-    </nav>
-    <div class='mx-auto max-w-xl space-y-8'>
+  <section class='container mx-auto px-4 py-10'>
+    <header class='mb-12 text-center'>
+      <h1 class='text-base-content text-4xl font-bold tracking-tight'>
+        Welcome {userData.username}
+      </h1>
+      <p class='text-base-content/70 mt-2 text-sm'>Manage your account settings and preferences</p>
+      <nav class='mt-4'>
+        <a href='/profile/sessions' class='link link-primary text-sm'>Manage Sessions</a>
+      </nav>
+    </header>
+    <div class='mx-auto flex max-w-xl flex-col gap-8'>
       <EditProfileContainer client:load userData={userData} />
       <ChangePasswordForm client:load />
       <DeleteAccountSection client:load />

@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import * as Dialog from '@radix-ui/react-dialog'
+import { useEffect, useState } from 'react'
 
 import { Button, Input } from '~/components/ui'
 import { authClient } from '~/lib/authClient'
@@ -16,7 +17,13 @@ export const DeleteAccountDialog = ({ isOpen, onClose }: DeleteAccountDialogProp
 
   const isConfirmed = confirmText === 'DELETE'
 
-  if (!isOpen) return null
+  useEffect(() => {
+    if (isOpen) {
+      setConfirmText('')
+      setIsDeleting(false)
+      setError(null)
+    }
+  }, [isOpen])
 
   const handleDelete = async () => {
     setIsDeleting(true)
@@ -34,54 +41,54 @@ export const DeleteAccountDialog = ({ isOpen, onClose }: DeleteAccountDialogProp
   }
 
   return (
-    <div
-      className='fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/70'
-      onClick={onClose}
-      aria-hidden='true'
+    <Dialog.Root
+      open={isOpen}
+      onOpenChange={open => {
+        if (!open) onClose()
+      }}
     >
-      <section
-        role='dialog'
-        aria-modal='true'
-        aria-labelledby='delete-dialog-title'
-        className='w-full max-w-md rounded-lg bg-zinc-800 p-6'
-        onClick={e => e.stopPropagation()}
-      >
-        <h2 id='delete-dialog-title' className='text-xl font-bold text-red-400'>
-          Delete Account
-        </h2>
+      <Dialog.Portal>
+        <Dialog.Overlay className='bg-neutral/50 fixed inset-0' onClick={onClose} />
+        <Dialog.Content
+          className='modal modal-open'
+          onInteractOutside={event => event.preventDefault()}
+        >
+          <div className='modal-box'>
+            <Dialog.Title className='text-error text-lg font-bold'>Delete Account</Dialog.Title>
+            <Dialog.Description className='text-base-content/70 py-4'>
+              This action is <strong>permanent</strong> and cannot be undone. All your data will be
+              deleted.
+            </Dialog.Description>
 
-        <p className='mt-4 text-zinc-300'>
-          This action is <strong>permanent</strong> and cannot be undone. All your data will be
-          deleted.
-        </p>
+            <p className='text-base-content/70'>
+              Type <strong className='text-error'>DELETE</strong> to confirm:
+            </p>
 
-        <p className='mt-4 text-zinc-300'>
-          Type <strong className='text-red-400'>DELETE</strong> to confirm:
-        </p>
+            <Input
+              type='text'
+              value={confirmText}
+              onChange={e => setConfirmText(e.target.value)}
+              placeholder='Type DELETE to confirm'
+              className='mt-2'
+            />
 
-        <Input
-          type='text'
-          value={confirmText}
-          onChange={e => setConfirmText(e.target.value)}
-          placeholder='Type DELETE to confirm'
-          className='mt-2'
-        />
+            {error && <p className='text-error mt-2'>{error}</p>}
 
-        {error && <p className='mt-2 text-red-400'>{error}</p>}
-
-        <footer className='mt-6 flex justify-end gap-3'>
-          <Button variant='outline' onClick={onClose} disabled={isDeleting}>
-            Cancel
-          </Button>
-          <Button
-            variant='destructive'
-            onClick={handleDelete}
-            disabled={!isConfirmed || isDeleting}
-          >
-            {isDeleting ? 'Deleting...' : 'Delete Account'}
-          </Button>
-        </footer>
-      </section>
-    </div>
+            <div className='modal-action'>
+              <Button variant='outline' onClick={onClose} disabled={isDeleting}>
+                Cancel
+              </Button>
+              <Button
+                variant='destructive'
+                onClick={handleDelete}
+                disabled={!isConfirmed || isDeleting}
+              >
+                {isDeleting ? 'Deleting...' : 'Delete Account'}
+              </Button>
+            </div>
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   )
 }

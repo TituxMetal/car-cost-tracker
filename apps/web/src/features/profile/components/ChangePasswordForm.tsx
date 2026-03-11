@@ -39,43 +39,43 @@ export const ChangePasswordForm = () => {
   })
 
   return (
-    <div className='p-6'>
-      <h2 className='mb-4 text-xl font-bold text-zinc-100'>Change Password</h2>
+    <article className='card bg-base-200'>
+      <section className='card-body gap-4'>
+        <h2 className='card-title'>Change Password</h2>
 
-      {status === 'success' && (
-        <p className='mb-4 rounded-md bg-green-900/50 p-3 text-green-400'>
-          Password changed successfully!
-        </p>
-      )}
-      <FormWrapper onSubmit={handleSubmit} error={errorMessage}>
-        <Input
-          {...form.register('currentPassword')}
-          type='password'
-          label='Current Password'
-          placeholder='Enter your current password'
-          error={form.formState.errors.currentPassword?.message}
-          autoComplete='current-password'
-        />
-        <Input
-          {...form.register('newPassword')}
-          type='password'
-          label='New Password'
-          placeholder='Enter your new password'
-          error={form.formState.errors.newPassword?.message}
-          autoComplete='new-password'
-        />
-        <Input
-          {...form.register('confirmPassword')}
-          type='password'
-          label='Confirm New Password'
-          placeholder='Confirm new password'
-          error={form.formState.errors.confirmPassword?.message}
-          autoComplete='new-password'
-        />
-        <Button type='submit' disabled={form.formState.isSubmitting}>
-          {form.formState.isSubmitting ? 'Changing...' : 'Change Password'}
-        </Button>
-      </FormWrapper>
-    </div>
+        {status === 'success' && (
+          <p className='alert alert-success'>Password changed successfully!</p>
+        )}
+        <FormWrapper onSubmit={handleSubmit} error={errorMessage}>
+          <Input
+            {...form.register('currentPassword')}
+            type='password'
+            label='Current Password'
+            placeholder='Enter your current password'
+            error={form.formState.errors.currentPassword?.message}
+            autoComplete='current-password'
+          />
+          <Input
+            {...form.register('newPassword')}
+            type='password'
+            label='New Password'
+            placeholder='Enter your new password'
+            error={form.formState.errors.newPassword?.message}
+            autoComplete='new-password'
+          />
+          <Input
+            {...form.register('confirmPassword')}
+            type='password'
+            label='Confirm New Password'
+            placeholder='Confirm new password'
+            error={form.formState.errors.confirmPassword?.message}
+            autoComplete='new-password'
+          />
+          <Button type='submit' disabled={form.formState.isSubmitting}>
+            {form.formState.isSubmitting ? 'Changing...' : 'Change Password'}
+          </Button>
+        </FormWrapper>
+      </section>
+    </article>
   )
 }

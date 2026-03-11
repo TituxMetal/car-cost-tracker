@@ -7,24 +7,33 @@ export interface ProfileViewProps {
 }
 
 export const ProfileView = ({ user, onEdit }: ProfileViewProps) => (
-  <>
-    <dl className='mx-auto mt-6 grid w-full max-w-lg grid-cols-2 gap-x-8 gap-y-2' role='list'>
-      <dt className='font-bold'>Email</dt>
-      <dt className='font-bold'>Username</dt>
-      <dd>{user.email}</dd>
-      <dd>{user.username}</dd>
+  <article className='card bg-base-200'>
+    <section className='card-body gap-4'>
+      <h2 className='card-title'>Profile Information</h2>
+      <dl className='grid grid-cols-2 gap-x-8 gap-y-1' role='list'>
+        <dt className='text-base-content/70 text-sm'>Email</dt>
+        <dt className='text-base-content/70 text-sm'>Username</dt>
+        <dd className='text-base-content mb-3 font-medium'>{user.email}</dd>
+        <dd className='text-base-content mb-3 font-medium'>{user.username}</dd>
 
-      <dt className='font-bold'>First name</dt>
-      <dt className='font-bold'>Last name</dt>
-      <dd>{user.firstName ?? '-'}</dd>
-      <dd>{user.lastName ?? '-'}</dd>
+        <dt className='text-base-content/70 text-sm'>First name</dt>
+        <dt className='text-base-content/70 text-sm'>Last name</dt>
+        <dd className='text-base-content mb-3 font-medium'>{user.firstName ?? '-'}</dd>
+        <dd className='text-base-content mb-3 font-medium'>{user.lastName ?? '-'}</dd>
 
-      <dt className='col-span-2 font-bold'>Email Verified</dt>
-      <dd className='col-span-2'>{user.emailVerified ? 'Yes' : 'No'}</dd>
-    </dl>
+        <dt className='text-base-content/70 col-span-2 text-sm'>Email Verified</dt>
+        <dd className='text-base-content col-span-2 font-medium'>
+          {user.emailVerified ? (
+            <span className='badge badge-success badge-sm'>Yes</span>
+          ) : (
+            <span className='badge badge-warning badge-sm'>No</span>
+          )}
+        </dd>
+      </dl>
 
-    <section className='mx-auto mt-4 grid w-full max-w-lg items-center justify-end'>
-      <Button onClick={onEdit}>Edit</Button>
+      <section className='card-actions justify-end'>
+        <Button onClick={onEdit}>Edit</Button>
+      </section>
     </section>
-  </>
+  </article>
 )

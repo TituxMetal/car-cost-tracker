@@ -99,28 +99,14 @@ describe('ProfileView', () => {
     const onEdit = mock(() => {})
     render(<ProfileView user={mockUser} onEdit={onEdit} />)
 
+    const card = screen.getByRole('article')
+    expect(card).toHaveClass('card', 'bg-base-200')
+
     const descriptionList = screen.getByRole('list')
-    expect(descriptionList).toHaveClass(
-      'mx-auto',
-      'mt-6',
-      'grid',
-      'w-full',
-      'max-w-lg',
-      'grid-cols-2',
-      'gap-x-8',
-      'gap-y-2'
-    )
+    expect(descriptionList).toHaveClass('grid', 'grid-cols-2', 'gap-x-8', 'gap-y-1')
 
     const section = screen.getByRole('button', { name: /edit/i }).closest('section')
-    expect(section).toHaveClass(
-      'mx-auto',
-      'mt-4',
-      'grid',
-      'w-full',
-      'max-w-lg',
-      'items-center',
-      'justify-end'
-    )
+    expect(section).toHaveClass('card-actions', 'justify-end')
   })
 
   it('should handle undefined firstName and lastName gracefully', () => {

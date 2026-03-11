@@ -221,7 +221,7 @@ describe('EditProfileContainer', () => {
       fireEvent.click(screen.getByRole('button', { name: /edit/i }))
 
       const form = screen.getByRole('form')
-      expect(form).toHaveClass('mx-auto', 'mt-6', 'grid', 'w-full', 'max-w-lg', 'gap-4')
+      expect(form).toHaveClass('card-body', 'gap-4')
     })
 
     it('should render Cancel button with destructive variant', () => {
