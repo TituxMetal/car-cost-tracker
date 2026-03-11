@@ -212,8 +212,8 @@ export const CheckTypeContainer = () => {
         {!hasCheckTypes && (
           <section className='flex flex-col items-center gap-3 py-16 text-center'>
             <ClipboardPlus size={48} className='text-base-content/30' />
-            <p className='text-base-content/50 text-lg font-medium'>Aucun type de contrôle</p>
-            <p className='text-base-content/40 max-w-sm text-sm'>
+            <p className='text-base-content/70 text-lg font-medium'>Aucun type de contrôle</p>
+            <p className='text-base-content/60 max-w-sm text-sm'>
               Ajoutez votre premier contrôle ou utilisez les suggestions rapides ci-dessus
             </p>
           </section>
