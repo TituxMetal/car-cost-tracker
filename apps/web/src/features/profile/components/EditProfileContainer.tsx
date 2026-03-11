@@ -68,21 +68,19 @@ export const EditProfileContainer = ({ userData }: EditProfileContainerProps) =>
   const isFormError = form.formState.isSubmitted && !form.formState.isValid
 
   return (
-    <FormWrapper
-      onSubmit={handleSubmit}
-      error={serverError}
-      className='mx-auto mt-6 grid w-full max-w-lg gap-4'
-    >
-      <EditProfileForm form={form} />
+    <article className='card bg-base-200'>
+      <FormWrapper onSubmit={handleSubmit} error={serverError} className='card-body gap-4'>
+        <EditProfileForm form={form} />
 
-      <section className='flex items-center justify-between'>
-        <Button variant='destructive' type='button' onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button type='submit' disabled={isFormError}>
-          Submit
-        </Button>
-      </section>
-    </FormWrapper>
+        <section className='card-actions justify-between'>
+          <Button variant='destructive' type='button' onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button type='submit' disabled={isFormError}>
+            Submit
+          </Button>
+        </section>
+      </FormWrapper>
+    </article>
   )
 }

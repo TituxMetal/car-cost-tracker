@@ -8,12 +8,18 @@ export const DeleteAccountSection = () => {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <section className='rounded-lg border-2 border-red-900 bg-zinc-800 p-6'>
-      <h2 className='text-lg font-bold text-red-400'>Danger Zone</h2>
-      <p className='mt-2 text-zinc-300'>Once you delete your account, there is no going back.</p>
-      <Button variant='destructive' onClick={() => setIsOpen(true)} className='mt-4'>
-        Delete Account
-      </Button>
+    <section className='card border-error bg-base-200 border-2'>
+      <div className='card-body gap-3'>
+        <h2 className='card-title text-error'>Danger Zone</h2>
+        <p className='text-base-content/70'>
+          Once you delete your account, there is no going back.
+        </p>
+        <div className='card-actions'>
+          <Button variant='destructive' onClick={() => setIsOpen(true)}>
+            Delete Account
+          </Button>
+        </div>
+      </div>
       <DeleteAccountDialog isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </section>
   )

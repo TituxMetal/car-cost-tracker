@@ -10,9 +10,12 @@ if (!user) {
 ---
 
 <Main title='Profile'>
-  <section class='container mx-auto px-4 py-8'>
-    <h1 class='mb-8 text-center text-4xl font-bold text-zinc-100'>Active Sessions</h1>
-    <div class='mx-auto max-w-xl space-y-8'>
+  <section class='container mx-auto px-4 py-10'>
+    <header class='mb-12 text-center'>
+      <h1 class='text-base-content text-4xl font-bold tracking-tight'>Active Sessions</h1>
+      <p class='text-base-content/70 mt-2 text-sm'>Manage your active sessions and devices</p>
+    </header>
+    <div class='mx-auto flex max-w-xl flex-col gap-8'>
       <SessionList client:load />
     </div>
   </section>

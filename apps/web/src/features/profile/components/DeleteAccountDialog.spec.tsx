@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, mock } from 'bun:test'
 
 import { authClient } from '~/lib/authClient'
-import { cleanup, render, screen, userEvent, waitFor } from '~/test-utils'
+import { cleanup, fireEvent, render, screen, userEvent, waitFor } from '~/test-utils'
 import * as navigationUtils from '~/utils/navigation'
 
 import { DeleteAccountDialog } from './DeleteAccountDialog'
@@ -67,12 +67,11 @@ describe('DeleteAccountDialog', () => {
       expect(mockOnClose).toHaveBeenCalled()
     })
 
-    it('should call onClose when backdrop is clicked', async () => {
-      const user = userEvent.setup()
+    it('should call onClose when backdrop is clicked', () => {
       render(<DeleteAccountDialog isOpen={true} onClose={mockOnClose} />)
 
-      const backdrop = screen.getByRole('dialog', { hidden: true }).parentElement
-      await user.click(backdrop!)
+      const overlay = document.querySelector('.fixed.inset-0')
+      fireEvent.click(overlay!)
 
       expect(mockOnClose).toHaveBeenCalled()
     })
@@ -106,6 +105,20 @@ describe('DeleteAccountDialog', () => {
       await waitFor(() => {
         expect(screen.getByText(/server error/i)).toBeInTheDocument()
       })
+    })
+
+    it('should reset state when dialog is reopened', async () => {
+      const user = userEvent.setup()
+      const { rerender } = render(<DeleteAccountDialog isOpen={true} onClose={mockOnClose} />)
+
+      await user.type(screen.getByPlaceholderText(/type delete/i), 'DEL')
+
+      rerender(<DeleteAccountDialog isOpen={false} onClose={mockOnClose} />)
+      rerender(<DeleteAccountDialog isOpen={true} onClose={mockOnClose} />)
+
+      const input = screen.getByPlaceholderText(/type delete/i) as HTMLInputElement
+      expect(input.value).toBe('')
+      expect(screen.getByRole('button', { name: /delete account/i, hidden: true })).toBeDisabled()
     })
 
     it('should show loading state while deleting', async () => {
