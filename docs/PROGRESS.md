@@ -141,11 +141,10 @@
 
 - [x] Update MVP.md checkboxes for Check Types (4 items + 1 Done criteria)
 
-### Block 2: Docker Bug Fix — `fix/docker-migrations-env`
+### Block 2: Docker Bug Fix — `fix/docker-migrations-env` ✅
 
-- [ ] Fix RUN_MIGRATIONS mismatch (start.sh checks 'yes', compose.yaml sets 'true')
-- [ ] Remove deprecated `version: '3.8'` from compose.yaml
-- [ ] Ship fix to develop
+- [x] Fix RUN_MIGRATIONS mismatch (start.sh checks 'yes', compose.yaml sets 'true')
+- [x] Remove deprecated `version: '3.8'` from compose.yaml
 
 ### Block 3: Dependency Updates — `chore/dependency-updates`
 

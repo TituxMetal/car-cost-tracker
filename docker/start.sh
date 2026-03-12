@@ -7,7 +7,7 @@ mkdir -p /data/backups
 DB_FILE=${DATABASE_URL#file:}
 
 # Check if RUN_MIGRATIONS is true
-if [ "$RUN_MIGRATIONS" = "yes" ]; then
+if [ "$RUN_MIGRATIONS" = "true" ]; then
   # Check if the database file exists
   if [ -f "$DB_FILE" ]; then
     # Backup the database with a timestamp
