@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   car-cost-tracker-api:
     image: ghcr.io/tituxmetal/car-cost-tracker-api:prod
