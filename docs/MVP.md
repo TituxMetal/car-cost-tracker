@@ -60,10 +60,10 @@ Multi-user, multi-car version. Allows sharing with family/friends.
 
 ### 3. Check Types (Templates)
 
-- [ ] Create custom check types (e.g., "Oil Level Check", "Tire Pressure", "Coolant Level")
-- [ ] Define interval in days (e.g., every 7 days, every 14 days)
-- [ ] Add description/instructions for each check type
-- [ ] Edit/delete check types
+- [x] Create custom check types (e.g., "Oil Level Check", "Tire Pressure", "Coolant Level")
+- [x] Define interval in days (e.g., every 7 days, every 14 days)
+- [x] Add description/instructions for each check type
+- [x] Edit/delete check types
 
 ### 4. Check Logging
 
@@ -240,7 +240,7 @@ Expense
 - [ ] Deployed to a public URL
 - [x] Auth works (register, login, logout)
 - [x] Can create and manage ONE vehicle
-- [ ] Can create check types with intervals
+- [x] Can create check types with intervals
 - [ ] Can log checks and see history
 - [ ] Dashboard shows vehicle status and upcoming checks
 - [ ] Can track expenses and see totals

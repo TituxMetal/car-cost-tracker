@@ -135,6 +135,43 @@
 
 ---
 
+## Post-Feature-03 Housekeeping
+
+### Block 1: MVP Sync + develop → main PR ✅
+
+- [x] Update MVP.md checkboxes for Check Types (4 items + 1 Done criteria)
+
+### Block 2: Docker Bug Fix — `fix/docker-migrations-env`
+
+- [ ] Fix RUN_MIGRATIONS mismatch (start.sh checks 'yes', compose.yaml sets 'true')
+- [ ] Remove deprecated `version: '3.8'` from compose.yaml
+- [ ] Ship fix to develop
+
+### Block 3: Dependency Updates — `chore/dependency-updates`
+
+- [ ] Batch 1: Safe updates (NestJS, Prisma, React, Astro 5.x, tooling)
+- [ ] Batch 2: TailwindCSS 4.2 (verify DaisyUI 5 compatibility)
+- [ ] Batch 2: better-auth 1.5 + nestjs-better-auth (review changelogs first)
+- [ ] Batch 2: @happy-dom 20.x (optional — skip if tests break)
+- [ ] Ship updates to develop
+
+### Block 4: Fly.io Deployment — `feature/fly-deployment`
+
+- [ ] Create Fly.io apps (api + web) and SQLite volume
+- [ ] Create fly-api.toml and fly-web.toml configs
+- [ ] Deploy both apps
+- [ ] Verify full flow on live URL
+- [ ] Update MVP.md "Deployed to a public URL" checkbox
+- [ ] Ship to develop
+
+### Block 5: Final Merge
+
+- [ ] Create PR develop → main (Blocks 2-4)
+- [ ] Merge and sync
+- [ ] Ready for Feature 04: Check Logging
+
+---
+
 ## Backlog — Future Improvements
 
 ### From Feature 01 PR review (low priority)
