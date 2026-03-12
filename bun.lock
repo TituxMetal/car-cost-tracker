@@ -5,7 +5,7 @@
     "": {
       "name": "car-cost-tracker",
       "dependencies": {
-        "better-auth": "^1.5.5",
+        "better-auth": "1.5.5",
       },
       "devDependencies": {
         "@changesets/cli": "^2.30.0",
