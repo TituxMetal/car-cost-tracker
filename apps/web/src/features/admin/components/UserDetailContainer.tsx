@@ -38,7 +38,9 @@ export const UserDetailContainer = ({ userId }: Props) => {
         return
       }
 
-      const foundUser = result.data?.users?.find(u => u.id === userId) as UserData | undefined
+      const foundUser = result.data?.users?.find(u => u.id === userId) as unknown as
+        | UserData
+        | undefined
 
       if (!foundUser) {
         setError('User not found')
