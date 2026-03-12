@@ -146,13 +146,13 @@
 - [x] Fix RUN_MIGRATIONS mismatch (start.sh checks 'yes', compose.yaml sets 'true')
 - [x] Remove deprecated `version: '3.8'` from compose.yaml
 
-### Block 3: Dependency Updates — `chore/dependency-updates`
+### Block 3: Dependency Updates — `chore/dependency-updates` ✅
 
-- [ ] Batch 1: Safe updates (NestJS, Prisma, React, Astro 5.x, tooling)
-- [ ] Batch 2: TailwindCSS 4.2 (verify DaisyUI 5 compatibility)
-- [ ] Batch 2: better-auth 1.5 + nestjs-better-auth (review changelogs first)
-- [ ] Batch 2: @happy-dom 20.x (optional — skip if tests break)
-- [ ] Ship updates to develop
+- [x] Batch 1: Safe updates (NestJS 11.1.16, Prisma 7.5.0, React 19.2.4, Astro 5.18.1, tooling)
+- [x] Batch 2: TailwindCSS 4.2.1 (DaisyUI 5 compatible, no breaking changes)
+- [x] Batch 2: better-auth 1.5.5 + nestjs-better-auth 2.5.1 (fixed admin type casts)
+- [x] Batch 2: @happy-dom 20.8.3 (no regressions, all 522 tests pass)
+- [x] Ship updates to develop
 
 ### Block 4: Fly.io Deployment — `feature/fly-deployment`
 
