@@ -29,7 +29,7 @@ export const UserList = () => {
       return
     }
 
-    setUsers((result.data?.users as AdminUser[]) ?? [])
+    setUsers((result.data?.users as unknown as AdminUser[]) ?? [])
     setIsLoading(false)
   }
 
