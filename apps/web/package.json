@@ -24,7 +24,6 @@
     "@astrojs/react": "^4.4.2",
     "@hookform/resolvers": "^5.2.2",
     "@nanostores/react": "^1.0.0",
-    "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-dialog": "^1.1.15",
     "astro": "^5.16.6",
     "lucide-react": "^0.576.0",
