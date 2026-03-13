@@ -156,12 +156,11 @@
 
 ### Block 4: Fly.io Deployment — `feature/fly-deployment`
 
-- [ ] Create Fly.io apps (api + web) and SQLite volume
-- [ ] Create fly-api.toml and fly-web.toml configs
-- [ ] Deploy both apps
-- [ ] Verify full flow on live URL
-- [ ] Update MVP.md "Deployed to a public URL" checkbox
-- [ ] Ship to develop
+- [ ] Phase 1: Cross-origin code changes (CORS env-driven, auth baseURL fix, authClient fix)
+- [ ] Phase 2: Fly.io infrastructure setup (apps, volume, secrets)
+- [ ] Phase 3: Fly config files (fly-api.toml, fly-web.toml)
+- [ ] Phase 4: Deploy both apps and verify full flow on live URL
+- [ ] Phase 5: Update MVP.md "Deployed to a public URL" checkbox + ship to develop
 
 ### Block 5: Final Merge
 
