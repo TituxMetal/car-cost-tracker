@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 # Create the backups directory if it doesn't exist
 mkdir -p /data/backups
@@ -6,21 +7,27 @@ mkdir -p /data/backups
 # Extract the database file path from DATABASE_URL
 DB_FILE=${DATABASE_URL#file:}
 
+echo "=== Car Cost Tracker API ==="
+echo "DATABASE_URL: $DATABASE_URL"
+echo "DB_FILE: $DB_FILE"
+echo "RUN_MIGRATIONS: $RUN_MIGRATIONS"
+
 # Check if RUN_MIGRATIONS is true
 if [ "$RUN_MIGRATIONS" = "true" ]; then
-  # Check if the database file exists
+  # Backup existing database if present
   if [ -f "$DB_FILE" ]; then
-    # Backup the database with a timestamp
+    echo "Database file exists, creating backup..."
     BACKUP_FILE="/data/backups/$(basename "$DB_FILE").$(date +%Y%m%d%H%M%S).backup"
-    if ! cp "$DB_FILE" "$BACKUP_FILE" 2>/dev/null; then
-      echo "Backup failed, proceeding with migration at your own risk"
-    fi
-  else
-    echo "Database file does not exist, skipping backup"
+    cp "$DB_FILE" "$BACKUP_FILE" && echo "Backup created: $BACKUP_FILE"
   fi
+
   # Run migrations
-  bun run --filter @app/api prisma migrate deploy
+  echo "Running Prisma migrations..."
+  cd /app/apps/api && bunx prisma migrate deploy
+  echo "Migrations completed successfully"
+  cd /app
 fi
 
 # Start the application
-bun run --filter @app/api start:prod
+echo "Starting application..."
+exec bun run --filter @app/api start:prod
