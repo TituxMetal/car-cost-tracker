@@ -44,7 +44,7 @@ COPY --from=build /app/apps/api/package.json ./apps/api/
 COPY --from=build /app/apps/web/package.json ./apps/web/
 COPY --from=build /app/packages ./packages/
 
-RUN bun install --filter @app/api --frozen-lockfile
+RUN bun install --filter @app/api --frozen-lockfile --production
 
 RUN mkdir -p ./apps/api/prisma
 
