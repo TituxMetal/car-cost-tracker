@@ -156,11 +156,11 @@
 
 ### Block 4: Fly.io Deployment — `feature/fly-deployment`
 
-- [ ] Phase 1: Cross-origin code changes (CORS env-driven, auth baseURL fix, authClient fix)
-- [ ] Phase 2: Fly.io infrastructure setup (apps, volume, secrets)
-- [ ] Phase 3: Fly config files (fly-api.toml, fly-web.toml)
-- [ ] Phase 4: Deploy both apps and verify full flow on live URL
-- [ ] Phase 5: Update MVP.md "Deployed to a public URL" checkbox + ship to develop
+- [x] Phase 1: Cross-origin code changes (CORS env-driven, auth baseURL fix, authClient fix)
+- [x] Phase 2: Fly.io infrastructure setup (apps, volume, secrets)
+- [x] Phase 3: Fly config files (fly-api.toml, fly-web.toml)
+- [x] Phase 4: Deploy both apps and verify full flow on live URL
+- [x] Phase 5: Update MVP.md "Deployed to a public URL" checkbox + ship to develop
 
 ### Block 5: Final Merge
 
