@@ -1,0 +1,27 @@
+app = 'car-cost-tracker-api'
+primary_region = 'cdg'
+
+[build]
+  dockerfile = 'docker/Dockerfile.api'
+
+[env]
+  DATABASE_URL = 'file:/data/prod.db'
+  RUN_MIGRATIONS = 'true'
+  NODE_ENV = 'production'
+  EXPIRES_IN = '604800'
+  UPDATE_AGE = '86400'
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+
+[mounts]
+  source = 'data'
+  destination = '/data'
+
+[[vm]]
+  size = 'shared-cpu-1x'
+  memory = '512mb'
