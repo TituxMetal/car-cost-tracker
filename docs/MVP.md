@@ -237,7 +237,7 @@ Expense
 
 ### MVP Core (Required)
 
-- [ ] Deployed to a public URL
+- [x] Deployed to a public URL
 - [x] Auth works (register, login, logout)
 - [x] Can create and manage ONE vehicle
 - [x] Can create check types with intervals
