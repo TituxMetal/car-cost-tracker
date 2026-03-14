@@ -5,8 +5,17 @@ import { createAuthClient } from 'better-auth/react'
 // Better-auth expects baseURL to be the server origin, NOT including /api/auth
 // The basePath config (default /api/auth) is added automatically
 const getBaseURL = (): string => {
-  // In browser, use current origin (proxy handles /api/auth/*)
   if (typeof window !== 'undefined') {
+    const publicApiUrl = import.meta.env.PUBLIC_API_URL || '/api'
+    // Absolute URL = cross-origin deployment (e.g. Fly.io two-app), extract the origin
+    if (publicApiUrl.startsWith('http')) {
+      try {
+        return new URL(publicApiUrl).origin
+      } catch {
+        // fall through
+      }
+    }
+    // Relative URL = same-origin (dev proxy or reverse-proxy setup)
     const origin = window.location?.origin
     // Check for valid origin (happy-dom returns literal string "null")
     if (origin && origin !== 'null') {

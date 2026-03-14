@@ -7,7 +7,8 @@ const bootstrap = async () => {
   const app = await NestFactory.create(AppModule, { bodyParser: false })
 
   const isProduction = process.env.NODE_ENV === 'production'
-  const allowedOrigins = isProduction ? ['https://fab.tuxlab.fr'] : ['http://localhost:4321']
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:4321'
+  const allowedOrigins = isProduction ? [frontendUrl] : ['http://localhost:4321']
 
   app.enableCors({
     origin: allowedOrigins,
