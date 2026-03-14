@@ -13,20 +13,29 @@ export const createBetterAuthConfig = (
   emailService: EmailService,
   configService: ConfigService
 ) => {
+  const frontendUrl = configService.betterAuth.frontendUrl
+  const isProduction = configService.app.isProduction
+
   const config = {
     secret: configService.betterAuth.secret,
-    baseURL: configService.betterAuth.frontendUrl,
-    trustedOrigins: [configService.betterAuth.frontendUrl],
+    baseURL: configService.betterAuth.baseURL,
+    trustedOrigins: [frontendUrl],
     database: prismaAdapter(prisma, { provider: 'sqlite' }),
+    advanced: {
+      useSecureCookies: false,
+      defaultCookieAttributes: isProduction ? { sameSite: 'lax' as const, secure: true } : undefined
+    },
     emailVerification: {
-      sendVerificationEmail: async ({ user, url, token }, _request) => {
-        await emailService.sendVerificationEmail(user.email, url)
+      sendVerificationEmail: async ({ user, url }, _request) => {
+        const parsed = new URL(url)
+        parsed.searchParams.set('callbackURL', `${frontendUrl}/auth`)
+        await emailService.sendVerificationEmail(user.email, parsed.toString())
       }
     },
     emailAndPassword: {
       enabled: true,
       requireEmailVerification: true,
-      sendResetPassword: async ({ user, url, token }, _request) => {
+      sendResetPassword: async ({ user, url }, _request) => {
         await emailService.sendPasswordResetEmail(user.email, url)
       }
     },
