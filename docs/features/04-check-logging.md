@@ -15,123 +15,259 @@ interval. Users can view their check history — both overall and filtered by ch
 
 **Main UI elements:**
 
-- Quick log action (accessible from dashboard and check type list)
-- Check log form (date, optional notes)
-- Check history list (all logs or per check type)
-- "Next due" indicator on check types and dashboard
+- Quick log action accessible from the check type list (button on each check type card)
+- Log check modal (Radix UI Dialog) with date input and optional notes
+- Check history list (all logs or filtered per check type)
+- "Next due" status indicator on each check type card (badge showing days until due or days overdue)
 
 **Data involved:**
 
-- CheckLog entity linked to a CheckType
-- Completed date, optional notes, calculated next due date
+- CheckLog entity linked to a CheckType (which is linked to a Vehicle)
+- Completed date (date-only, no time component), optional notes, calculated next due date
 
 ## User Flow
 
 ### Logging a Check
 
-1. User sees a check type in the list or dashboard (e.g., "Oil Level — due in 2 days")
-2. User clicks "Log Check" (or similar action)
-3. A form appears with:
-   - Check type name (read-only, for context)
-   - Completed date (defaults to today, can be backdated)
-   - Notes (optional text field)
-4. User submits
-5. System calculates `nextDueAt = completedAt + interval days`
-6. System saves the check log
-7. User sees confirmation and updated "next due" status
+1. User sees their check type list (e.g., "Niveau d'huile — dans 2 jours")
+2. User clicks "Enregistrer" on a check type card
+3. A modal dialog opens with:
+   - Check type name displayed as read-only header
+   - Date input (defaults to today, allows backdating but not future dates)
+   - Notes textarea (optional, max 500 characters)
+4. User submits the form
+5. System validates input (Zod on frontend, class-validator + domain validation on backend)
+6. System calculates `nextDueAt = completedAt + intervalDays`
+7. System saves the check log
+8. Modal closes, check type card updates with the new "next due" status
+9. Success feedback displayed (toast or inline alert)
 
 ### Viewing History
 
-1. User navigates to check history (from menu or check type detail)
-2. User sees a chronological list of all logged checks
+1. User navigates to check history (from the check types page or a dedicated history view)
+2. User sees a chronological list of all logged checks (newest first)
 3. Each entry shows: check type name, completed date, notes (if any), next due date
-4. User can filter by check type to see history for a specific check
-5. User can delete a log entry if needed (with confirmation)
+4. User can filter by check type using a dropdown selector
+5. User can delete a log entry (with confirmation dialog using existing ConfirmDialog component)
+
+### Check Status on Check Type Cards
+
+1. Each check type card displays a status badge:
+   - **"À jour"** (success) — next due date is in the future, more than 2 days away
+   - **"Bientôt"** (warning) — next due date is within 2 days
+   - **"En retard"** (error) — next due date is in the past
+   - **"Jamais effectué"** (neutral) — no logs exist for this check type
+2. Status is computed on the frontend from the most recent log's `nextDueAt` vs today's date
 
 ## Dependencies
 
 **Requires:**
 
-- Vehicle Profile — logs are ultimately tied to a vehicle
-- Check Types — logs are recorded against a specific check type
+- Vehicle Profile (Feature 02) — logs are ultimately tied to a vehicle ✅ Done
+- Check Types (Feature 03) — logs are recorded against a specific check type ✅ Done
+- UI Design System (Feature 03b) — DaisyUI 5 components, Radix UI Dialog ✅ Done
+- Post-Feature-03 housekeeping Block 5 (develop → main merge) — should be completed before starting
+  this feature
 
 **Enables:**
 
-- Dashboard — displays overdue checks, upcoming checks, last check performed
-- Provides the data needed to calculate check status (on time, due soon, overdue)
+- Dashboard (Feature 05) — displays overdue checks, upcoming checks, last check performed
+- Provides the data needed to calculate per-check-type status (on time, due soon, overdue)
+- Lays groundwork for future notification/reminder features
 
 ## What Must Exist (Backend)
 
-**Domain layer:**
+### Domain Layer
 
-- CheckLog entity with properties (checkTypeId, completedAt, notes, nextDueAt)
-- CheckLog ID value object
-- CheckType ID reference (value object)
-- CheckLog repository interface
-- Domain logic: `nextDueAt` calculation based on check type interval
-- Domain exceptions (not found, validation errors)
+**Entity:**
 
-**Application layer:**
+- CheckLog entity with behavior:
+  - Encapsulates business logic for next due date calculation
+  - Constructor validates invariants (completed date not in future, notes length)
+  - `nextDueAt` computed from `completedAt + intervalDays` at creation time
+  - Properties: id, checkTypeId, completedAt, notes, nextDueAt, createdAt, updatedAt
 
-- Create check log use case (includes nextDueAt calculation)
-- List check logs (by vehicle, optionally filtered by check type) use case
-- Get check log use case
-- Delete check log use case
-- CheckLog DTOs for input/output
-- CheckLog mapper
+**Value Objects:**
 
-**Infrastructure layer:**
+- CheckLog ID (UUID validation, immutable, equality comparison)
+- CompletedAt (date validation — required, not in the future, date-only)
 
-- CheckLog controller with endpoints
-- Prisma CheckLog repository implementation
-- Database migration for CheckLog table
+**Repository Interface (port):**
 
-**Validations:**
+- Create a check log
+- Find check log by ID
+- Find all check logs by check type
+- Find all check logs by vehicle (through check type relationship)
+- Find most recent log per check type (for status calculation)
+- Delete a check log
+- Count logs per check type (optional, for statistics)
 
-- CheckType must exist and belong to user's vehicle
-- Completed date is required, cannot be in the future
-- Notes are optional, max 500 characters
-- NextDueAt is calculated, not user-provided
+**Domain Exceptions:**
 
-**API endpoints:**
+- CheckLog not found
+- Invalid check log (validation failures)
 
-- `POST /vehicles/:vehicleId/check-types/:checkTypeId/logs` — create check log
-- `GET /vehicles/:vehicleId/check-logs` — list all check logs for vehicle
-- `GET /vehicles/:vehicleId/check-types/:checkTypeId/logs` — list logs for specific check type
+**Validation Constants:**
+
+- Notes max length (500 characters)
+- Completed date constraints (not in future)
+
+### Application Layer
+
+**Use Cases:**
+
+- Create check log — receives check type ID + input, fetches check type to get interval, creates
+  entity with calculated nextDueAt, saves via repository
+- List check logs by vehicle — returns all logs for a vehicle, optionally filtered by check type,
+  sorted newest first
+- Get single check log — by ID with ownership verification
+- Delete check log — with ownership verification and confirmation
+- Get check status summary — returns latest log + status per check type for a vehicle (used by
+  frontend for status badges, and later by dashboard)
+
+**Service Orchestrator:**
+
+- Delegates to use cases, provides a unified API for the controller
+
+**DTOs:**
+
+- Create check log input DTO (checkTypeId, completedAt, notes) with class-validator decorators
+  referencing domain validation constants
+- Check log response DTO (id, checkTypeId, checkTypeName, completedAt, notes, nextDueAt, createdAt)
+- Check status summary DTO (checkTypeId, checkTypeName, lastCompletedAt, nextDueAt, status)
+
+**Application Mapper:**
+
+- Entity → response DTO conversion (unwraps value objects to primitives)
+
+### Infrastructure Layer
+
+**Controller:**
+
+- Mounted at nested route under vehicles (consistent with check types pattern)
+- All endpoints verify vehicle ownership before delegating to service
+- Uses `@Session()` decorator for authentication
+
+**Prisma Repository:**
+
+- Implements the domain repository interface
+- Handles Prisma error codes → domain exceptions (P2002, P2025)
+- Uses infrastructure mapper for Prisma ↔ domain entity conversion
+
+**Infrastructure Mapper:**
+
+- Prisma record → domain entity (reconstructs value objects)
+- Domain entity → Prisma record (unwraps value objects to primitives)
+
+**Database Migration:**
+
+- New CheckLog table with:
+  - Foreign key to CheckType (cascade delete when check type is deleted)
+  - Index on checkTypeId for efficient lookups
+  - completedAt as date-only field
+  - nextDueAt as date-only field
+  - Relation added to CheckType model (one-to-many)
+
+**Module:**
+
+- NestJS module with useFactory DI pattern (consistent with CheckTypes module)
+- Imports: Auth module, Vehicles module, CheckTypes module
+- Exports: CheckLog service (for future dashboard consumption)
+
+### API Endpoints
+
+- `POST /vehicles/:vehicleId/check-logs` — create check log (checkTypeId in request body)
+- `GET /vehicles/:vehicleId/check-logs` — list all check logs for vehicle (optional `?checkTypeId=`
+  query filter)
 - `GET /vehicles/:vehicleId/check-logs/:id` — get single check log
 - `DELETE /vehicles/:vehicleId/check-logs/:id` — delete check log
+- `GET /vehicles/:vehicleId/check-status` — get status summary per check type
+
+### Validations
+
+- Check type must exist and belong to the user's vehicle
+- Completed date is required, must be a valid date, cannot be in the future
+- Notes are optional, max 500 characters
+- NextDueAt is calculated server-side, never user-provided
+- Vehicle ownership verified on every endpoint
 
 ## What Must Exist (Frontend)
 
-**Pages/routes:**
+### Types
 
-- Check history page (all logs)
-- Check type history view (logs filtered by check type)
+- CheckLog interface (id, checkTypeId, checkTypeName, completedAt, notes, nextDueAt, createdAt)
+- CheckStatus type union: `'on-time' | 'due-soon' | 'overdue' | 'never'`
+- CheckStatusSummary interface (checkTypeId, checkTypeName, lastCompletedAt, nextDueAt, status)
+- CreateCheckLogInput interface (checkTypeId, completedAt, notes)
 
-**Components:**
+### Validation Schemas (Zod)
 
-- Log check form (date picker, notes textarea)
-- Log check modal or inline form
-- Check history list component
-- Check log item (showing check type, date, notes, next due)
-- Filter/selector for check type
-- Delete confirmation dialog
-- Empty state ("No checks logged yet")
+- Create check log schema:
+  - completedAt: required date string, validated as not-in-future
+  - notes: optional string, max 500 characters
+  - French error messages (consistent with existing schemas)
+- Type inference from schemas for form typing
 
-**State management:**
+### API Service
 
-- Check logs store (list of logs for current vehicle)
-- Current filter state (all or specific check type)
-- Loading and error states
-- Actions: fetch logs, create log, delete log
+- Typed service methods: create log, list logs (with optional filter), get log, delete log, get
+  status summary
+- Uses existing `apiRequest` client (`api.get`, `api.post`, `api.delete`)
+- Uses existing `handleApiResponse` for error handling
+- Endpoints prefixed with `/api/vehicles/:vehicleId/` (Astro proxy)
 
-**User interactions:**
+### State Management (Nanostores)
 
-- Quick log from dashboard or check type list
-- Date picker with "today" as default
-- Optional notes input
-- History browsing with filtering
-- Delete log action
+- Atoms: `$checkLogs`, `$checkStatuses`, `$isLoading`, `$error`
+- Computed: `$hasCheckLogs`, `$checkLogCount`
+- Actions: fetch logs (with optional filter), create log, delete log, fetch statuses, clear error
+- Separate atoms for statuses vs logs (different lifecycle — statuses refresh after every log
+  action)
+
+### Custom Hook
+
+- Connects store to components
+- Provides: logs, statuses, loading, error, actions (create, delete, refresh, filter)
+- Handles the fetch-on-mount and refresh-after-mutation patterns
+
+### Pages / Routes
+
+- Check history page (all logs for the vehicle) — Astro page with React island
+- Potentially integrated into the check types page (logs visible per check type)
+
+### Components
+
+**Container (smart):**
+
+- Check log container — manages modes (list, create), orchestrates data fetching, handles form
+  submission, error handling
+
+**Presentational (dumb):**
+
+- Log check form — date input (defaults to today), notes textarea, submit/cancel buttons. Uses React
+  Hook Form + Zod resolver. Receives `onSubmit` callback.
+- Check log list — renders a list of check log cards, accepts logs array as prop
+- Check log card — displays single log entry: check type name, completed date, notes excerpt, next
+  due date. Edit/delete action buttons.
+- Check type status badge — displays status badge on check type cards (success/warning/error/neutral
+  based on status). This component enhances the existing CheckTypeCard.
+- Check type filter — dropdown to filter history by check type (uses existing Select component)
+- Delete check log dialog — wraps existing ConfirmDialog for log deletion confirmation
+- Empty state — "Aucun contrôle enregistré" with call-to-action icon and message
+
+**Reused shared components:**
+
+- ConfirmDialog (from `components/ui/`) — for delete confirmation
+- Button, Input, Textarea, Label, FormWrapper, Select (from `components/ui/`)
+
+### State & Interactions
+
+- Log check modal triggered from check type card "Enregistrer" button
+- Modal uses Radix UI Dialog (same pattern as existing ConfirmDialog)
+- Date input defaults to today, uses native HTML date input for MVP
+- After successful log creation: modal closes, check type status refreshes, success feedback shown
+- Filter dropdown in history view: updates store filter, re-renders list
+- Delete: ConfirmDialog → API call → refresh list → success feedback
 
 ## UI Reference
 
@@ -143,112 +279,144 @@ standard to match. Refer to the Design System section in MVP.md for available to
 
 ### Layout & Structure
 
-- **Log check form:** Radix UI Dialog (modal) centered over the current page, containing a date
-  input (defaulting to today), an optional notes textarea, and submit/cancel buttons. The check type
-  name is displayed as a read-only header for context.
-- **Check history page:** Full-width content area with a filter bar at the top (check type selector)
-  and a chronological list of log cards below. Each card shows the check type name, completed date,
-  notes excerpt, and next due date.
+- **Log check modal:** Radix UI Dialog (`modal modal-open` + `modal-box`) centered over the current
+  page. Contains check type name as `modal-box` title, a date input (defaulting to today), an
+  optional notes textarea, and submit/cancel buttons in `modal-action`. Same structural pattern as
+  existing ConfirmDialog and DeleteCheckTypeDialog.
+- **Check history page:** Full-width content area within `container mx-auto px-4 py-8` (same as
+  check types page). Filter bar at the top (check type selector using `select` component), then a
+  chronological list of log cards below.
+- **Check type cards enhanced:** Each existing CheckTypeCard gains a status badge
+  (`badge badge-success`, `badge-warning`, or `badge-error`) and a "Enregistrer" action button
+  (`btn btn-primary btn-sm`).
 - **Visual hierarchy:** Filter bar prominent at top, then log entries sorted newest-first. Each log
-  entry is a compact card with date as primary info and notes as secondary.
-- **"Next due" indicators:** Displayed on check type cards (from check types feature) as a badge
-  showing days until due or days overdue.
+  entry is a compact card (`card card-body bg-base-200`) with date as primary info and notes as
+  secondary.
 
 ### UI Components & Patterns
 
 **DaisyUI components used:**
 
-- `btn` — "Log Check" action button (primary/amber), cancel (ghost), delete (error)
-- `card` — each check log entry in the history list
-- `input` — date input for completed date
-- `textarea` — optional notes field
-- `badge` — status indicators: on time (success), due soon (warning), overdue (error)
-- `modal` — log check form dialog (backed by Radix UI Dialog)
-- `alert` — success feedback after logging, error on failure
-- `select` — check type filter in history view (backed by Radix UI Select)
+- `btn` — "Enregistrer" action button (`btn-primary btn-sm`), cancel (`btn-outline`), delete
+  (`btn-error`)
+- `card card-body bg-base-200` — each check log entry in the history list
+- `input` — date input for completed date (no `-bordered` suffix, DaisyUI 5)
+- `textarea` — optional notes field (no `-bordered` suffix, DaisyUI 5)
+- `badge` — status indicators: `badge-success` (à jour), `badge-warning` (bientôt), `badge-error`
+  (en retard), `badge-neutral` (jamais effectué)
+- `modal modal-open` + `modal-box` + `modal-action` — log check form dialog (backed by Radix UI
+  Dialog)
+- `alert` — success feedback after logging (`alert-success`), error on failure (`alert-error`)
+- `select` — check type filter in history view (no `-bordered` suffix, DaisyUI 5)
 - `divider` — separating filter area from history list
-- `loading` — spinner during form submission and data fetching
+- `loading loading-spinner` — during form submission and data fetching
 
 **Radix UI primitives used:**
 
-- Dialog — for the log check form modal and delete confirmation
-- Select — for the check type filter dropdown in history view
-- AlertDialog — for delete log confirmation
+- Dialog — for the log check form modal and delete confirmation (reuses existing ConfirmDialog
+  pattern). Note: only `@radix-ui/react-dialog` is installed.
 
 **Interactive patterns:**
 
-- Quick log: clicking "Log Check" on a check type card opens the modal pre-filled with that check
-  type
-- Date picker defaults to today but allows backdating
-- Filter: selecting a check type instantly filters the history list
-- Delete: confirmation dialog before removing a log entry
+- Quick log: clicking "Enregistrer" on a check type card opens the modal pre-filled with that check
+  type's context
+- Date input defaults to today but allows backdating (native HTML `<input type="date">` for MVP)
+- Filter: selecting a check type from dropdown filters the history list immediately
+- Delete: confirmation dialog before removing a log entry (reuses existing ConfirmDialog)
 
 **States:**
 
-- Empty state — "No checks logged yet — log your first check!" with call-to-action
-- Empty filtered state — "No logs for this check type" when filter yields no results
-- Loading state — spinner centered in history list area
-- Error state — alert with error token color and retry action
-- Success feedback — alert confirming "Check logged successfully" with auto-dismiss
+- Empty state — "Aucun contrôle enregistré — enregistrez votre premier contrôle !" with Lucide icon
+  (`ClipboardCheck` or similar) and call-to-action
+- Empty filtered state — "Aucun enregistrement pour ce type de contrôle" when filter yields no
+  results
+- Loading state — `loading loading-spinner` centered in content area
+- Error state — `alert alert-error` with error message and retry action
+- Success feedback — `alert alert-success` confirming "Contrôle enregistré avec succès" (auto-
+  dismiss or inline)
 
 ### Design Tokens
 
 All styling uses DaisyUI theme tokens referencing the tokens defined in MVP.md Design System:
 
-- **primary (amber):** "Log Check" buttons, active filter highlight, form submit button
-- **neutral (zinc):** Card backgrounds (base-200), card borders, secondary text (dates, notes),
+- **primary (amber):** "Enregistrer" buttons, active filter highlight, form submit button
+- **neutral (zinc):** Card backgrounds (`bg-base-200`), card borders, secondary text (dates, notes),
   history list background
-- **success (emerald):** "On time" status badge, success alert after logging
-- **error (red):** "Overdue" status badge, delete button, delete confirmation, error alerts
-- **warning (amber):** "Due soon" status badge, approaching deadline indicators
+- **success (emerald):** "À jour" status badge, success alert after logging
+- **error (red):** "En retard" status badge, delete button, delete confirmation, error alerts
+- **warning (amber):** "Bientôt" status badge, approaching deadline indicators
 - **base-100/200/300:** Background layering (page → cards → hover states)
-- **base-content:** Primary text (check type name, dates), secondary text (notes)
+- **base-content:** Primary text (check type name, dates)
+- **base-content/60, base-content/70:** Secondary text (notes, metadata) — opacity variants
 
 No hardcoded hex values — all colors through DaisyUI theme tokens.
 
 ### Responsiveness
 
-- **Log form modal:** Full-screen sheet on mobile, centered overlay on desktop
+- **Log form modal:** Full-screen sheet on mobile, centered overlay on desktop (same as existing
+  ConfirmDialog behavior)
 - **History list:** Full-width stacked cards on all breakpoints, comfortable reading width on
   desktop
 - **Filter bar:** Full-width select on mobile, inline with title on desktop
 - **Log cards:** Single-column, full-width — date and status badge on the same row, notes below
 - **Action buttons:** Stack vertically on mobile, inline on desktop
-- **Spacing:** Reduced padding (p-4) on mobile, standard (p-6) on desktop
+- **Check type cards:** Status badge and "Enregistrer" button adapt to card layout (badge in header,
+  button in card-actions)
+- **Spacing:** Reduced padding (`p-4`) on mobile, standard (`p-6`) on desktop
 
 ## Open Questions
 
-1. Should users be able to edit a check log after creation (change date or notes)? Or is it
-   immutable once logged?
-2. When displaying check history, should we show the "next due" that was calculated at the time, or
-   recalculate based on current interval? (Per your answer: keep original)
-3. Should we allow logging future checks (scheduled but not yet performed)? Probably no for MVP.
-4. If a user deletes their most recent log for a check type, what's the "next due" status? Should it
-   fall back to the previous log's nextDueAt, or show "never performed"?
+1. **Log editing:** Should users be able to edit a check log after creation (change date or notes)?
+   Or is it immutable once logged? → **Recommendation: immutable for MVP** (simpler, avoids
+   nextDueAt recalculation complexity)
+2. **Delete cascade on status:** If a user deletes their most recent log for a check type, what's
+   the "next due" status? Should it fall back to the previous log's nextDueAt, or show "never
+   performed"? → **Recommendation: fall back to previous log** if one exists, otherwise "jamais
+   effectué"
+3. **Check history location:** Should check history be a dedicated page, or a section within the
+   check types page (expandable per check type)? → **Recommendation: dedicated page** for MVP
+   (simpler routing, clearer navigation)
+4. **Status badge thresholds:** What defines "due soon"? 2 days? 3 days? Configurable per check
+   type? → **Recommendation: fixed 2-day threshold for MVP**, configurable later
+5. **Date-only vs DateTime:** Using date-only (no time component) for completedAt and nextDueAt.
+   This means "overdue" is triggered at the start of the due date, not at a specific time. Is this
+   acceptable? → **Recommendation: yes, date-only for MVP**
 
 ## Out of Scope
 
-- Editing check logs (create-only for simplicity)
+- Editing check logs (create-only and delete-only for simplicity)
 - Bulk logging (log multiple checks at once)
 - Recurring reminders/notifications
 - Attaching photos to check logs
 - Mileage at time of check
 - Integration with calendar apps
+- Pagination of check log history (show all for MVP, add pagination later if needed)
+- Dashboard integration (separate feature — Feature 05)
 
 ## Risks / Gotchas
 
-- **Backdating checks:** Users should be able to backdate (log a check they did yesterday). But the
-  `nextDueAt` should be calculated from the logged date, not today's date.
-- **Time zones:** Dates should be handled consistently. Consider storing as UTC dates and displaying
-  in user's local time. For MVP, date-only (no time component) might be simpler.
-- **Deleting logs:** If a user deletes their most recent log, the check type's "status" needs to
-  recalculate. This might require looking up the previous log or marking the check as "never
-  performed" if no logs remain.
-- **Interval changes:** If a check type's interval is changed, existing logs keep their original
-  `nextDueAt`. The UI should reflect the actual stored nextDueAt, not recalculate it. This is the
-  behavior you specified.
-- **Performance:** As check log history grows, pagination or limiting the displayed history becomes
-  important. For MVP, showing the last 50-100 logs per check type should be sufficient.
-- **Dashboard integration:** The dashboard will need to query check logs to determine status. This
-  might require a dedicated query/endpoint that returns aggregated status per check type (last log,
-  next due, status: ok/due-soon/overdue).
+- **Backdating checks:** Users should be able to backdate (log a check they did yesterday). The
+  `nextDueAt` must be calculated from the logged date (`completedAt`), not from today's date. The
+  domain entity must enforce this.
+- **Date handling:** Dates should be stored as date-only (no time component) in the database. Using
+  ISO date strings (`YYYY-MM-DD`) avoids timezone confusion. The backend stores dates in UTC, the
+  frontend displays as-is (no timezone conversion needed for date-only).
+- **Deleting logs and status recalculation:** When the most recent log is deleted, the check type's
+  status must recalculate based on the new most recent log (or "never performed" if no logs remain).
+  The "get check status summary" use case handles this by always querying the latest log.
+- **Interval changes on check types:** If a check type's interval is changed after logs exist,
+  existing logs keep their original `nextDueAt` (calculated at creation time). Only new logs use the
+  updated interval. The status badge always uses the most recent log's `nextDueAt`, not a
+  recalculation.
+- **CheckType deletion cascade:** When a check type is deleted, all its logs must be cascade-deleted
+  (Prisma `onDelete: Cascade`). This is handled at the database level.
+- **Cross-feature dependency:** The CheckLog module needs to import CheckTypes module to access
+  check type data (interval, ownership). This creates a module dependency that must be managed via
+  NestJS module imports and service exports.
+- **Performance for MVP:** Showing all logs without pagination is acceptable for MVP (typical user
+  will have dozens, not thousands of logs). Consider adding pagination if usage grows.
+- **Frontend status computation:** Status badges are computed client-side from `nextDueAt` vs
+  today's date. This means the status is always up-to-date without polling. However, if the page
+  stays open across midnight, status badges won't update until refresh.
+- **Nanostores atom separation:** Keep `$checkLogs` and `$checkStatuses` as separate atoms with
+  different refresh strategies. Statuses should refresh after every create/delete action.
