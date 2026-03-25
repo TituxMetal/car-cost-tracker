@@ -35,6 +35,17 @@ describe('createCheckLogSchema', () => {
     )
   })
 
+  it('should reject invalid calendar date', () => {
+    const invalidData = { completedAt: '2020-99-99' }
+
+    const result = createCheckLogSchema.safeParse(invalidData)
+
+    expect(result.success).toBe(false)
+    expect(result.error?.issues[0].message).toBe(
+      `Le champ 'completedAt' doit être une date valide.`
+    )
+  })
+
   it('should reject future date', () => {
     const invalidData = { completedAt: '2099-01-01' }
 
