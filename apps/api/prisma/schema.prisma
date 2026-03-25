@@ -118,8 +118,23 @@ model CheckType {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  vehicle   Vehicle    @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  checkLogs CheckLog[]
 
   @@unique([vehicleId, name])
   @@index([vehicleId])
+}
+
+model CheckLog {
+  id          String   @id @default(uuid())
+  checkTypeId String
+  completedAt String
+  notes       String?
+  nextDueAt   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  checkType CheckType @relation(fields: [checkTypeId], references: [id], onDelete: Cascade)
+
+  @@index([checkTypeId])
 }
