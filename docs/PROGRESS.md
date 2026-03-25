@@ -8,18 +8,18 @@
 
 #### Phase 1: Database & Types Foundation
 
-- [ ] Prisma schema: CheckLog model + migration
-- [ ] Frontend types: CheckLog, CheckStatus, CheckStatusSummary
-- [ ] Backend validation constants
-- [ ] Frontend Zod schema + tests
+- [x] Prisma schema: CheckLog model + migration
+- [x] Frontend types: CheckLog, CheckStatus, CheckStatusSummary
+- [x] Backend validation constants
+- [x] Frontend Zod schema + tests
 
 #### Phase 2: Backend Domain Layer
 
-- [ ] CheckLogId value object + tests
-- [ ] CompletedAt value object + tests
-- [ ] CheckLog entity + tests
-- [ ] Domain exceptions (CheckLogNotFound, InvalidCheckLog)
-- [ ] Repository interface (ICheckLogRepository)
+- [x] CheckLogId value object + tests
+- [x] CompletedAt value object + tests
+- [x] CheckLog entity + tests
+- [x] Domain exceptions (CheckLogNotFound, InvalidCheckLog)
+- [x] Repository interface (ICheckLogRepository)
 
 ---
 
