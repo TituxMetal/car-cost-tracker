@@ -6,6 +6,9 @@ export const createCheckLogSchema = z.object({
     .regex(/^\d{4}-\d{2}-\d{2}$/, {
       error: `Le champ 'completedAt' doit être une date au format YYYY-MM-DD.`
     })
+    .refine(dateString => !isNaN(Date.parse(dateString)), {
+      error: `Le champ 'completedAt' doit être une date valide.`
+    })
     .refine(
       dateString => {
         const today = new Date()
