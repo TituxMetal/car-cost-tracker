@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 
 import { AuthModule } from '~/auth/Auth.module'
+import { CheckLogsModule } from '~/check-logs/CheckLogs.module'
 import { CheckTypesModule } from '~/check-types/CheckTypes.module'
 import { PrismaModule } from '~/shared/infrastructure/database'
 import { SharedModule } from '~/shared/Shared.module'
@@ -18,6 +19,7 @@ import { VehiclesModule } from '~/vehicles/Vehicles.module'
     UsersModule,
     VehiclesModule,
     CheckTypesModule,
+    CheckLogsModule,
     AuthModule
   ]
 })
