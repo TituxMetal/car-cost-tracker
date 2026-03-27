@@ -20,6 +20,10 @@ export class ListCheckLogsByVehicleUseCase {
 
     return logs
       .map(log => CheckLogMapper.toGetCheckLogDto(log, nameMap.get(log.checkTypeId) ?? ''))
-      .sort((a, b) => (b.completedAt > a.completedAt ? 1 : -1))
+      .sort((a, b) => {
+        if (a.completedAt === b.completedAt) return 0
+
+        return a.completedAt > b.completedAt ? -1 : 1
+      })
   }
 }
