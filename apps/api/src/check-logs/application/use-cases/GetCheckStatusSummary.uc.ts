@@ -14,6 +14,9 @@ export class GetCheckStatusSummaryUseCase {
 
   async execute(vehicleId: string): Promise<CheckStatusSummaryDto[]> {
     const checkTypes = await this.checkTypeService.getCheckTypesByVehicle(vehicleId)
+
+    if (checkTypes.length === 0) return []
+
     const checkTypeIds = checkTypes.map(checkType => checkType.id)
     const latestLogs = await this.checkLogRepository.findMostRecentByCheckTypeIds(checkTypeIds)
 
