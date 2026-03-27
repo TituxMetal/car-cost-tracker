@@ -27,28 +27,28 @@
 
 #### Phase 3: Application DTOs & Mapper
 
-- [ ] CreateCheckLog DTO + tests
-- [ ] GetCheckLog DTO + tests
-- [ ] CheckStatusSummary DTO + tests
-- [ ] Application mapper + tests
+- [x] CreateCheckLog DTO + tests
+- [x] GetCheckLog DTO + tests
+- [x] CheckStatusSummary DTO + tests
+- [x] Application mapper + tests
 
 #### Phase 4: Application Use Cases & Service
 
-- [ ] CreateCheckLog use case + tests
-- [ ] ListCheckLogsByVehicle use case + tests
-- [ ] GetCheckLog use case + tests
-- [ ] DeleteCheckLog use case + tests
-- [ ] GetCheckStatusSummary use case + tests
-- [ ] CheckLog service + tests
+- [x] CreateCheckLog use case + tests
+- [x] ListCheckLogsByVehicle use case + tests
+- [x] GetCheckLog use case + tests
+- [x] DeleteCheckLog use case + tests
+- [x] GetCheckStatusSummary use case + tests
+- [x] CheckLog service + tests
 
 #### Phase 5: Infrastructure + Frontend API
 
-- [ ] Infrastructure mapper + tests
-- [ ] Prisma repository + tests
-- [ ] Frontend API service + tests
-- [ ] CheckLog controller + tests
-- [ ] CheckStatus controller + tests (separate route prefix)
-- [ ] CheckLogs module + app.module registration
+- [x] Infrastructure mapper + tests
+- [x] Prisma repository + tests
+- [x] Frontend API service + tests
+- [x] CheckLog controller + tests
+- [x] CheckStatus controller + tests (separate route prefix)
+- [x] CheckLogs module + app.module registration
 
 ---
 
