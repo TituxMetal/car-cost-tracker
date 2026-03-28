@@ -18,26 +18,26 @@ export const CheckLogCard = ({ checkLog, onDelete }: CheckLogCardProps) => (
           {checkLog.checkTypeName}
         </h2>
       </header>
-      <div className='text-base-content/70 flex flex-col gap-1 text-sm'>
-        <p className='flex items-center gap-2'>
+      <ul className='text-base-content/70 flex flex-col gap-1 text-sm'>
+        <li className='flex items-center gap-2'>
           <Calendar size={14} className='shrink-0' />
           Effectué le {checkLog.completedAt}
-        </p>
-        <p className='flex items-center gap-2'>
+        </li>
+        <li className='flex items-center gap-2'>
           <Calendar size={14} className='shrink-0' />
           Prochain le {checkLog.nextDueAt}
-        </p>
-      </div>
+        </li>
+      </ul>
       {checkLog.notes && (
         <p className='text-base-content/60 line-clamp-2 text-sm'>{checkLog.notes}</p>
       )}
       <footer className='card-actions justify-end'>
         <Button
           variant='destructive'
-          className='btn-sm btn-outline gap-1'
+          className='btn-xs btn-outline gap-1'
           onClick={() => onDelete(checkLog)}
         >
-          <Trash2 size={14} />
+          <Trash2 size={12} />
           Supprimer
         </Button>
       </footer>
