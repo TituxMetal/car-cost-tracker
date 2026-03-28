@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, mock } from 'bun:test'
 
+import type { CheckStatus } from '~/features/check-logs/types'
 import { cleanup, fireEvent, render, screen } from '~/test-utils'
 
 import type { CheckType } from '../types'
@@ -74,5 +75,54 @@ describe('CheckTypeList', () => {
       fireEvent.click(button)
       expect(onDelete).toHaveBeenCalledWith(mockCheckTypes[index])
     })
+  })
+
+  it('should forward statuses to cards as CheckStatusBadge', () => {
+    const actions = mock(() => {})
+    const statuses = new Map<string, CheckStatus>([
+      ['ct-1', 'on-time'],
+      ['ct-2', 'overdue']
+    ])
+
+    render(
+      <CheckTypeList
+        checkTypes={mockCheckTypes}
+        onEdit={actions}
+        onDelete={actions}
+        statuses={statuses}
+      />
+    )
+
+    expect(screen.getByText(/à jour/i)).toBeInTheDocument()
+    expect(screen.getByText(/en retard/i)).toBeInTheDocument()
+  })
+
+  it('should not render badges when statuses is not provided', () => {
+    const actions = mock(() => {})
+
+    render(<CheckTypeList checkTypes={mockCheckTypes} onEdit={actions} onDelete={actions} />)
+
+    expect(screen.queryByText(/à jour/i)).toBeNull()
+    expect(screen.queryByText(/en retard/i)).toBeNull()
+  })
+
+  it('should forward onLog to cards', () => {
+    const actions = mock(() => {})
+    const onLog = mock(() => {})
+
+    render(
+      <CheckTypeList
+        checkTypes={mockCheckTypes}
+        onEdit={actions}
+        onDelete={actions}
+        onLog={onLog}
+      />
+    )
+
+    const logButtons = screen.getAllByRole('button', { name: /journaliser/i })
+
+    expect(logButtons).toHaveLength(2)
+    fireEvent.click(logButtons[0])
+    expect(onLog).toHaveBeenCalledWith(mockCheckTypes[0])
   })
 })
