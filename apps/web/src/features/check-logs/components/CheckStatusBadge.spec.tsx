@@ -37,12 +37,12 @@ describe('CheckStatusBadge', () => {
     expect(badge).toHaveClass('badge-error')
   })
 
-  it('should render "Jamais effectué" with badge-neutral for never status', () => {
+  it('should render "Jamais effectué" with badge-info for never status', () => {
     render(<CheckStatusBadge status='never' />)
 
     const badge = screen.getByText('Jamais effectué')
 
     expect(badge).toBeInTheDocument()
-    expect(badge).toHaveClass('badge-neutral')
+    expect(badge).toHaveClass('badge-info')
   })
 })
