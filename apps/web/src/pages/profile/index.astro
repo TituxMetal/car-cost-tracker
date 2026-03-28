@@ -23,7 +23,7 @@ const userData = user as User
         <a href='/profile/sessions' class='link link-primary text-sm'>Manage Sessions</a>
       </nav>
     </header>
-    <div class='mx-auto flex max-w-xl flex-col gap-8'>
+    <div class='mx-auto flex max-w-2xl flex-col gap-8'>
       <EditProfileContainer client:load userData={userData} />
       <ChangePasswordForm client:load />
       <DeleteAccountSection client:load />
