@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { useCheckTypes } from '~/features/check-types'
 import { useVehicle } from '~/features/vehicles'
+import { redirect } from '~/utils/navigation'
 
 import { useCheckLogs } from '../hooks'
 import type { CheckLog } from '../types'
@@ -12,6 +13,7 @@ import { DeleteCheckLogDialog } from './DeleteCheckLogDialog'
 
 export const CheckLogContainer = () => {
   const [mode, setMode] = useState<'loading' | 'list'>('loading')
+  const [hasFetchedVehicle, setHasFetchedVehicle] = useState(false)
   const [selectedCheckTypeId, setSelectedCheckTypeId] = useState<string | null>(null)
   const [deletingCheckLog, setDeletingCheckLog] = useState<CheckLog | null>(null)
   const { vehicle, fetchVehicle, hasVehicle } = useVehicle()
@@ -19,7 +21,11 @@ export const CheckLogContainer = () => {
   const { checkTypes, fetchByVehicle } = useCheckTypes()
 
   useEffect(() => {
-    fetchVehicle()
+    const load = async () => {
+      await fetchVehicle()
+      setHasFetchedVehicle(true)
+    }
+    load()
   }, [fetchVehicle])
 
   useEffect(() => {
@@ -31,9 +37,15 @@ export const CheckLogContainer = () => {
 
   useEffect(() => {
     if (mode !== 'loading') return
-    if (!hasVehicle) return
+    if (!hasFetchedVehicle && !hasVehicle) return
+
+    if (!hasVehicle) {
+      redirect('/vehicle')
+      return
+    }
+
     if (vehicle && !isLoading) setMode('list')
-  }, [mode, hasVehicle, vehicle, isLoading])
+  }, [mode, hasFetchedVehicle, hasVehicle, vehicle, isLoading])
 
   const filteredLogs = selectedCheckTypeId
     ? logs.filter(log => log.checkTypeId === selectedCheckTypeId)
