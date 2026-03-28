@@ -240,6 +240,11 @@ export const CheckTypeContainer = () => {
             {serverError}
           </p>
         )}
+        {successMessage && (
+          <p className='alert alert-success mb-4' role='status'>
+            {successMessage}
+          </p>
+        )}
         {remainingSuggestions.length > 0 && (
           <SuggestedCheckTypes suggestions={remainingSuggestions} onAdd={onAddSuggestion} />
         )}
@@ -268,11 +273,6 @@ export const CheckTypeContainer = () => {
             onConfirm={handleDeleteConfirm}
             onCancel={() => setDeletingCheckType(null)}
           />
-        )}
-        {successMessage && (
-          <p className='alert alert-success' role='status'>
-            {successMessage}
-          </p>
         )}
         {loggingCheckType && (
           <LogCheckDialog
