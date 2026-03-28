@@ -41,7 +41,7 @@ export const LogCheckDialog = ({ checkTypeName, onSubmit, onCancel }: LogCheckDi
             <FormWrapper onSubmit={form.handleSubmit(onSubmit)} className='grid gap-4'>
               <LogCheckForm form={form} />
               <div className='modal-action'>
-                <Button variant='outline' onClick={onCancel}>
+                <Button variant='outline' type='button' onClick={onCancel}>
                   Annuler
                 </Button>
                 <Button type='submit'>Enregistrer</Button>
