@@ -47,7 +47,9 @@ describe('DialogShell', () => {
       </DialogShell>
     )
 
-    expect(screen.queryByText('A description')).toBeNull()
+    const dialog = screen.getByRole('dialog')
+
+    expect(dialog).not.toHaveAttribute('aria-describedby')
   })
 
   it('should call onClose when backdrop is clicked', () => {
