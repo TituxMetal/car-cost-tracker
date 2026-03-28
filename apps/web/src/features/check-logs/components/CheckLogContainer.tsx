@@ -1,3 +1,4 @@
+import { ClipboardList } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import { useCheckTypes } from '~/features/check-types'
@@ -67,14 +68,25 @@ export const CheckLogContainer = () => {
   }
 
   return (
-    <section>
-      <h1>Historique des contrôles</h1>
-      {error && <p className='alert alert-error'>{error}</p>}
-      <CheckTypeFilter
-        checkTypes={checkTypes}
-        selectedCheckTypeId={selectedCheckTypeId}
-        onChange={setSelectedCheckTypeId}
-      />
+    <section className='mx-auto max-w-6xl p-6'>
+      <header className='mb-6'>
+        <h1 className='text-base-content flex items-center gap-2 text-2xl font-bold'>
+          <ClipboardList size={24} className='text-primary' />
+          Historique des contrôles
+        </h1>
+      </header>
+      {error && (
+        <p className='alert alert-error' role='alert'>
+          {error}
+        </p>
+      )}
+      <aside className='mb-6'>
+        <CheckTypeFilter
+          checkTypes={checkTypes}
+          selectedCheckTypeId={selectedCheckTypeId}
+          onChange={setSelectedCheckTypeId}
+        />
+      </aside>
       <CheckLogList checkLogs={filteredLogs} onDelete={setDeletingCheckLog} />
       {deletingCheckLog && (
         <DeleteCheckLogDialog
