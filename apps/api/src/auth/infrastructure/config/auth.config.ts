@@ -22,7 +22,7 @@ export const createBetterAuthConfig = (
     trustedOrigins: [frontendUrl],
     database: prismaAdapter(prisma, { provider: 'sqlite' }),
     advanced: {
-      useSecureCookies: isProduction,
+      useSecureCookies: false,
       defaultCookieAttributes: isProduction ? { sameSite: 'lax' as const, secure: true } : undefined
     },
     emailVerification: {
