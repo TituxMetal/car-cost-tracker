@@ -8,7 +8,6 @@ mkdir -p /data/backups
 DB_FILE=${DATABASE_URL#file:}
 
 echo "=== Car Cost Tracker API ==="
-echo "DATABASE_URL: $DATABASE_URL"
 echo "DB_FILE: $DB_FILE"
 echo "RUN_MIGRATIONS: $RUN_MIGRATIONS"
 

@@ -60,7 +60,7 @@ export const checkLogActions = {
     try {
       const response = await createCheckLog(vehicleId, { ...data, checkTypeId })
 
-      $checkLogs.set([...$checkLogs.get(), response])
+      $checkLogs.set([response, ...$checkLogs.get()])
 
       await checkLogActions.fetchStatuses(vehicleId)
 
