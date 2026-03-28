@@ -2,86 +2,47 @@
 
 ---
 
-## Feature 04: Check Logging
+## Feature 05: Dashboard
 
-### Block 1: Database + Domain (Phases 1-2) — `feature/check-logging-domain`
+### Block 1: Shell → Data → First Sections (Phases 1-4) — `feature/dashboard`
 
-#### Phase 1: Database & Types Foundation
+#### Phase 1: Page Shell & Navigation
 
-- [x] Prisma schema: CheckLog model + migration
-- [x] Frontend types: CheckLog, CheckStatus, CheckStatusSummary
-- [x] Backend validation constants
-- [x] Frontend Zod schema + tests
+- [ ] Minimal DashboardContainer + barrel exports
+- [ ] Update index.astro (auth-gated dashboard)
+- [ ] Update Main.astro (add "Tableau de bord" nav link)
 
-#### Phase 2: Backend Domain Layer
+#### Phase 2: Types & Date Utilities
 
-- [x] CheckLogId value object + tests
-- [x] CompletedAt value object + tests
-- [x] CheckLog entity + tests
-- [x] Domain exceptions (CheckLogNotFound, InvalidCheckLog)
-- [x] Repository interface (ICheckLogRepository)
+- [ ] Dashboard types (StatusCounts, ActionItem)
+- [ ] Date utility functions (daysFromNow, formatDaysLabel) + tests
 
----
+#### Phase 3: Hook, Empty States & Container Wiring
 
-### Block 2: Application + Infrastructure + API (Phases 3-5) — `feature/check-logging-backend`
+- [ ] DashboardEmptyState + tests
+- [ ] useDashboard hook + tests
+- [ ] DashboardContainer wiring + tests
 
-#### Phase 3: Application DTOs & Mapper
+#### Phase 4: Vehicle Summary & Status Overview
 
-- [x] CreateCheckLog DTO + tests
-- [x] GetCheckLog DTO + tests
-- [x] CheckStatusSummary DTO + tests
-- [x] Application mapper + tests
-
-#### Phase 4: Application Use Cases & Service
-
-- [x] CreateCheckLog use case + tests
-- [x] ListCheckLogsByVehicle use case + tests
-- [x] GetCheckLog use case + tests
-- [x] DeleteCheckLog use case + tests
-- [x] GetCheckStatusSummary use case + tests
-- [x] CheckLog service + tests
-
-#### Phase 5: Infrastructure + Frontend API
-
-- [x] Infrastructure mapper + tests
-- [x] Prisma repository + tests
-- [x] Frontend API service + tests
-- [x] CheckLog controller + tests
-- [x] CheckStatus controller + tests (separate route prefix)
-- [x] CheckLogs module + app.module registration
+- [ ] VehicleSummaryCard + tests
+- [ ] StatusOverview + tests
+- [ ] Wire into DashboardContainer
 
 ---
 
-### Block 3: State + Components (Phases 6-7) — `feature/check-logging-frontend`
+### Block 2: Action Items + Recent Activity (Phases 5-6) — `feature/dashboard`
 
-#### Phase 6: Frontend State & Hook
+#### Phase 5: Action Items & Quick-Log
 
-- [x] Nanostores store + tests
-- [x] Custom hook (useCheckLogs) + tests
+- [ ] ActionItemCard + tests
+- [ ] ActionItemsList + tests
+- [ ] Wire into DashboardContainer + LogCheckDialog integration
 
-#### Phase 7: Frontend UI Components
+#### Phase 6: Recent Activity & Polish
 
-- [x] CheckStatusBadge + tests
-- [x] LogCheckForm + tests
-- [x] LogCheckDialog + tests
-- [x] CheckLogCard + tests
-- [x] CheckLogList + tests
-- [x] CheckTypeFilter + tests
-- [x] DeleteCheckLogDialog + tests
-- [x] CheckLogContainer + tests
-
----
-
-### Block 4: Integration (Phase 8) — `feature/check-logging-integration`
-
-#### Phase 8: Integration & Enhancement
-
-- [x] Enhanced CheckTypeCard (status badge + "Enregistrer" button) + updated tests
-- [x] Enhanced CheckTypeList (forward status + onLog props) + updated tests
-- [x] Enhanced CheckTypeContainer (status fetching + log modal + success feedback) + updated tests
-- [x] Astro page: /check-logs
-- [x] Navigation link: "Historique" in Main.astro
-- [x] Feature barrel exports
+- [ ] RecentActivityList + tests
+- [ ] Wire into DashboardContainer & finalize barrel exports
 
 ---
 
