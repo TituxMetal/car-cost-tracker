@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ClipboardPlus, ListChecks, PencilLine, PlusCircle } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { Button, FormWrapper } from '~/components/ui'
@@ -29,6 +29,7 @@ export const CheckTypeContainer = () => {
   const [deletingCheckType, setDeletingCheckType] = useState<CheckType | null>(null)
   const [loggingCheckType, setLoggingCheckType] = useState<CheckType | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const successTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const { vehicle, fetchVehicle, hasVehicle } = useVehicle()
   const {
     checkTypes,
@@ -78,6 +79,13 @@ export const CheckTypeContainer = () => {
     }
   }, [mode, hasFetchedVehicle, hasVehicle, vehicle, isCheckTypesLoading])
 
+  useEffect(
+    () => () => {
+      if (successTimeoutRef.current) clearTimeout(successTimeoutRef.current)
+    },
+    []
+  )
+
   const handleSubmit = form.handleSubmit(async values => {
     setServerError(null)
 
@@ -108,7 +116,8 @@ export const CheckTypeContainer = () => {
       await createLog(vehicle.id, loggingCheckType.id, data)
       setLoggingCheckType(null)
       setSuccessMessage('Contrôle enregistré avec succès')
-      setTimeout(() => setSuccessMessage(null), 3000)
+      if (successTimeoutRef.current) clearTimeout(successTimeoutRef.current)
+      successTimeoutRef.current = setTimeout(() => setSuccessMessage(null), 3000)
     } catch (error) {
       setServerError(error instanceof Error ? error.message : 'Une erreur est survenue')
     }
@@ -226,6 +235,11 @@ export const CheckTypeContainer = () => {
           </h1>
           <Button onClick={() => setMode('create')}>Ajouter un contrôle</Button>
         </header>
+        {serverError && (
+          <p className='alert alert-error mb-4' role='alert'>
+            {serverError}
+          </p>
+        )}
         {remainingSuggestions.length > 0 && (
           <SuggestedCheckTypes suggestions={remainingSuggestions} onAdd={onAddSuggestion} />
         )}
@@ -255,7 +269,11 @@ export const CheckTypeContainer = () => {
             onCancel={() => setDeletingCheckType(null)}
           />
         )}
-        {successMessage && <p className='alert alert-success'>{successMessage}</p>}
+        {successMessage && (
+          <p className='alert alert-success' role='status'>
+            {successMessage}
+          </p>
+        )}
         {loggingCheckType && (
           <LogCheckDialog
             checkTypeName={loggingCheckType.name}
