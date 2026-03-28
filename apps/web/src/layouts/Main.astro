@@ -51,6 +51,9 @@ const { user } = Astro.locals
                 <li>
                   <a href='/check-types'>Contrôles</a>
                 </li>
+                <li>
+                  <a href='/check-logs'>Historique</a>
+                </li>
                 {user.role === 'admin' && (
                   <li>
                     <a href='/admin'>Admin</a>
@@ -92,6 +95,9 @@ const { user } = Astro.locals
                     </li>
                     <li>
                       <a href='/check-types'>Contrôles</a>
+                    </li>
+                    <li>
+                      <a href='/check-logs'>Historique</a>
                     </li>
                     {user.role === 'admin' && (
                       <li>
