@@ -76,12 +76,12 @@
 
 #### Phase 8: Integration & Enhancement
 
-- [ ] Enhanced CheckTypeCard (status badge + "Enregistrer" button) + updated tests
-- [ ] Enhanced CheckTypeList (forward status + onLog props) + updated tests
-- [ ] Enhanced CheckTypeContainer (status fetching + log modal + success feedback) + updated tests
-- [ ] Astro page: /check-logs
-- [ ] Navigation link: "Historique" in Main.astro
-- [ ] Feature barrel exports
+- [x] Enhanced CheckTypeCard (status badge + "Enregistrer" button) + updated tests
+- [x] Enhanced CheckTypeList (forward status + onLog props) + updated tests
+- [x] Enhanced CheckTypeContainer (status fetching + log modal + success feedback) + updated tests
+- [x] Astro page: /check-logs
+- [x] Navigation link: "Historique" in Main.astro
+- [x] Feature barrel exports
 
 ---
 
