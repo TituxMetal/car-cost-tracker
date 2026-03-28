@@ -14,7 +14,7 @@ export const CheckStatusBadge = ({ status }: CheckStatusBadgeProps) => {
     'on-time': { className: 'badge-success', label: 'À jour' },
     'due-soon': { className: 'badge-warning', label: 'Bientôt' },
     overdue: { className: 'badge-error', label: 'En retard' },
-    never: { className: 'badge-neutral', label: 'Jamais effectué' }
+    never: { className: 'badge-info', label: 'Jamais effectué' }
   }
 
   return (
