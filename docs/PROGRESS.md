@@ -56,19 +56,19 @@
 
 #### Phase 6: Frontend State & Hook
 
-- [ ] Nanostores store + tests
-- [ ] Custom hook (useCheckLogs) + tests
+- [x] Nanostores store + tests
+- [x] Custom hook (useCheckLogs) + tests
 
 #### Phase 7: Frontend UI Components
 
-- [ ] CheckStatusBadge + tests
-- [ ] LogCheckForm + tests
-- [ ] LogCheckDialog + tests
-- [ ] CheckLogCard + tests
-- [ ] CheckLogList + tests
-- [ ] CheckTypeFilter + tests
-- [ ] DeleteCheckLogDialog + tests
-- [ ] CheckLogContainer + tests
+- [x] CheckStatusBadge + tests
+- [x] LogCheckForm + tests
+- [x] LogCheckDialog + tests
+- [x] CheckLogCard + tests
+- [x] CheckLogList + tests
+- [x] CheckTypeFilter + tests
+- [x] DeleteCheckLogDialog + tests
+- [x] CheckLogContainer + tests
 
 ---
 
