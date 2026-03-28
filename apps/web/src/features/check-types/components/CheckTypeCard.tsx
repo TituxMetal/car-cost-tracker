@@ -45,7 +45,7 @@ export const CheckTypeCard = ({
             Journaliser
           </Button>
         )}
-        <nav className='ml-auto flex gap-1'>
+        <div className='ml-auto flex gap-1'>
           <Button
             variant='ghost'
             className='btn-xs btn-square'
@@ -62,7 +62,7 @@ export const CheckTypeCard = ({
           >
             <Trash2 size={14} />
           </Button>
-        </nav>
+        </div>
       </footer>
     </section>
   </article>
