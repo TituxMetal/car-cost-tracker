@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, mock, spyOn } from 'bun:te
 // Direct store imports: bun:test mock.module leaks globally across files,
 // so mocking ~/features/vehicles breaks the vehicles feature's own tests.
 // Using internal paths for test state setup is the pragmatic workaround.
+import { $checkStatuses, checkLogActions } from '~/features/check-logs/store'
 import type { Vehicle } from '~/features/vehicles'
 import {
   $isLoading as $isVehicleLoading,
@@ -65,6 +66,8 @@ describe('CheckTypeContainer', () => {
   let createSpy: ReturnType<typeof spyOn>
   let updateSpy: ReturnType<typeof spyOn>
   let removeSpy: ReturnType<typeof spyOn>
+  let fetchStatusesSpy: ReturnType<typeof spyOn>
+  let createLogSpy: ReturnType<typeof spyOn>
 
   beforeEach(() => {
     cleanup()
@@ -73,6 +76,7 @@ describe('CheckTypeContainer', () => {
     $vehicle.set(null)
     $isVehicleLoading.set(false)
     $checkTypes.set([])
+    $checkStatuses.set([])
     $isLoading.set(false)
     $error.set(null)
 
@@ -81,6 +85,16 @@ describe('CheckTypeContainer', () => {
     createSpy = spyOn(checkTypeActions, 'create').mockResolvedValue(mockCheckTypes[0])
     updateSpy = spyOn(checkTypeActions, 'update').mockResolvedValue(mockCheckTypes[0])
     removeSpy = spyOn(checkTypeActions, 'remove').mockResolvedValue(undefined)
+    fetchStatusesSpy = spyOn(checkLogActions, 'fetchStatuses').mockResolvedValue(undefined)
+    createLogSpy = spyOn(checkLogActions, 'create').mockResolvedValue({
+      id: 'cl-1',
+      checkTypeId: 'ct-1',
+      checkTypeName: "Niveau d'huile",
+      completedAt: '2026-03-28',
+      notes: null,
+      nextDueAt: '2026-04-04',
+      createdAt: '2026-03-28T10:00:00Z'
+    })
   })
 
   afterEach(() => {
@@ -89,6 +103,8 @@ describe('CheckTypeContainer', () => {
     createSpy.mockRestore()
     updateSpy.mockRestore()
     removeSpy.mockRestore()
+    fetchStatusesSpy.mockRestore()
+    createLogSpy.mockRestore()
   })
 
   describe('loading + initial fetch', () => {
@@ -238,7 +254,7 @@ describe('CheckTypeContainer', () => {
       await act(async () => {
         render(<CheckTypeContainer />)
       })
-      fireEvent.click(screen.getAllByRole('button', { name: 'Modifier' })[0])
+      fireEvent.click(screen.getAllByRole('button', { name: /modifier/i })[0])
 
       expect(screen.getByLabelText('Nom')).toHaveValue(`Niveau d'huile`)
       expect(screen.getByLabelText('Intervalle (jours)')).toHaveValue(7)
@@ -254,7 +270,7 @@ describe('CheckTypeContainer', () => {
       await act(async () => {
         render(<CheckTypeContainer />)
       })
-      fireEvent.click(screen.getAllByRole('button', { name: 'Modifier' })[0])
+      fireEvent.click(screen.getAllByRole('button', { name: /modifier/i })[0])
       await user.clear(screen.getByLabelText('Nom'))
       await user.type(screen.getByLabelText('Nom'), 'Updated Check Type')
       fireEvent.click(screen.getByRole('button', { name: 'Enregistrer' }))
@@ -276,7 +292,7 @@ describe('CheckTypeContainer', () => {
       await act(async () => {
         render(<CheckTypeContainer />)
       })
-      fireEvent.click(screen.getAllByRole('button', { name: 'Modifier' })[0])
+      fireEvent.click(screen.getAllByRole('button', { name: /modifier/i })[0])
       fireEvent.click(screen.getByRole('button', { name: 'Annuler' }))
 
       expect(screen.getByText(`Niveau d'huile`)).toBeVisible()
@@ -295,7 +311,7 @@ describe('CheckTypeContainer', () => {
       await act(async () => {
         render(<CheckTypeContainer />)
       })
-      fireEvent.click(screen.getAllByRole('button', { name: 'Modifier' })[0])
+      fireEvent.click(screen.getAllByRole('button', { name: /modifier/i })[0])
       await user.clear(screen.getByLabelText('Nom'))
       await user.type(screen.getByLabelText('Nom'), 'Updated Check Type')
       fireEvent.click(screen.getByRole('button', { name: 'Enregistrer' }))
@@ -325,7 +341,7 @@ describe('CheckTypeContainer', () => {
       await act(async () => {
         render(<CheckTypeContainer />)
       })
-      fireEvent.click(screen.getAllByRole('button', { name: 'Supprimer' })[0])
+      fireEvent.click(screen.getAllByRole('button', { name: /supprimer/i })[0])
 
       expect(screen.getByText('Supprimer le type de contrôle')).toBeVisible()
       expect(
@@ -344,8 +360,8 @@ describe('CheckTypeContainer', () => {
       await act(async () => {
         render(<CheckTypeContainer />)
       })
-      fireEvent.click(screen.getAllByRole('button', { name: 'Supprimer' })[0])
-      const deleteButtons = screen.getAllByRole('button', { name: 'Supprimer' })
+      fireEvent.click(screen.getAllByRole('button', { name: /supprimer/i })[0])
+      const deleteButtons = screen.getAllByRole('button', { name: /supprimer/i })
       await user.click(deleteButtons[deleteButtons.length - 1]) // Click the confirm button in the dialog
 
       await waitFor(() => {
@@ -363,7 +379,7 @@ describe('CheckTypeContainer', () => {
       await act(async () => {
         render(<CheckTypeContainer />)
       })
-      fireEvent.click(screen.getAllByRole('button', { name: 'Supprimer' })[0])
+      fireEvent.click(screen.getAllByRole('button', { name: /supprimer/i })[0])
       await user.click(screen.getByRole('button', { name: 'Annuler' }))
 
       await waitFor(() => {
@@ -454,10 +470,94 @@ describe('CheckTypeContainer', () => {
       updateSpy.mockRejectedValueOnce(new Error(errorMessage))
 
       render(<CheckTypeContainer />)
-      fireEvent.click(screen.getAllByRole('button', { name: 'Modifier' })[0])
+      fireEvent.click(screen.getAllByRole('button', { name: /modifier/i })[0])
       fireEvent.click(screen.getByRole('button', { name: 'Enregistrer' }))
 
       await waitFor(() => expect(screen.getByText(errorMessage)).toBeVisible())
+    })
+  })
+
+  describe('check log integration', () => {
+    it('should render status badges on check type cards', async () => {
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+      $checkTypes.set(mockCheckTypes)
+      $checkStatuses.set([
+        {
+          checkTypeId: 'ct-1',
+          checkTypeName: `Niveau d'huile`,
+          intervalDays: 7,
+          lastCompletedAt: '2026-01-01',
+          nextDueAt: '2026-01-08',
+          status: 'overdue'
+        },
+        {
+          checkTypeId: 'ct-2',
+          checkTypeName: `Niveau de liquide de refroidissement`,
+          intervalDays: 7,
+          lastCompletedAt: '2026-01-10T00:00:00.000Z',
+          nextDueAt: '2026-01-17T00:00:00.000Z',
+          status: 'on-time'
+        }
+      ])
+
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+
+      expect(screen.getByText('En retard')).toBeVisible()
+      expect(screen.getByText('À jour')).toBeVisible()
+    })
+
+    it('should render "Journaliser" button on each card', async () => {
+      $vehicle.set(mockVehicle)
+      $isLoading.set(false)
+      $checkTypes.set(mockCheckTypes)
+
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+
+      const logButtons = screen.getAllByRole('button', { name: 'Journaliser' })
+      expect(logButtons).toHaveLength(mockCheckTypes.length)
+    })
+
+    it('should open LogCheckDialog when Journaliser is clicked', async () => {
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+      $checkTypes.set(mockCheckTypes)
+
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+
+      const logButtons = screen.getAllByRole('button', { name: /journaliser/i })
+      fireEvent.click(logButtons[0])
+
+      await waitFor(() => {
+        expect(screen.getByText(/Enregistrer un contrôle/i)).toBeVisible()
+      })
+    })
+
+    it('should show success message after logging a check', async () => {
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+      $checkTypes.set(mockCheckTypes)
+
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+
+      const logButtons = screen.getAllByRole('button', { name: /journaliser/i })
+      fireEvent.click(logButtons[0])
+
+      await waitFor(() => {
+        expect(screen.getByText(/Enregistrer un contrôle/i)).toBeVisible()
+      })
+
+      fireEvent.click(screen.getByRole('button', { name: /^Enregistrer$/i }))
+
+      await waitFor(() => expect(screen.getByText('Contrôle enregistré avec succès')).toBeVisible())
     })
   })
 })

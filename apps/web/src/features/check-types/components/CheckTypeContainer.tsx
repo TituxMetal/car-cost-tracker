@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { Button, FormWrapper } from '~/components/ui'
+import type { CheckStatus } from '~/features/check-logs'
+import { LogCheckDialog, useCheckLogs } from '~/features/check-logs'
+import type { CreateCheckLogSchema } from '~/features/check-logs/schemas'
 import { useVehicle } from '~/features/vehicles'
 import { redirect } from '~/utils/navigation'
 
@@ -24,6 +27,8 @@ export const CheckTypeContainer = () => {
   const [hasFetchedVehicle, setHasFetchedVehicle] = useState(false)
   const [editingCheckType, setEditingCheckType] = useState<CheckType | null>(null)
   const [deletingCheckType, setDeletingCheckType] = useState<CheckType | null>(null)
+  const [loggingCheckType, setLoggingCheckType] = useState<CheckType | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const { vehicle, fetchVehicle, hasVehicle } = useVehicle()
   const {
     checkTypes,
@@ -34,6 +39,7 @@ export const CheckTypeContainer = () => {
     remove,
     update
   } = useCheckTypes()
+  const { statuses, fetchStatuses, create: createLog } = useCheckLogs()
 
   const form = useForm<CreateCheckTypeSchema>({
     defaultValues: {},
@@ -54,8 +60,9 @@ export const CheckTypeContainer = () => {
   useEffect(() => {
     if (hasVehicle && vehicle) {
       fetchByVehicle(vehicle.id)
+      fetchStatuses(vehicle.id)
     }
-  }, [hasVehicle, vehicle, fetchByVehicle])
+  }, [hasVehicle, vehicle, fetchByVehicle, fetchStatuses])
 
   useEffect(() => {
     if (mode !== 'loading') return
@@ -93,6 +100,19 @@ export const CheckTypeContainer = () => {
       setServerError(error instanceof Error ? error.message : 'Une erreur est survenue')
     }
   })
+
+  const handleLogSubmit = async (data: CreateCheckLogSchema) => {
+    if (!vehicle || !loggingCheckType) return
+
+    try {
+      await createLog(vehicle.id, loggingCheckType.id, data)
+      setLoggingCheckType(null)
+      setSuccessMessage('Contrôle enregistré avec succès')
+      setTimeout(() => setSuccessMessage(null), 3000)
+    } catch (error) {
+      setServerError(error instanceof Error ? error.message : 'Une erreur est survenue')
+    }
+  }
 
   const handleDeleteConfirm = async () => {
     if (!vehicle || !deletingCheckType) return
@@ -146,7 +166,7 @@ export const CheckTypeContainer = () => {
 
   if (mode === 'create') {
     return (
-      <section className='mx-auto max-w-lg p-6'>
+      <section className='mx-auto max-w-2xl p-6'>
         <h1 className='text-base-content mb-8 flex items-center justify-center gap-3 text-center text-4xl font-bold'>
           <PlusCircle size={32} className='text-primary' />
           Ajouter un type de contrôle
@@ -168,7 +188,7 @@ export const CheckTypeContainer = () => {
 
   if (mode === 'edit') {
     return (
-      <section className='mx-auto max-w-lg p-6'>
+      <section className='mx-auto max-w-2xl p-6'>
         <h1 className='text-base-content mb-8 flex items-center justify-center gap-3 text-center text-4xl font-bold'>
           <PencilLine size={32} className='text-primary' />
           Modifier le type de contrôle
@@ -192,9 +212,13 @@ export const CheckTypeContainer = () => {
     suggestion => !checkTypes.some(checkType => checkType.name === suggestion.name)
   )
 
+  const statusesMap = new Map<string, CheckStatus>(
+    statuses.map(statusMap => [statusMap.checkTypeId, statusMap.status])
+  )
+
   if (mode === 'list') {
     return (
-      <section className='mx-auto max-w-4xl p-6'>
+      <section className='mx-auto max-w-6xl p-6'>
         <header className='mb-6 flex items-center justify-between'>
           <h1 className='text-base-content flex items-center gap-2 text-2xl font-bold'>
             <ListChecks size={24} className='text-primary' />
@@ -207,7 +231,13 @@ export const CheckTypeContainer = () => {
         )}
         {remainingSuggestions.length > 0 && hasCheckTypes && <hr className='divider my-4' />}
         {hasCheckTypes && (
-          <CheckTypeList checkTypes={checkTypes} onEdit={onEdit} onDelete={onDelete} />
+          <CheckTypeList
+            checkTypes={checkTypes}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            statuses={statusesMap}
+            onLog={setLoggingCheckType}
+          />
         )}
         {!hasCheckTypes && (
           <section className='flex flex-col items-center gap-3 py-16 text-center'>
@@ -223,6 +253,14 @@ export const CheckTypeContainer = () => {
             checkTypeName={deletingCheckType.name}
             onConfirm={handleDeleteConfirm}
             onCancel={() => setDeletingCheckType(null)}
+          />
+        )}
+        {successMessage && <p className='alert alert-success'>{successMessage}</p>}
+        {loggingCheckType && (
+          <LogCheckDialog
+            checkTypeName={loggingCheckType.name}
+            onSubmit={handleLogSubmit}
+            onCancel={() => setLoggingCheckType(null)}
           />
         )}
       </section>

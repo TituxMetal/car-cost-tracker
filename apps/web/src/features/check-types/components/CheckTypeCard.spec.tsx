@@ -87,4 +87,63 @@ describe('CheckTypeCard', () => {
 
     expect(onDelete).toHaveBeenCalledWith(mockCheckType)
   })
+
+  it('should render CheckStatusBadge when status is provided', () => {
+    const actions = mock(() => {})
+
+    render(
+      <CheckTypeCard
+        checkType={mockCheckType}
+        onEdit={actions}
+        onDelete={actions}
+        status='on-time'
+      />
+    )
+
+    expect(screen.getByText(/à jour/i)).toBeInTheDocument()
+  })
+
+  it('should not render CheckStatusBadge when status is not provided', () => {
+    const actions = mock(() => {})
+
+    render(<CheckTypeCard checkType={mockCheckType} onEdit={actions} onDelete={actions} />)
+
+    expect(screen.queryByText(/à jour/i)).toBeNull()
+  })
+
+  it('should render log button when onLog is provided', () => {
+    const actions = mock(() => {})
+
+    render(
+      <CheckTypeCard
+        checkType={mockCheckType}
+        onEdit={actions}
+        onDelete={actions}
+        onLog={actions}
+      />
+    )
+
+    expect(screen.getByRole('button', { name: /journaliser/i })).toBeInTheDocument()
+  })
+
+  it('should not render log button when onLog is not provided', () => {
+    const actions = mock(() => {})
+
+    render(<CheckTypeCard checkType={mockCheckType} onEdit={actions} onDelete={actions} />)
+
+    expect(screen.queryByRole('button', { name: /journaliser/i })).toBeNull()
+  })
+
+  it('should call onLog with checkType when log button clicked', () => {
+    const onLog = mock(() => {})
+    const actions = mock(() => {})
+
+    render(
+      <CheckTypeCard checkType={mockCheckType} onEdit={actions} onDelete={actions} onLog={onLog} />
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: /journaliser/i }))
+
+    expect(onLog).toHaveBeenCalledWith(mockCheckType)
+  })
 })
