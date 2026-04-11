@@ -2,47 +2,47 @@
 
 ---
 
-## Feature 05: Dashboard
+## Feature 05: Dashboard ✅
 
-### Block 1: Shell → Data → First Sections (Phases 1-4) — `feature/dashboard`
+### Block 1: Shell → Data → First Sections (Phases 1-4) — `feature/dashboard` ✅
 
-#### Phase 1: Page Shell & Navigation
+#### Phase 1: Page Shell & Navigation ✅
 
-- [ ] Minimal DashboardContainer + barrel exports
-- [ ] Update index.astro (auth-gated dashboard)
-- [ ] Update Main.astro (add "Tableau de bord" nav link)
+- [x] Minimal DashboardContainer + barrel exports
+- [x] Update index.astro (auth-gated dashboard)
+- [x] Update Main.astro (add "Tableau de bord" nav link)
 
-#### Phase 2: Types & Date Utilities
+#### Phase 2: Types & Date Utilities ✅
 
-- [ ] Dashboard types (StatusCounts, ActionItem)
-- [ ] Date utility functions (daysFromNow, formatDaysLabel) + tests
+- [x] Dashboard types (StatusCounts, ActionItem)
+- [x] Date utility functions (daysFromNow, formatDaysLabel) + tests
 
-#### Phase 3: Hook, Empty States & Container Wiring
+#### Phase 3: Hook, Empty States & Container Wiring ✅
 
-- [ ] DashboardEmptyState + tests
-- [ ] useDashboard hook + tests
-- [ ] DashboardContainer wiring + tests
+- [x] DashboardEmptyState + tests
+- [x] useDashboard hook + tests
+- [x] DashboardContainer wiring + tests
 
-#### Phase 4: Vehicle Summary & Status Overview
+#### Phase 4: Vehicle Summary & Status Overview ✅
 
-- [ ] VehicleSummaryCard + tests
-- [ ] StatusOverview + tests
-- [ ] Wire into DashboardContainer
+- [x] VehicleSummaryCard + tests
+- [x] StatusOverview + tests
+- [x] Wire into DashboardContainer
 
 ---
 
-### Block 2: Action Items + Recent Activity (Phases 5-6) — `feature/dashboard`
+### Block 2: Action Items + Recent Activity (Phases 5-6) — `feature/dashboard` ✅
 
-#### Phase 5: Action Items & Quick-Log
+#### Phase 5: Action Items & Quick-Log ✅
 
-- [ ] ActionItemCard + tests
-- [ ] ActionItemsList + tests
-- [ ] Wire into DashboardContainer + LogCheckDialog integration
+- [x] ActionItemCard + tests
+- [x] ActionItemsList + tests
+- [x] Wire into DashboardContainer + LogCheckDialog integration
 
-#### Phase 6: Recent Activity & Polish
+#### Phase 6: Recent Activity & Polish ✅
 
-- [ ] RecentActivityList + tests
-- [ ] Wire into DashboardContainer & finalize barrel exports
+- [x] RecentActivityList + tests
+- [x] Wire into DashboardContainer & finalize barrel exports
 
 ---
 
