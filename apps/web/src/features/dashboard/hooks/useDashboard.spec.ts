@@ -257,9 +257,8 @@ describe('useDashboard', () => {
       fetchLogsSpy.mockRestore()
     })
 
-    it('logCheck delegates to createLog and then refreshes statuses and logs', async () => {
+    it('logCheck delegates to createLog and then refreshes logs', async () => {
       const createSpy = spyOn(checkLogActions, 'create').mockResolvedValue(mockLog())
-      const fetchStatusesSpy = spyOn(checkLogActions, 'fetchStatuses').mockResolvedValue(undefined)
       const fetchLogsSpy = spyOn(checkLogActions, 'fetchLogs').mockResolvedValue(undefined)
 
       const { result } = renderHook(() => useDashboard())
@@ -269,11 +268,9 @@ describe('useDashboard', () => {
         completedAt: '2026-04-10',
         notes: 'ok'
       })
-      expect(fetchStatusesSpy).toHaveBeenCalledWith('v1')
       expect(fetchLogsSpy).toHaveBeenCalledWith('v1')
 
       createSpy.mockRestore()
-      fetchStatusesSpy.mockRestore()
       fetchLogsSpy.mockRestore()
     })
   })

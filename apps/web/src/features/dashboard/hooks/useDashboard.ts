@@ -105,9 +105,9 @@ export const useDashboard = (): UseDashboardReturn => {
   const logCheck = useCallback(
     async (vehicleId: string, checkTypeId: string, data: CreateCheckLogSchema) => {
       await createLog(vehicleId, checkTypeId, data)
-      await Promise.all([fetchStatuses(vehicleId), fetchLogs(vehicleId)])
+      await fetchLogs(vehicleId)
     },
-    [createLog, fetchStatuses, fetchLogs]
+    [createLog, fetchLogs]
   )
 
   return {
