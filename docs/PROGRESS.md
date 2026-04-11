@@ -2,51 +2,110 @@
 
 ---
 
-## Feature 05: Dashboard ✅
+## Feature 06: Expenses
 
-### Block 1: Shell → Data → First Sections (Phases 1-4) — `feature/dashboard` ✅
+- Feature shape: `docs/features/06-expenses.md`
+- Implementation plan: `~/.claude/plans/car-cost-tracker-06-expenses.md`
 
-#### Phase 1: Page Shell & Navigation ✅
+### Block 1: Backend (Phases 1-5) — `feature/expenses-backend`
 
-- [x] Minimal DashboardContainer + barrel exports
-- [x] Update index.astro (auth-gated dashboard)
-- [x] Update Main.astro (add "Tableau de bord" nav link)
+#### Phase 1: Database schema & migration
 
-#### Phase 2: Types & Date Utilities ✅
+- [ ] Prisma schema + migration (Expense model, ExpenseCategory enum, Vehicle relation, indexes)
 
-- [x] Dashboard types (StatusCounts, ActionItem)
-- [x] Date utility functions (daysFromNow, formatDaysLabel) + tests
+#### Phase 2: Backend domain layer
 
-#### Phase 3: Hook, Empty States & Container Wiring ✅
+- [ ] ExpenseId value object + tests
+- [ ] OccurredAt value object + tests (date-only, backdating allowed, no future)
+- [ ] Amount value object + tests (integer cents, Math.round, sanity cap)
+- [ ] Expense validation constants
+- [ ] Expense entity + tests (mutable with update methods)
+- [ ] Repository interface + domain exceptions
 
-- [x] DashboardEmptyState + tests
-- [x] useDashboard hook + tests
-- [x] DashboardContainer wiring + tests
+#### Phase 3: Backend application DTOs & mapper
 
-#### Phase 4: Vehicle Summary & Status Overview ✅
+- [ ] CreateExpense DTO + tests
+- [ ] UpdateExpense DTO (partial) + tests
+- [ ] GetExpense DTO + tests
+- [ ] Application mapper + tests
 
-- [x] VehicleSummaryCard + tests
-- [x] StatusOverview + tests
-- [x] Wire into DashboardContainer
+#### Phase 4: Backend application use cases & service
 
----
+- [ ] CreateExpense use case + tests
+- [ ] UpdateExpense use case + tests (partial update orchestration)
+- [ ] DeleteExpense use case + tests
+- [ ] GetExpenseById use case + tests
+- [ ] ListExpensesByVehicle use case + tests
+- [ ] Expense service (facade) + tests
 
-### Block 2: Action Items + Recent Activity (Phases 5-6) — `feature/dashboard` ✅
+#### Phase 5: Backend infrastructure & module
 
-#### Phase 5: Action Items & Quick-Log ✅
+- [ ] Infrastructure mapper + tests
+- [ ] Prisma repository + tests
+- [ ] Expense controller + tests (5 endpoints under `/vehicles/:vehicleId/expenses`)
+- [ ] Expenses module (DI wiring)
+- [ ] App module registration
 
-- [x] ActionItemCard + tests
-- [x] ActionItemsList + tests
-- [x] Wire into DashboardContainer + LogCheckDialog integration
+### Block 2: Frontend outside-in (Phases 6-11) — `feature/expenses-frontend`
 
-#### Phase 6: Recent Activity & Polish ✅
+#### Phase 6: Page shell + navigation
 
-- [x] RecentActivityList + tests
-- [x] Wire into DashboardContainer & finalize barrel exports
+- [ ] Astro page `/expenses` (auth-gated)
+- [ ] Navigation link "Dépenses" in Main.astro (desktop + mobile)
+- [ ] Minimal ExpensesContainer stub + tests (visible in browser)
+
+#### Phase 7: Frontend plumbing (types, schemas, utils, API, store)
+
+- [ ] Types + category labels utils + tests
+- [ ] Amount utils (formatEuros, parseEurosToCents) + tests
+- [ ] Zod schemas (create + update with transform) + tests
+- [ ] API service + tests
+- [ ] Nanostores store (atoms, computed money, actions) + tests
+
+#### Phase 8: Hook + list + card (first render)
+
+- [ ] useExpenses hook + tests
+- [ ] ExpenseCard component + tests
+- [ ] ExpensesList component + tests
+- [ ] ExpensesEmptyState component
+- [ ] Wire into ExpensesContainer (real data visible)
+
+#### Phase 9: Form + create dialog
+
+- [ ] ExpenseForm (RHF + Zod transform) + tests
+- [ ] ExpenseFormDialog (Radix) + tests
+- [ ] Wire "Ajouter" button + create flow in container
+
+#### Phase 10: Edit + delete
+
+- [ ] Wire edit flow (reuse ExpenseFormDialog in edit mode)
+- [ ] DeleteExpenseDialog + wire delete flow + tests
+
+#### Phase 11: Header (totals + breakdown) + filter
+
+- [ ] ExpensesHeader (total + category breakdown + "Ajouter" button) + tests
+- [ ] ExpensesFilter (category dropdown) + tests
+- [ ] Wire header & filter into container (complete feature)
+
+### Block 3: Docs & tracking (Phase 12)
+
+- [ ] Feature barrel exports (`features/expenses/index.ts`)
+- [ ] PROGRESS.md final pass (mark all Feature 06 phases complete)
 
 ---
 
 ## Backlog — Future Improvements
+
+### Dashboard — Polish phase (deferred from Feature 06 Expenses)
+
+- [ ] Dashboard widget "Dépenses récentes": total dépensé ce mois + 3 dernières dépenses + lien vers
+      `/expenses`
+- [ ] Dashboard widget "Budget" (driven by Feature 07): spent vs budget with visual indicator
+
+### Documentation (optional, future)
+
+- [ ] Consider adding a short "About this document" blurb to `docs/MVP.md` and to each feature shape
+      describing their respective roles and authority (optional, UX improvement for future sessions)
 
 ### From Feature 01 PR review (low priority)
 
