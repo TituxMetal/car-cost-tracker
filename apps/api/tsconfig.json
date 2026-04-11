@@ -2,12 +2,11 @@
   "extends": "@packages/ts-config/node",
   "compilerOptions": {
     "outDir": "./dist",
-    "baseUrl": "./",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "paths": {
       "@generated": ["./generated/prisma/client"],
-      "~/*": ["src/*"],
+      "~/*": ["./src/*"],
       "@prisma/client-runtime-utils": ["./node_modules/@prisma/client-runtime-utils"]
     }
   },

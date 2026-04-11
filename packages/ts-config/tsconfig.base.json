@@ -10,12 +10,11 @@
     "verbatimModuleSyntax": true,
     "noEmit": true,
     "incremental": true,
-    "baseUrl": ".",
     "paths": {
-      "@packages/types": ["packages/shared-types/src"],
-      "@packages/types/*": ["packages/shared-types/src/*"],
-      "@packages/eslint-config": ["packages/eslint-config/src"],
-      "@packages/eslint-config/*": ["packages/eslint-config/src/*"]
+      "@packages/types": ["../shared-types/src"],
+      "@packages/types/*": ["../shared-types/src/*"],
+      "@packages/eslint-config": ["../eslint-config/src"],
+      "@packages/eslint-config/*": ["../eslint-config/src/*"]
     }
   },
   "references": [
