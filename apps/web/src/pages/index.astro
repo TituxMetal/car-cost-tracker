@@ -1,17 +1,28 @@
 ---
+import { DashboardContainer } from '~/features/dashboard'
 import Main from '~/layouts/Main.astro'
+
+const { user } = Astro.locals
 ---
 
-<Main>
-  <section class='flex flex-col gap-4'>
-    <h1 class='mb-8 text-2xl font-bold'>Fullstack Nest + Astro</h1>
+<Main title={user ? 'Tableau de bord' : undefined}>
+  {
+    user ? (
+      <section class='container mx-auto px-4 py-8'>
+        <DashboardContainer client:only='react' />
+      </section>
+    ) : (
+      <section class='flex flex-col gap-4'>
+        <h1 class='mb-8 text-2xl font-bold'>Fullstack Nest + Astro</h1>
 
-    <p>
-      This is a simple example of a fullstack app using Astro as frontend and NestJs as backend.
-    </p>
+        <p>
+          This is a simple example of a fullstack app using Astro as frontend and NestJs as backend.
+        </p>
 
-    <p>It uses a JWT + Cookie authentication system and a Sqlite database.</p>
+        <p>It uses a JWT + Cookie authentication system and a Sqlite database.</p>
 
-    <p>It also uses a React frontend with TailwindCSS for styling.</p>
-  </section>
+        <p>It also uses a React frontend with TailwindCSS for styling.</p>
+      </section>
+    )
+  }
 </Main>

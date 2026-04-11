@@ -41,9 +41,7 @@ const { user } = Astro.locals
             user ? (
               <>
                 <li>
-                  <a href='/profile'>
-                    {user.username.charAt(0).toUpperCase() + user.username.slice(1)}
-                  </a>
+                  <a href='/'>Tableau de bord</a>
                 </li>
                 <li>
                   <a href='/vehicle'>Mon véhicule</a>
@@ -54,21 +52,26 @@ const { user } = Astro.locals
                 <li>
                   <a href='/check-logs'>Historique</a>
                 </li>
-                {user.role === 'admin' && (
-                  <li>
-                    <a href='/admin'>Admin</a>
-                  </li>
-                )}
               </>
             ) : null
           }
         </ul>
-        <div class='hidden flex-none lg:flex'>
+        <div class='hidden flex-none gap-1 lg:flex'>
           {
             user ? (
-              <a href='/auth/logout' class='btn btn-ghost'>
-                Logout
-              </a>
+              <>
+                <a href='/profile' class='btn btn-ghost'>
+                  {user.username.charAt(0).toUpperCase() + user.username.slice(1)}
+                </a>
+                {user.role === 'admin' && (
+                  <a href='/admin' class='btn btn-ghost'>
+                    Admin
+                  </a>
+                )}
+                <a href='/auth/logout' class='btn btn-ghost'>
+                  Logout
+                </a>
+              </>
             ) : (
               <a href='/auth' class='btn btn-ghost'>
                 Login
@@ -86,9 +89,7 @@ const { user } = Astro.locals
                 user ? (
                   <>
                     <li>
-                      <a href='/profile'>
-                        {user.username.charAt(0).toUpperCase() + user.username.slice(1)}
-                      </a>
+                      <a href='/'>Tableau de bord</a>
                     </li>
                     <li>
                       <a href='/vehicle'>Mon véhicule</a>
@@ -98,6 +99,11 @@ const { user } = Astro.locals
                     </li>
                     <li>
                       <a href='/check-logs'>Historique</a>
+                    </li>
+                    <li>
+                      <a href='/profile'>
+                        {user.username.charAt(0).toUpperCase() + user.username.slice(1)}
+                      </a>
                     </li>
                     {user.role === 'admin' && (
                       <li>
