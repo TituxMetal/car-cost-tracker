@@ -1,4 +1,3 @@
-import { act } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, mock, spyOn } from 'bun:test'
 
 // Direct store imports: bun:test mock.module leaks globally across files,
@@ -11,7 +10,7 @@ import {
   $vehicle,
   vehicleActions
 } from '~/features/vehicles/store'
-import { cleanup, fireEvent, render, screen, userEvent, waitFor } from '~/test-utils'
+import { act, cleanup, fireEvent, render, screen, userEvent, waitFor } from '~/test-utils'
 import * as navigationUtils from '~/utils/navigation'
 
 import { $checkTypes, $error, $isLoading, checkTypeActions } from '../store'

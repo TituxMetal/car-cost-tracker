@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
+/// <reference types="bun" />
 import type { TestingLibraryMatchers } from '@testing-library/jest-dom/matchers'
 
 declare module 'bun:test' {
