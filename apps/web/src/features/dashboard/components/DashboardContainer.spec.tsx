@@ -71,23 +71,27 @@ const renderContainer = async () => {
 }
 
 describe('DashboardContainer', () => {
-  const fetchVehicleSpy = spyOn(vehicleActions, 'fetchVehicle').mockResolvedValue(undefined)
-  const fetchByVehicleSpy = spyOn(checkTypeActions, 'fetchByVehicle').mockResolvedValue(undefined)
-  const fetchStatusesSpy = spyOn(checkLogActions, 'fetchStatuses').mockResolvedValue(undefined)
-  const fetchLogsSpy = spyOn(checkLogActions, 'fetchLogs').mockResolvedValue(undefined)
+  let fetchVehicleSpy: ReturnType<typeof spyOn<typeof vehicleActions, 'fetchVehicle'>>
+  let fetchByVehicleSpy: ReturnType<typeof spyOn<typeof checkTypeActions, 'fetchByVehicle'>>
+  let fetchStatusesSpy: ReturnType<typeof spyOn<typeof checkLogActions, 'fetchStatuses'>>
+  let fetchLogsSpy: ReturnType<typeof spyOn<typeof checkLogActions, 'fetchLogs'>>
 
   beforeEach(() => {
     cleanup()
     document.body.innerHTML = ''
     resetStores()
-    fetchVehicleSpy.mockClear()
-    fetchByVehicleSpy.mockClear()
-    fetchStatusesSpy.mockClear()
-    fetchLogsSpy.mockClear()
+    fetchVehicleSpy = spyOn(vehicleActions, 'fetchVehicle').mockResolvedValue(undefined)
+    fetchByVehicleSpy = spyOn(checkTypeActions, 'fetchByVehicle').mockResolvedValue(undefined)
+    fetchStatusesSpy = spyOn(checkLogActions, 'fetchStatuses').mockResolvedValue(undefined)
+    fetchLogsSpy = spyOn(checkLogActions, 'fetchLogs').mockResolvedValue(undefined)
   })
 
   afterEach(() => {
     cleanup()
+    fetchVehicleSpy.mockRestore()
+    fetchByVehicleSpy.mockRestore()
+    fetchStatusesSpy.mockRestore()
+    fetchLogsSpy.mockRestore()
   })
 
   it('renders the dashboard heading immediately', async () => {
