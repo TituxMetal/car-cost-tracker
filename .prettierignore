@@ -3,3 +3,5 @@
 .github/
 .opencode/
 **/generated/**
+docs/polish/visual-refresh-handoff/components/
+docs/polish/visual-refresh-handoff/index.html

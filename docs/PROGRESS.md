@@ -96,6 +96,14 @@
 
 ## Backlog — Future Improvements
 
+### Polish phase — Visual refresh "V1 Cluster"
+
+- Handoff preserved at `docs/polish/visual-refresh-handoff/` (theme tokens, `Gauge` +
+  `TelltaleLight` primitives, component-by-component restyling plan)
+- Integration intentionally deferred to the MVP Polish phase so Expenses (Feature 06) and Budget
+  (Feature 07) components are built once against the new theme, not re-skinned twice
+- [ ] Extend the handoff to cover Expenses/Budget components before integration
+
 ### Dashboard — Polish phase (deferred from Feature 06 Expenses)
 
 - [ ] Dashboard widget "Dépenses récentes": total dépensé ce mois + 3 dernières dépenses + lien vers

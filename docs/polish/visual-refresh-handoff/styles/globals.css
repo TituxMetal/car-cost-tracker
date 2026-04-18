@@ -1,0 +1,139 @@
+@import 'tailwindcss';
+
+@plugin 'daisyui' {
+  themes: cartracker --default;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * CARTRACKER THEME — V1 "CLUSTER" (retro-modern dashboard)
+ *
+ * WCAG contrast ratios computed on base-100 and base-200:
+ *   base-content     → 15.30 / 14.09  AAA
+ *   base-content/70  →  7.86 /  7.24  AAA
+ *   base-content/50  →  5.37 /  4.95  AA strict
+ *   primary (amber)  →  9.84 /  9.06  AAA
+ *   warning          → 10.65 /  9.81  AAA
+ *   error            →  5.94 /  5.47  AA
+ *   success          → 10.05 /  9.25  AAA
+ *   info             →  9.71 /  8.94  AAA
+ *   primary-content on primary → 10.02  AAA
+ *
+ * Goal: strict AA (4.5:1) guaranteed everywhere, AAA (7:1) wherever possible.
+ * ─────────────────────────────────────────────────────────────────────── */
+
+@plugin 'daisyui/theme' {
+  name: 'cartracker';
+  default: true;
+  color-scheme: dark;
+
+  /* — Accents — */
+  --color-primary: oklch(80% 0.16 75); /* cluster amber */
+  --color-primary-content: oklch(17% 0.03 75);
+  --color-secondary: oklch(73.375% 0.165 35.353);
+  --color-secondary-content: oklch(14.675% 0.033 35.353);
+  --color-accent: oklch(74.229% 0.133 311.379);
+  --color-accent-content: oklch(14.845% 0.026 311.379);
+
+  /* — Neutrals / surfaces (darker than the old theme) — */
+  --color-neutral: oklch(24% 0.015 264);
+  --color-neutral-content: oklch(93% 0.015 85);
+  --color-base-100: oklch(18% 0.01 264); /* main bg */
+  --color-base-200: oklch(22% 0.012 264); /* panels, cards */
+  --color-base-300: oklch(28% 0.015 264); /* borders, tracks */
+  --color-base-content: oklch(93% 0.015 85); /* text — warm tint */
+
+  /* — States (telltale lights) — */
+  --color-info: oklch(78% 0.12 220);
+  --color-info-content: oklch(17% 0.025 220);
+  --color-success: oklch(78% 0.17 155);
+  --color-success-content: oklch(17% 0.03 155);
+  --color-warning: oklch(82% 0.17 85);
+  --color-warning-content: oklch(17% 0.03 85);
+  --color-error: oklch(70% 0.22 25);
+  --color-error-content: oklch(98% 0.01 25);
+
+  /* — Squarer radii (retro cluster) — */
+  --radius-selector: 0.25rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.375rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+/* ─── Fonts (import in your Astro layout or via @import) ───────────────
+ *   <link rel="preconnect" href="https://fonts.googleapis.com">
+ *   <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+ * ───────────────────────────────────────────────────────────────────── */
+
+@theme {
+  --font-sans: 'Oxanium', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Courier New', monospace;
+  --font-display: 'Oxanium', ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    @apply h-full;
+    overflow-y: scroll;
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-base-100 text-base-content flex min-h-screen flex-col font-sans antialiased;
+    margin: 0;
+    padding: 0;
+  }
+
+  img {
+    @apply h-auto max-w-full;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0.67em 0;
+    line-height: 1.2;
+  }
+
+  .min-h-screen {
+    min-height: 100vh;
+  }
+
+  /* Focus visible — required for keyboard navigation */
+  :focus-visible {
+    @apply outline-primary outline-2 outline-offset-2;
+  }
+
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(0.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.3s ease-out both;
+  }
+
+  /* Respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
