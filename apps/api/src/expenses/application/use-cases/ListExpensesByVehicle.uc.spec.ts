@@ -55,12 +55,12 @@ describe('ListExpensesByVehicleUseCase', () => {
       expect(result).toEqual([])
     })
 
-    it('should return expenses sorted by occurredAt descending (newest first)', async () => {
-      const older = makeEntity('550e8400-e29b-41d4-a716-446655440001', '2025-01-15')
+    it('should preserve the repository ordering (occurredAt desc contract)', async () => {
       const newer = makeEntity('550e8400-e29b-41d4-a716-446655440002', '2026-03-15')
       const middle = makeEntity('550e8400-e29b-41d4-a716-446655440003', '2025-08-01')
+      const older = makeEntity('550e8400-e29b-41d4-a716-446655440001', '2025-01-15')
 
-      mockRepository.findByVehicleId.mockResolvedValueOnce([older, newer, middle])
+      mockRepository.findByVehicleId.mockResolvedValueOnce([newer, middle, older])
 
       const result = await useCase.execute(vehicleId)
 

@@ -11,12 +11,6 @@ export class ListExpensesByVehicleUseCase {
   async execute(vehicleId: string): Promise<GetExpenseDto[]> {
     const entities = await this.expenseRepository.findByVehicleId(vehicleId)
 
-    return entities
-      .map(entity => ExpenseMapper.toGetExpenseDto(entity))
-      .sort((a, b) => {
-        if (a.occurredAt === b.occurredAt) return 0
-
-        return a.occurredAt > b.occurredAt ? -1 : 1
-      })
+    return entities.map(entity => ExpenseMapper.toGetExpenseDto(entity))
   }
 }
