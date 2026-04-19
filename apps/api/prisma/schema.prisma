@@ -88,6 +88,13 @@ enum FuelType {
   HYBRID
 }
 
+enum ExpenseCategory {
+  SERVICE
+  PARTS
+  LABOR
+  OTHER
+}
+
 model Vehicle {
   id           String    @id @default(uuid())
   userId       String    @unique
@@ -106,6 +113,7 @@ model Vehicle {
 
   user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   checkTypes CheckType[]
+  expenses   Expense[]
 }
 
 model CheckType {
@@ -137,4 +145,20 @@ model CheckLog {
   checkType CheckType @relation(fields: [checkTypeId], references: [id], onDelete: Cascade)
 
   @@index([checkTypeId])
+}
+
+model Expense {
+  id          String          @id @default(uuid())
+  vehicleId   String
+  occurredAt  String
+  amountCents Int
+  category    ExpenseCategory
+  description String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@index([vehicleId])
+  @@index([vehicleId, occurredAt])
 }
