@@ -216,4 +216,26 @@ describe('ExpenseController', () => {
       expect(mockExpenseService.deleteExpense).not.toHaveBeenCalled()
     })
   })
+
+  describe('verifyVehicleOwnership', () => {
+    it('should throw VehicleNotFoundException when user has no vehicle', async () => {
+      const session = createMockSession(userId)
+      mockVehicleService.getVehicleByUser.mockResolvedValue(null)
+
+      await expect(controller.getByVehicle(session, vehicleId)).rejects.toThrow(
+        `Vehicle not found: ${vehicleId}`
+      )
+    })
+
+    it('should throw VehicleNotFoundException when vehicle ID does not match', async () => {
+      const session = createMockSession(userId)
+      const wrongVehicle = createMockVehicleDto({ id: 'different-vehicle-id' })
+
+      mockVehicleService.getVehicleByUser.mockResolvedValue(wrongVehicle)
+
+      await expect(controller.getByVehicle(session, vehicleId)).rejects.toThrow(
+        `Vehicle not found: ${vehicleId}`
+      )
+    })
+  })
 })
