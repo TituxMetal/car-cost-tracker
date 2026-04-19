@@ -9,42 +9,42 @@
 
 ### Block 1: Backend (Phases 1-5) — `feature/expenses-backend`
 
-#### Phase 1: Database schema & migration
+#### Phase 1: Database schema & migration ✅
 
-- [ ] Prisma schema + migration (Expense model, ExpenseCategory enum, Vehicle relation, indexes)
+- [x] Prisma schema + migration (Expense model, ExpenseCategory enum, Vehicle relation, indexes)
 
-#### Phase 2: Backend domain layer
+#### Phase 2: Backend domain layer ✅
 
-- [ ] ExpenseId value object + tests
-- [ ] OccurredAt value object + tests (date-only, backdating allowed, no future)
-- [ ] Amount value object + tests (integer cents, Math.round, sanity cap)
-- [ ] Expense validation constants
-- [ ] Expense entity + tests (mutable with update methods)
-- [ ] Repository interface + domain exceptions
+- [x] ExpenseId value object + tests
+- [x] OccurredAt value object + tests (date-only, backdating allowed, no future)
+- [x] Amount value object + tests (integer cents, Math.round, sanity cap)
+- [x] Expense validation constants
+- [x] Expense entity + tests (mutable with update methods)
+- [x] Repository interface + domain exceptions
 
-#### Phase 3: Backend application DTOs & mapper
+#### Phase 3: Backend application DTOs & mapper ✅
 
-- [ ] CreateExpense DTO + tests
-- [ ] UpdateExpense DTO (partial) + tests
-- [ ] GetExpense DTO + tests
-- [ ] Application mapper + tests
+- [x] CreateExpense DTO + tests
+- [x] UpdateExpense DTO (partial) + tests
+- [x] GetExpense DTO + tests
+- [x] Application mapper + tests
 
-#### Phase 4: Backend application use cases & service
+#### Phase 4: Backend application use cases & service ✅
 
-- [ ] CreateExpense use case + tests
-- [ ] UpdateExpense use case + tests (partial update orchestration)
-- [ ] DeleteExpense use case + tests
-- [ ] GetExpenseById use case + tests
-- [ ] ListExpensesByVehicle use case + tests
-- [ ] Expense service (facade) + tests
+- [x] CreateExpense use case + tests
+- [x] UpdateExpense use case + tests (partial update orchestration)
+- [x] DeleteExpense use case + tests
+- [x] GetExpenseById use case + tests
+- [x] ListExpensesByVehicle use case + tests
+- [x] Expense service (facade) + tests
 
-#### Phase 5: Backend infrastructure & module
+#### Phase 5: Backend infrastructure & module ✅
 
-- [ ] Infrastructure mapper + tests
-- [ ] Prisma repository + tests
-- [ ] Expense controller + tests (5 endpoints under `/vehicles/:vehicleId/expenses`)
-- [ ] Expenses module (DI wiring)
-- [ ] App module registration
+- [x] Infrastructure mapper + tests
+- [x] Prisma repository + tests
+- [x] Expense controller + tests (5 endpoints under `/vehicles/:vehicleId/expenses`)
+- [x] Expenses module (DI wiring)
+- [x] App module registration
 
 ### Block 2: Frontend outside-in (Phases 6-11) — `feature/expenses-frontend`
 
