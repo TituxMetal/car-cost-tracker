@@ -1,26 +1,24 @@
-const OCCURRED_AT_PATTERN = /^\d{4}-\d{2}-\d{2}$/
-const OCCURRED_AT_MESSAGE = 'Occurred date must be in YYYY-MM-DD format'
-const OCCURRED_AT_FUTURE_MESSAGE = 'Occurred date cannot be in the future'
+import { EXPENSE_VALIDATION } from '../validation'
 
 export class OccurredAtValueObject {
   private readonly _value: string
 
   constructor(value: string) {
-    if (!OCCURRED_AT_PATTERN.test(value)) {
-      throw new Error(OCCURRED_AT_MESSAGE)
+    if (!EXPENSE_VALIDATION.OCCURRED_AT.PATTERN.test(value)) {
+      throw new Error(EXPENSE_VALIDATION.OCCURRED_AT.MESSAGE)
     }
 
     const timestamp = Date.parse(value)
 
     if (isNaN(timestamp)) {
-      throw new Error(OCCURRED_AT_MESSAGE)
+      throw new Error(EXPENSE_VALIDATION.OCCURRED_AT.MESSAGE)
     }
 
     const today = new Date()
     today.setUTCHours(0, 0, 0, 0)
     const input = new Date(value + 'T00:00:00Z')
     if (input > today) {
-      throw new Error(OCCURRED_AT_FUTURE_MESSAGE)
+      throw new Error(EXPENSE_VALIDATION.OCCURRED_AT.FUTURE_MESSAGE)
     }
 
     this._value = value

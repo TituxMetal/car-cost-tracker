@@ -14,10 +14,12 @@ import { EXPENSE_VALIDATION as expenseValidation } from '~/expenses/domain/valid
 
 export class CreateExpenseDto {
   @IsString()
-  @Matches(/^\d{4}-\d{2}-\d{2}$/, { message: 'OccurredAt must be in YYYY-MM-DD format' })
+  @Matches(expenseValidation.OCCURRED_AT.PATTERN, {
+    message: expenseValidation.OCCURRED_AT.MESSAGE
+  })
   occurredAt!: string
 
-  @IsInt({ message: 'AmountCents must be an integer' })
+  @IsInt({ message: expenseValidation.AMOUNT.INTEGER_MESSAGE })
   @IsPositive({ message: expenseValidation.AMOUNT.MIN_MESSAGE })
   @Max(expenseValidation.AMOUNT.MAX_CENTS, { message: expenseValidation.AMOUNT.MAX_MESSAGE })
   amountCents!: number
