@@ -1,0 +1,5 @@
+export { CreateExpenseUseCase } from './CreateExpense.uc'
+export { DeleteExpenseUseCase } from './DeleteExpense.uc'
+export { GetExpenseByIdUseCase } from './GetExpenseById.uc'
+export { ListExpensesByVehicleUseCase } from './ListExpensesByVehicle.uc'
+export { UpdateExpenseUseCase } from './UpdateExpense.uc'
