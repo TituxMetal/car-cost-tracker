@@ -137,3 +137,8 @@
 - [ ] Expenses: add a test for the `serverError` local state display path (mutation failure)
 - [ ] Page-level layout: collapse nested max-width wrappers (`Main` + page `container` + feature
       container) across all pages — part of V1 Cluster visual refresh, not a per-feature fix
+- [ ] Expenses: single alert source of truth in `ExpensesContainer` — currently store `$error` and
+      local `serverError` can both render on mutation failure, producing duplicate alerts
+- [ ] Expenses: stricter `occurredAt` calendar validation in schema — `Date.parse` normalises
+      impossible dates (e.g. `2026-02-30` → `2026-03-02`), so invalid calendar dates slip through
+      when bypassing the native date input
