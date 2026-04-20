@@ -16,19 +16,18 @@ export const parseEurosToCents = (input: string): number => {
     .replace(/\s/g, '') // Remove all whitespace (including non-breaking spaces)
     .replace(/,/g, '.') // Replace comma with dot for decimal separator
 
-  const euros = parseFloat(normalized)
-
-  if (isNaN(euros)) {
-    throw new Error(`Invalid euro amount: "${input}"`)
-  }
-
-  if (euros < 0) {
-    throw new Error(`Negative euro amounts are not allowed: "${input}"`)
-  }
-
-  if ((normalized.match(/[.,]/g) || []).length > 1) {
+  if ((normalized.match(/\./g) || []).length > 1) {
     throw new Error(`Invalid euro amount with multiple separators: "${input}"`)
   }
 
-  return Math.round(euros * 100)
+  if (normalized.startsWith('-')) {
+    throw new Error(`Negative euro amounts are not allowed: "${input}"`)
+  }
+
+  // Strict match rejects trailing garbage (e.g. "12abc") and scientific notation.
+  if (!/^\d+(\.\d+)?$/.test(normalized)) {
+    throw new Error(`Invalid euro amount: "${input}"`)
+  }
+
+  return Math.round(parseFloat(normalized) * 100)
 }
