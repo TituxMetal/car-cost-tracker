@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, mock } from 'bun:test'
 import { cleanup, fireEvent, render, screen, waitFor } from '~/test-utils'
 
 import type { Expense } from '../types'
+import { getTodayLocalISO } from '../utils/date.utils'
 
 import { ExpenseFormDialog } from './ExpenseFormDialog'
 
@@ -64,7 +65,7 @@ describe('ExpenseFormDialog', () => {
   it('defaults occurredAt to today in create mode', async () => {
     await renderDialog({ mode: 'create' })
 
-    const today = new Date().toISOString().split('T')[0]
+    const today = getTodayLocalISO()
 
     expect(screen.getByLabelText('Date')).toHaveValue(today)
   })

@@ -3,14 +3,14 @@ import type { UseFormReturn } from 'react-hook-form'
 import { Input, Select, Textarea } from '~/components/ui'
 
 import type { CreateExpenseFormValues, CreateExpenseSchema } from '../schemas'
-import { CATEGORY_OPTIONS } from '../utils'
+import { CATEGORY_OPTIONS, getTodayLocalISO } from '../utils'
 
 export interface ExpenseFormProps {
   form: UseFormReturn<CreateExpenseFormValues, unknown, CreateExpenseSchema>
 }
 
 export const ExpenseForm = ({ form }: ExpenseFormProps) => {
-  const today = new Date().toISOString().split('T')[0]
+  const today = getTodayLocalISO()
 
   return (
     <>

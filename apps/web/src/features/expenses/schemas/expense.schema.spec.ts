@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'bun:test'
 
+import { getTodayLocalISO } from '../utils/date.utils'
+
 import { createExpenseSchema, updateExpenseSchema } from './expense.schema'
 
 describe('createExpenseSchema', () => {
@@ -110,7 +112,7 @@ describe('createExpenseSchema', () => {
     })
 
     it('accepts today', () => {
-      const today = new Date().toISOString().split('T')[0]
+      const today = getTodayLocalISO()
       const result = createExpenseSchema.safeParse({
         occurredAt: today,
         amountInput: '89,50',
