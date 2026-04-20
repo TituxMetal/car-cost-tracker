@@ -79,4 +79,12 @@ describe('parseEurosToCents', () => {
       'Invalid euro amount with multiple separators: "8.9.5"'
     )
   })
+
+  it('throws on trailing non-numeric characters', () => {
+    expect(() => parseEurosToCents('12abc')).toThrow('Invalid euro amount: "12abc"')
+  })
+
+  it('throws on scientific notation', () => {
+    expect(() => parseEurosToCents('1e2')).toThrow('Invalid euro amount: "1e2"')
+  })
 })
