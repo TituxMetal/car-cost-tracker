@@ -23,7 +23,7 @@ const buildDefaultValues = (expense?: Expense): CreateExpenseFormValues => {
     return {
       occurredAt: today,
       amountInput: '',
-      category: undefined as unknown as CreateExpenseFormValues['category'],
+      category: '' as CreateExpenseFormValues['category'],
       description: undefined
     }
   }
