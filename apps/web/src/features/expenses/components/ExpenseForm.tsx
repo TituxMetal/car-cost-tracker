@@ -30,7 +30,7 @@ export const ExpenseForm = ({ form }: ExpenseFormProps) => {
       />
       <Select
         label='Catégorie'
-        placeholder='Séléctionner une catégorie'
+        placeholder='Sélectionner une catégorie'
         options={CATEGORY_OPTIONS}
         {...form.register('category')}
         error={form.formState.errors.category?.message}
