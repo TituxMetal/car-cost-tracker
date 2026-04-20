@@ -48,49 +48,49 @@
 
 ### Block 2: Frontend outside-in (Phases 6-11) — `feature/expenses-frontend`
 
-#### Phase 6: Page shell + navigation
+#### Phase 6: Page shell + navigation ✅
 
-- [ ] Astro page `/expenses` (auth-gated)
-- [ ] Navigation link "Dépenses" in Main.astro (desktop + mobile)
-- [ ] Minimal ExpensesContainer stub + tests (visible in browser)
+- [x] Astro page `/expenses` (auth-gated)
+- [x] Navigation link "Dépenses" in Main.astro (desktop + mobile)
+- [x] Minimal ExpensesContainer stub + tests (visible in browser)
 
-#### Phase 7: Frontend plumbing (types, schemas, utils, API, store)
+#### Phase 7: Frontend plumbing (types, schemas, utils, API, store) ✅
 
-- [ ] Types + category labels utils + tests
-- [ ] Amount utils (formatEuros, parseEurosToCents) + tests
-- [ ] Zod schemas (create + update with transform) + tests
-- [ ] API service + tests
-- [ ] Nanostores store (atoms, computed money, actions) + tests
+- [x] Types + category labels utils + tests
+- [x] Amount utils (formatEuros, parseEurosToCents) + tests
+- [x] Zod schemas (create + update with transform) + tests
+- [x] API service + tests
+- [x] Nanostores store (atoms, computed money, actions) + tests
 
-#### Phase 8: Hook + list + card (first render)
+#### Phase 8: Hook + list + card (first render) ✅
 
-- [ ] useExpenses hook + tests
-- [ ] ExpenseCard component + tests
-- [ ] ExpensesList component + tests
-- [ ] ExpensesEmptyState component
-- [ ] Wire into ExpensesContainer (real data visible)
+- [x] useExpenses hook + tests
+- [x] ExpenseCard component + tests
+- [x] ExpensesList component + tests
+- [x] ExpensesEmptyState component
+- [x] Wire into ExpensesContainer (real data visible)
 
-#### Phase 9: Form + create dialog
+#### Phase 9: Form + create dialog ✅
 
-- [ ] ExpenseForm (RHF + Zod transform) + tests
-- [ ] ExpenseFormDialog (Radix) + tests
-- [ ] Wire "Ajouter" button + create flow in container
+- [x] ExpenseForm (RHF + Zod transform) + tests
+- [x] ExpenseFormDialog (Radix) + tests
+- [x] Wire "Ajouter" button + create flow in container
 
-#### Phase 10: Edit + delete
+#### Phase 10: Edit + delete ✅
 
-- [ ] Wire edit flow (reuse ExpenseFormDialog in edit mode)
-- [ ] DeleteExpenseDialog + wire delete flow + tests
+- [x] Wire edit flow (reuse ExpenseFormDialog in edit mode)
+- [x] DeleteExpenseDialog + wire delete flow + tests
 
-#### Phase 11: Header (totals + breakdown) + filter
+#### Phase 11: Header (totals + breakdown) + filter ✅
 
-- [ ] ExpensesHeader (total + category breakdown + "Ajouter" button) + tests
-- [ ] ExpensesFilter (category dropdown) + tests
-- [ ] Wire header & filter into container (complete feature)
+- [x] ExpensesHeader (total + category breakdown + "Ajouter" button) + tests
+- [x] ExpensesFilter (category dropdown) + tests
+- [x] Wire header & filter into container (complete feature)
 
-### Block 3: Docs & tracking (Phase 12)
+### Block 3: Docs & tracking (Phase 12) ✅
 
-- [ ] Feature barrel exports (`features/expenses/index.ts`)
-- [ ] PROGRESS.md final pass (mark all Feature 06 phases complete)
+- [x] Feature barrel exports (`features/expenses/index.ts`)
+- [x] PROGRESS.md final pass (mark all Feature 06 phases complete)
 
 ---
 
@@ -122,3 +122,18 @@
 - [ ] VehicleContainer: replace `vehicle!.id` non-null assertions with guard clauses
 - [ ] apiRequest: handle empty-body responses (204/205) explicitly instead of catching JSON parse
       errors
+
+### From Feature 06 PR review (low priority)
+
+- [ ] Expenses: centralize `AMOUNT_MAX_CENTS` in an `EXPENSE_VALIDATION` constant object mirroring
+      backend convention (currently hardcoded in `expense.schema.ts`)
+- [ ] Expenses: single source of truth for category values — the literal list
+      `['SERVICE', 'PARTS', 'LABOR', 'OTHER']` is duplicated between `expense.schema.ts` and
+      `expenseCategory.utils.ts`
+- [ ] Expenses: format dates in French locale on `ExpenseCard` (currently raw ISO `2026-03-15`)
+- [ ] Expenses: decide barrel policy for `utils/index.ts` — currently `amount.utils` is imported via
+      deep paths while `expenseCategory.utils` goes through the barrel
+- [ ] Expenses: move `normalizeDescription` from `ExpensesContainer` to a utility + add unit test
+- [ ] Expenses: add a test for the `serverError` local state display path (mutation failure)
+- [ ] Page-level layout: collapse nested max-width wrappers (`Main` + page `container` + feature
+      container) across all pages — part of V1 Cluster visual refresh, not a per-feature fix
