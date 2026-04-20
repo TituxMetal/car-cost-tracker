@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 import { formatEuros, parseEurosToCents } from '../utils/amount.utils'
+import { getTodayLocalISO } from '../utils/date.utils'
 
 const AMOUNT_MAX_CENTS = 100000000 // 1 million euros
 
@@ -13,14 +14,9 @@ export const createExpenseSchema = z.object({
     .refine(dateString => !isNaN(Date.parse(dateString)), {
       error: `Le champ 'occurredAt' doit être une date valide.`
     })
-    .refine(
-      dateString => {
-        const today = new Date()
-        const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
-        return dateString <= todayStr
-      },
-      { error: `Le champ 'occurredAt' ne peut pas être une date future.` }
-    ),
+    .refine(dateString => dateString <= getTodayLocalISO(), {
+      error: `Le champ 'occurredAt' ne peut pas être une date future.`
+    }),
   amountInput: z
     .string({ error: 'Le montant est requis.' })
     .min(1, { error: 'Le montant est requis.' })

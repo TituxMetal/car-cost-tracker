@@ -6,6 +6,7 @@ import { cleanup, render, screen } from '~/test-utils'
 
 import type { CreateExpenseFormValues, CreateExpenseSchema } from '../schemas'
 import { createExpenseSchema } from '../schemas'
+import { getTodayLocalISO } from '../utils/date.utils'
 
 import { ExpenseForm } from './ExpenseForm'
 
@@ -54,7 +55,7 @@ describe('ExpenseForm', () => {
 
   it('should render occurredAt as a date input with max=today', () => {
     render(<TestWrapper />)
-    const today = new Date().toISOString().split('T')[0]
+    const today = getTodayLocalISO()
     const dateInput = screen.getByLabelText('Date')
 
     expect(dateInput).toHaveAttribute('type', 'date')

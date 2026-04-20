@@ -7,6 +7,7 @@ import type { CreateExpenseFormValues, CreateExpenseSchema } from '../schemas'
 import { createExpenseSchema } from '../schemas'
 import type { Expense } from '../types'
 import { centsToInputEuros } from '../utils/amount.utils'
+import { getTodayLocalISO } from '../utils/date.utils'
 
 import { ExpenseForm } from './ExpenseForm'
 
@@ -19,9 +20,8 @@ export interface ExpenseFormDialogProps {
 
 const buildDefaultValues = (expense?: Expense): CreateExpenseFormValues => {
   if (!expense) {
-    const today = new Date().toISOString().split('T')[0]
     return {
-      occurredAt: today,
+      occurredAt: getTodayLocalISO(),
       amountInput: '',
       category: '' as CreateExpenseFormValues['category'],
       description: undefined
