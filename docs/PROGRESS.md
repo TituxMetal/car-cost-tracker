@@ -2,95 +2,105 @@
 
 ---
 
-## Feature 06: Expenses
+## Feature 07: Budget
 
-- Feature shape: `docs/features/06-expenses.md`
-- Implementation plan: `~/.claude/plans/car-cost-tracker-06-expenses.md`
+- Feature shape: `docs/features/07-budget.md`
+- Implementation plan: `~/.claude/plans/car-cost-tracker-07-budget.md`
 
-### Block 1: Backend (Phases 1-5) — `feature/expenses-backend`
+### Block 1: Backend (Phases 1-5) — `feature/budget-backend`
 
-#### Phase 1: Database schema & migration ✅
+#### Phase 1: Shared Amount refactor + Prisma schema & migration
 
-- [x] Prisma schema + migration (Expense model, ExpenseCategory enum, Vehicle relation, indexes)
+- [ ] Relocate `Amount` value object and `AMOUNT_VALIDATION` constants from `expenses/domain/` to
+      `shared/domain/value-objects/` and `shared/domain/validation/`; update all Expense imports,
+      tests green
+- [ ] Prisma schema + migration (`Budget` model, `BudgetPeriod` enum, 1:1 Vehicle relation via
+      `@unique`, cascade delete)
 
-#### Phase 2: Backend domain layer ✅
+#### Phase 2: Backend domain layer
 
-- [x] ExpenseId value object + tests
-- [x] OccurredAt value object + tests (date-only, backdating allowed, no future)
-- [x] Amount value object + tests (integer cents, Math.round, sanity cap)
-- [x] Expense validation constants
-- [x] Expense entity + tests (mutable with update methods)
-- [x] Repository interface + domain exceptions
+- [ ] `BudgetId` value object + tests
+- [ ] `Budget` validation constants (period values + messages)
+- [ ] `Budget` entity + tests (mutable with focused update methods, shared `Amount` VO)
+- [ ] Repository interface
+- [ ] Domain exceptions (`BudgetNotFoundException`, `InvalidBudgetException`)
 
-#### Phase 3: Backend application DTOs & mapper ✅
+#### Phase 3: Backend application DTOs & mapper
 
-- [x] CreateExpense DTO + tests
-- [x] UpdateExpense DTO (partial) + tests
-- [x] GetExpense DTO + tests
-- [x] Application mapper + tests
+- [ ] `UpsertBudget` DTO + tests (class-validator, references shared `AMOUNT_VALIDATION`)
+- [ ] `GetBudget` response DTO
+- [ ] Application mapper + tests
 
-#### Phase 4: Backend application use cases & service ✅
+#### Phase 4: Backend application use cases & service
 
-- [x] CreateExpense use case + tests
-- [x] UpdateExpense use case + tests (partial update orchestration)
-- [x] DeleteExpense use case + tests
-- [x] GetExpenseById use case + tests
-- [x] ListExpensesByVehicle use case + tests
-- [x] Expense service (facade) + tests
+- [ ] `GetBudgetByVehicle` use case + tests
+- [ ] `UpsertBudget` use case + tests (idempotent create-or-update orchestration)
+- [ ] `DeleteBudget` use case + tests
+- [ ] Budget service (facade) + tests
 
-#### Phase 5: Backend infrastructure & module ✅
+#### Phase 5: Backend infrastructure & module
 
-- [x] Infrastructure mapper + tests
-- [x] Prisma repository + tests
-- [x] Expense controller + tests (5 endpoints under `/vehicles/:vehicleId/expenses`)
-- [x] Expenses module (DI wiring)
-- [x] App module registration
+- [ ] Infrastructure mapper + tests
+- [ ] Prisma repository + tests (Prisma `upsert` semantics)
+- [ ] Budget controller + tests (3 endpoints under `/vehicles/:vehicleId/budget`: `GET`, `PUT`
+      upsert, `DELETE`)
+- [ ] Budgets module (DI wiring)
+- [ ] App module registration + smoke test
 
-### Block 2: Frontend outside-in (Phases 6-11) — `feature/expenses-frontend`
+### Block 2: Frontend outside-in (Phases 6-11) — `feature/budget-frontend`
 
-#### Phase 6: Page shell + navigation ✅
+#### Phase 6: Frontend shared utils refactor + page shell + navigation
 
-- [x] Astro page `/expenses` (auth-gated)
-- [x] Navigation link "Dépenses" in Main.astro (desktop + mobile)
-- [x] Minimal ExpensesContainer stub + tests (visible in browser)
+- [ ] Relocate `amount.utils.ts` (and its spec) from `features/expenses/utils/` to `shared/utils/`;
+      update Expense imports, tests green
+- [ ] Astro page `/budget` (auth-gated)
+- [ ] Navigation link "Budget" in `Main.astro` (desktop + mobile, after "Dépenses")
+- [ ] Minimal `BudgetContainer` stub + test (visible in browser)
 
-#### Phase 7: Frontend plumbing (types, schemas, utils, API, store) ✅
+#### Phase 7: Frontend plumbing (types, schema, API, Expense store extension)
 
-- [x] Types + category labels utils + tests
-- [x] Amount utils (formatEuros, parseEurosToCents) + tests
-- [x] Zod schemas (create + update with transform) + tests
-- [x] API service + tests
-- [x] Nanostores store (atoms, computed money, actions) + tests
+- [ ] Types (`Budget`, `BudgetPeriod`, `UpsertBudgetInput`, `BudgetStatus`, `BudgetProgressState`)
+- [ ] Zod schema `upsertBudgetSchema` + tests (transform amount string → cents, period enum)
+- [ ] API service + tests (`GET`, `PUT`, `DELETE`, `getBudget` handles 404 as `null`)
+- [ ] Extend Expense store with `$spentThisMonthCents` and `$spentThisYearCents` computed atoms +
+      tests (mocked clock, ISO prefix comparison, cross-year boundary cases)
 
-#### Phase 8: Hook + list + card (first render) ✅
+#### Phase 8: Frontend budget utilities (period + status)
 
-- [x] useExpenses hook + tests
-- [x] ExpenseCard component + tests
-- [x] ExpensesList component + tests
-- [x] ExpensesEmptyState component
-- [x] Wire into ExpensesContainer (real data visible)
+- [ ] `budgetPeriod.utils.ts` (`PERIOD_LABELS`, `PERIOD_OPTIONS`) + tests
+- [ ] `budgetStatus.utils.ts` (`deriveMonthlyTargetCents`, `deriveAnnualTargetCents`,
+      `computeProgressState`, `computeBudgetStatus`) + tests (threshold boundaries 0.80 / 1.00,
+      rounding on annual-to-monthly division, zero-target guard)
 
-#### Phase 9: Form + create dialog ✅
+#### Phase 9: Budget store + hook + first render (status + empty state)
 
-- [x] ExpenseForm (RHF + Zod transform) + tests
-- [x] ExpenseFormDialog (Radix) + tests
-- [x] Wire "Ajouter" button + create flow in container
+- [ ] Budget store (atoms, computed `$monthlyStatus` / `$annualStatus` integrating Expense store
+      spent atoms, actions) + tests
+- [ ] `useBudget` hook + tests (fetch-on-mount, triggers `useExpenses`)
+- [ ] `BudgetEmptyState` component + test
+- [ ] `BudgetStatus` dual-panel component + test (monthly + annual panels, derivation hint,
+      state-driven colour, progress bar cap)
+- [ ] Wire into `BudgetContainer` (empty state vs status rendering, loading/error paths)
 
-#### Phase 10: Edit + delete ✅
+#### Phase 10: Form + FormDialog + create flow
 
-- [x] Wire edit flow (reuse ExpenseFormDialog in edit mode)
-- [x] DeleteExpenseDialog + wire delete flow + tests
+- [ ] `BudgetForm` (RHF + Zod, amount input + period select) + tests
+- [ ] `BudgetFormDialog` (Radix Dialog wrapper) + tests
+- [ ] Wire create flow in `BudgetContainer` (empty-state CTA opens dialog, success feedback, error
+      handling) + container spec
 
-#### Phase 11: Header (totals + breakdown) + filter ✅
+#### Phase 11: Edit + delete + header (complete feature)
 
-- [x] ExpensesHeader (total + category breakdown + "Ajouter" button) + tests
-- [x] ExpensesFilter (category dropdown) + tests
-- [x] Wire header & filter into container (complete feature)
+- [ ] `BudgetHeader` component + test (page title + Modifier/Supprimer buttons)
+- [ ] Wire edit flow in `BudgetContainer` (reuse `BudgetFormDialog` pre-filled)
+- [ ] `DeleteBudgetDialog` (wraps existing `ConfirmDialog`) + test
+- [ ] Wire delete flow in `BudgetContainer` (container transitions back to empty state)
+- [ ] Container full-flow tests (create / edit / delete with feedback)
+- [ ] Feature barrel exports (`features/budget/index.ts`)
 
-### Block 3: Docs & tracking (Phase 12) ✅
+### Block 3: Docs & tracking (Phase 12)
 
-- [x] Feature barrel exports (`features/expenses/index.ts`)
-- [x] PROGRESS.md final pass (mark all Feature 06 phases complete)
+- [ ] PROGRESS.md final pass (mark all Feature 07 phases complete)
 
 ---
 
