@@ -95,6 +95,11 @@ enum ExpenseCategory {
   OTHER
 }
 
+enum BudgetPeriod {
+  MONTHLY
+  ANNUAL
+}
+
 model Vehicle {
   id           String    @id @default(uuid())
   userId       String    @unique
@@ -114,6 +119,7 @@ model Vehicle {
   user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   checkTypes CheckType[]
   expenses   Expense[]
+  budget     Budget?
 }
 
 model CheckType {
@@ -161,4 +167,15 @@ model Expense {
 
   @@index([vehicleId])
   @@index([vehicleId, occurredAt])
+}
+
+model Budget {
+  id          String       @id @default(uuid())
+  vehicleId   String       @unique
+  amountCents Int
+  period      BudgetPeriod
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
 }
