@@ -3,11 +3,8 @@ import { beforeEach, describe, expect, it, mock } from 'bun:test'
 
 import { ExpenseCategory, ExpenseEntity } from '~/expenses/domain/entities'
 import type { IExpenseRepository } from '~/expenses/domain/repositories'
-import {
-  AmountValueObject,
-  ExpenseIdValueObject,
-  OccurredAtValueObject
-} from '~/expenses/domain/value-objects'
+import { ExpenseIdValueObject, OccurredAtValueObject } from '~/expenses/domain/value-objects'
+import { AmountValueObject } from '~/shared/domain/value-objects'
 
 import { ListExpensesByVehicleUseCase } from './ListExpensesByVehicle.uc'
 

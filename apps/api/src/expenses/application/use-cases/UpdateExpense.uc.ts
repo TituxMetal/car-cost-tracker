@@ -4,11 +4,8 @@ import type { GetExpenseDto, UpdateExpenseDto } from '~/expenses/application/dto
 import { ExpenseMapper } from '~/expenses/application/mappers'
 import { ExpenseNotFoundException } from '~/expenses/domain/exceptions'
 import type { IExpenseRepository } from '~/expenses/domain/repositories'
-import {
-  AmountValueObject,
-  ExpenseIdValueObject,
-  OccurredAtValueObject
-} from '~/expenses/domain/value-objects'
+import { ExpenseIdValueObject, OccurredAtValueObject } from '~/expenses/domain/value-objects'
+import { AmountValueObject } from '~/shared/domain/value-objects'
 
 @Injectable()
 export class UpdateExpenseUseCase {

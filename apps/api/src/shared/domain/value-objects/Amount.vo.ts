@@ -1,19 +1,19 @@
-import { EXPENSE_VALIDATION } from '../validation'
+import { AMOUNT_VALIDATION } from '../validation'
 
 export class AmountValueObject {
   private readonly _cents: number
 
   private constructor(cents: number) {
     if (!Number.isInteger(cents)) {
-      throw new Error(EXPENSE_VALIDATION.AMOUNT.INTEGER_MESSAGE)
+      throw new Error(AMOUNT_VALIDATION.INTEGER_MESSAGE)
     }
 
-    if (cents < EXPENSE_VALIDATION.AMOUNT.MIN_CENTS) {
-      throw new Error(EXPENSE_VALIDATION.AMOUNT.MIN_MESSAGE)
+    if (cents < AMOUNT_VALIDATION.MIN_CENTS) {
+      throw new Error(AMOUNT_VALIDATION.MIN_MESSAGE)
     }
 
-    if (cents > EXPENSE_VALIDATION.AMOUNT.MAX_CENTS) {
-      throw new Error(EXPENSE_VALIDATION.AMOUNT.MAX_MESSAGE)
+    if (cents > AMOUNT_VALIDATION.MAX_CENTS) {
+      throw new Error(AMOUNT_VALIDATION.MAX_MESSAGE)
     }
 
     this._cents = cents
