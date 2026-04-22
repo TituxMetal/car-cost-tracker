@@ -9,43 +9,43 @@
 
 ### Block 1: Backend (Phases 1-5) — `feature/budget-backend`
 
-#### Phase 1: Shared Amount refactor + Prisma schema & migration
+#### Phase 1: Shared Amount refactor + Prisma schema & migration ✅
 
-- [ ] Relocate `Amount` value object and `AMOUNT_VALIDATION` constants from `expenses/domain/` to
+- [x] Relocate `Amount` value object and `AMOUNT_VALIDATION` constants from `expenses/domain/` to
       `shared/domain/value-objects/` and `shared/domain/validation/`; update all Expense imports,
       tests green
-- [ ] Prisma schema + migration (`Budget` model, `BudgetPeriod` enum, 1:1 Vehicle relation via
+- [x] Prisma schema + migration (`Budget` model, `BudgetPeriod` enum, 1:1 Vehicle relation via
       `@unique`, cascade delete)
 
-#### Phase 2: Backend domain layer
+#### Phase 2: Backend domain layer ✅
 
-- [ ] `BudgetId` value object + tests
-- [ ] `Budget` validation constants (period values + messages)
-- [ ] `Budget` entity + tests (mutable with focused update methods, shared `Amount` VO)
-- [ ] Repository interface
-- [ ] Domain exceptions (`BudgetNotFoundException`, `InvalidBudgetException`)
+- [x] `BudgetId` value object + tests
+- [x] `Budget` validation constants (period values + messages)
+- [x] `Budget` entity + tests (mutable with focused update methods, shared `Amount` VO)
+- [x] Repository interface
+- [x] Domain exceptions (`BudgetNotFoundException`, `InvalidBudgetException`)
 
-#### Phase 3: Backend application DTOs & mapper
+#### Phase 3: Backend application DTOs & mapper ✅
 
-- [ ] `UpsertBudget` DTO + tests (class-validator, references shared `AMOUNT_VALIDATION`)
-- [ ] `GetBudget` response DTO
-- [ ] Application mapper + tests
+- [x] `UpsertBudget` DTO + tests (class-validator, references shared `AMOUNT_VALIDATION`)
+- [x] `GetBudget` response DTO
+- [x] Application mapper + tests
 
-#### Phase 4: Backend application use cases & service
+#### Phase 4: Backend application use cases & service ✅
 
-- [ ] `GetBudgetByVehicle` use case + tests
-- [ ] `UpsertBudget` use case + tests (idempotent create-or-update orchestration)
-- [ ] `DeleteBudget` use case + tests
-- [ ] Budget service (facade) + tests
+- [x] `GetBudgetByVehicle` use case + tests
+- [x] `UpsertBudget` use case + tests (idempotent create-or-update orchestration)
+- [x] `DeleteBudget` use case + tests
+- [x] Budget service (facade) + tests
 
-#### Phase 5: Backend infrastructure & module
+#### Phase 5: Backend infrastructure & module ✅
 
-- [ ] Infrastructure mapper + tests
-- [ ] Prisma repository + tests (Prisma `upsert` semantics)
-- [ ] Budget controller + tests (3 endpoints under `/vehicles/:vehicleId/budget`: `GET`, `PUT`
+- [x] Infrastructure mapper + tests
+- [x] Prisma repository + tests (Prisma `upsert` semantics)
+- [x] Budget controller + tests (3 endpoints under `/vehicles/:vehicleId/budget`: `GET`, `PUT`
       upsert, `DELETE`)
-- [ ] Budgets module (DI wiring)
-- [ ] App module registration + smoke test
+- [x] Budgets module (DI wiring)
+- [x] App module registration + smoke test
 
 ### Block 2: Frontend outside-in (Phases 6-11) — `feature/budget-frontend`
 
@@ -152,3 +152,16 @@
 - [ ] Expenses: stricter `occurredAt` calendar validation in schema — `Date.parse` normalises
       impossible dates (e.g. `2026-02-30` → `2026-03-02`), so invalid calendar dates slip through
       when bypassing the native date input
+
+### From Feature 07 Block 1 review (low priority)
+
+- [ ] Budget: revisit controller/use-case ownership split when multi-vehicle lands — current design
+      does a double vehicle lookup (controller `verifyVehicleOwnership` + each use case's
+      `vehicleService.getVehicleByUser(userId)`). Harmless under the 1:1 user-vehicle constraint,
+      but will need to mirror the Expense pattern (verify once in controller, pass `vehicleId`
+      through) once users own more than one vehicle.
+- [ ] Budget: align period error messages — `BUDGET_VALIDATION.PERIOD.MESSAGE` says "Budget period
+      must be MONTHLY or ANNUAL" (used by the DTO) while `InvalidBudgetException` thrown from the
+      entity says "Invalid budget period". Unify for grep-ability and consistent user feedback.
+- [ ] Budget: add explicit no-op test for `BudgetEntity.updateBoth({})` — currently covered only in
+      spirit by the amount-only / period-unchanged paths.
