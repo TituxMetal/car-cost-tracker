@@ -2,11 +2,8 @@ import type { Expense as PrismaExpense } from '@generated'
 
 import type { ExpenseCategory } from '~/expenses/domain/entities'
 import { ExpenseEntity } from '~/expenses/domain/entities'
-import {
-  AmountValueObject,
-  ExpenseIdValueObject,
-  OccurredAtValueObject
-} from '~/expenses/domain/value-objects'
+import { ExpenseIdValueObject, OccurredAtValueObject } from '~/expenses/domain/value-objects'
+import { AmountValueObject } from '~/shared/domain/value-objects'
 
 export class ExpenseInfrastructureMapper {
   static toDomain(prismaExpense: PrismaExpense): ExpenseEntity {

@@ -1,15 +1,12 @@
 import type { Mock } from 'bun:test'
 import { beforeEach, describe, expect, it, mock } from 'bun:test'
 
-import { ExpenseCategory as PrismaExpenseCategory, Prisma } from '@generated'
+import { Prisma, ExpenseCategory as PrismaExpenseCategory } from '@generated'
 
 import { ExpenseCategory, ExpenseEntity } from '~/expenses/domain/entities'
 import { ExpenseNotFoundException } from '~/expenses/domain/exceptions'
-import {
-  AmountValueObject,
-  ExpenseIdValueObject,
-  OccurredAtValueObject
-} from '~/expenses/domain/value-objects'
+import { ExpenseIdValueObject, OccurredAtValueObject } from '~/expenses/domain/value-objects'
+import { AmountValueObject } from '~/shared/domain/value-objects'
 import type { PrismaProvider } from '~/shared/infrastructure/database'
 
 import { ExpenseInfrastructureMapper } from '../mappers'

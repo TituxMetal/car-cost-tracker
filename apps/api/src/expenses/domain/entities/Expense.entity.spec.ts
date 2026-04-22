@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'bun:test'
 
+import { AmountValueObject } from '~/shared/domain/value-objects'
+
 import { EXPENSE_VALIDATION as expenseValidation } from '../validation'
-import { AmountValueObject, ExpenseIdValueObject, OccurredAtValueObject } from '../value-objects'
+import { ExpenseIdValueObject, OccurredAtValueObject } from '../value-objects'
 
 import { ExpenseCategory, ExpenseEntity } from './Expense.entity'
 

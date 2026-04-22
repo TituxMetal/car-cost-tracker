@@ -1,11 +1,8 @@
 import { describe, expect, it } from 'bun:test'
 
 import { ExpenseCategory, ExpenseEntity } from '~/expenses/domain/entities'
-import {
-  AmountValueObject,
-  ExpenseIdValueObject,
-  OccurredAtValueObject
-} from '~/expenses/domain/value-objects'
+import { ExpenseIdValueObject, OccurredAtValueObject } from '~/expenses/domain/value-objects'
+import { AmountValueObject } from '~/shared/domain/value-objects'
 
 import { GetExpenseDto } from '../dtos'
 

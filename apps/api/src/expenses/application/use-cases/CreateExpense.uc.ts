@@ -4,11 +4,8 @@ import type { CreateExpenseDto, GetExpenseDto } from '~/expenses/application/dto
 import { ExpenseMapper } from '~/expenses/application/mappers'
 import { ExpenseEntity } from '~/expenses/domain/entities'
 import type { IExpenseRepository } from '~/expenses/domain/repositories'
-import {
-  AmountValueObject,
-  ExpenseIdValueObject,
-  OccurredAtValueObject
-} from '~/expenses/domain/value-objects'
+import { ExpenseIdValueObject, OccurredAtValueObject } from '~/expenses/domain/value-objects'
+import { AmountValueObject } from '~/shared/domain/value-objects'
 
 @Injectable()
 export class CreateExpenseUseCase {

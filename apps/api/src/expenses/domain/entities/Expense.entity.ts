@@ -1,10 +1,8 @@
+import type { AmountValueObject } from '~/shared/domain/value-objects'
+
 import { InvalidExpenseException } from '../exceptions'
 import { EXPENSE_VALIDATION as expenseValidation } from '../validation'
-import type {
-  AmountValueObject,
-  ExpenseIdValueObject,
-  OccurredAtValueObject
-} from '../value-objects'
+import type { ExpenseIdValueObject, OccurredAtValueObject } from '../value-objects'
 
 export enum ExpenseCategory {
   SERVICE = 'SERVICE',

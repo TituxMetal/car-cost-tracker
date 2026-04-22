@@ -11,6 +11,7 @@ import {
 
 import { ExpenseCategory } from '~/expenses/domain/entities'
 import { EXPENSE_VALIDATION as expenseValidation } from '~/expenses/domain/validation'
+import { AMOUNT_VALIDATION } from '~/shared/domain/validation'
 
 export class CreateExpenseDto {
   @IsString()
@@ -19,9 +20,9 @@ export class CreateExpenseDto {
   })
   occurredAt!: string
 
-  @IsInt({ message: expenseValidation.AMOUNT.INTEGER_MESSAGE })
-  @IsPositive({ message: expenseValidation.AMOUNT.MIN_MESSAGE })
-  @Max(expenseValidation.AMOUNT.MAX_CENTS, { message: expenseValidation.AMOUNT.MAX_MESSAGE })
+  @IsInt({ message: AMOUNT_VALIDATION.INTEGER_MESSAGE })
+  @IsPositive({ message: AMOUNT_VALIDATION.MIN_MESSAGE })
+  @Max(AMOUNT_VALIDATION.MAX_CENTS, { message: AMOUNT_VALIDATION.MAX_MESSAGE })
   amountCents!: number
 
   @IsEnum(ExpenseCategory, { message: expenseValidation.CATEGORY_MESSAGE })
