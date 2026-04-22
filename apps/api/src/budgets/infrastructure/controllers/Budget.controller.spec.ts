@@ -6,6 +6,7 @@ import type { AuthSession } from '~/auth/domain/types'
 import { GetBudgetDto, UpsertBudgetDto } from '~/budgets/application/dtos'
 import { BudgetService } from '~/budgets/application/services'
 import { BudgetPeriod } from '~/budgets/domain/entities'
+import { BudgetNotFoundException } from '~/budgets/domain/exceptions'
 import { GetVehicleDto } from '~/vehicles/application/dtos'
 import { VehicleService } from '~/vehicles/application/services'
 import { VehicleNotFoundException } from '~/vehicles/domain/exceptions'
@@ -144,6 +145,15 @@ describe('BudgetController', () => {
 
       await expect(controller.get(session, vehicleId)).rejects.toThrow(VehicleNotFoundException)
       expect(mockBudgetService.getBudgetByVehicle).not.toHaveBeenCalled()
+    })
+
+    it('should propagate BudgetNotFoundException when the vehicle has no budget', async () => {
+      const session = createMockSession(userId)
+      mockVehicleService.getVehicleByUser.mockResolvedValue(createMockVehicleDto())
+      mockBudgetService.getBudgetByVehicle.mockRejectedValue(new BudgetNotFoundException(vehicleId))
+
+      await expect(controller.get(session, vehicleId)).rejects.toThrow(BudgetNotFoundException)
+      expect(mockBudgetService.getBudgetByVehicle).toHaveBeenCalledWith(userId)
     })
   })
 
