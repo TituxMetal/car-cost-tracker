@@ -165,3 +165,16 @@
       entity says "Invalid budget period". Unify for grep-ability and consistent user feedback.
 - [ ] Budget: add explicit no-op test for `BudgetEntity.updateBoth({})` — currently covered only in
       spirit by the amount-only / period-unchanged paths.
+
+### Cross-cutting API — domain exceptions to HTTP status mapping (medium priority)
+
+- [ ] Add a global `ExceptionFilter` in `apps/api/src/main.ts` (or a dedicated shared filter) to map
+      domain exceptions to HTTP responses. Currently every module's domain exception
+      (`VehicleNotFoundException`, `ExpenseNotFoundException`, `BudgetNotFoundException`,
+      `CheckTypeNotFoundException`, `CheckLogNotFoundException`, `UserNotFoundException`,
+      `Invalid*Exception`, etc.) extends plain `Error`, and there is no `useGlobalFilters` nor
+      `@Catch` anywhere. NestJS therefore serialises these as HTTP 500 instead of the intended 404 /
+      400 / 422. The filter should match on exception name (or via a shared `DomainException` base
+      class that carries an intended HTTP status) so that the domain layer remains decoupled from
+      Nest. Scope: API-wide refactor — blocks proper REST semantics once any feature relies on
+      specific error codes. Flagged by Copilot on PR #49 (Budget backend).
