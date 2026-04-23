@@ -1,17 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, spyOn } from 'bun:test'
 
-import {
-  $spentThisMonthCents,
-  $spentThisYearCents,
-  expenseActions
-} from '~/features/expenses/store'
+import { expenseActions } from '~/features/expenses/store'
 import type { Vehicle } from '~/features/vehicles'
 import {
   $isLoading as $isVehicleLoading,
   $vehicle,
   vehicleActions
 } from '~/features/vehicles/store'
-import { act, cleanup, fireEvent, render, screen, userEvent, waitFor } from '~/test-utils'
+import { act, cleanup, fireEvent, render, screen, userEvent, waitFor, within } from '~/test-utils'
 import * as navigationUtils from '~/utils/navigation'
 
 import { $budget, $error, $isLoading, budgetActions } from '../store'
@@ -124,8 +120,6 @@ describe('BudgetContainer', () => {
 
     it('renders the status panels when a budget exists', async () => {
       $budget.set(mockBudget)
-      $spentThisMonthCents.listen(() => {})
-      $spentThisYearCents.listen(() => {})
 
       await act(async () => {
         render(<BudgetContainer />)
@@ -274,6 +268,10 @@ describe('BudgetContainer', () => {
     })
 
     it('calls deleteBudget on confirm and transitions back to the empty state', async () => {
+      deleteBudgetSpy.mockImplementation(async () => {
+        $budget.set(null)
+      })
+
       await act(async () => {
         render(<BudgetContainer />)
       })
@@ -284,12 +282,8 @@ describe('BudgetContainer', () => {
         expect(screen.getByRole('dialog')).toBeInTheDocument()
       })
 
-      await act(async () => {
-        $budget.set(null)
-      })
-
-      const confirmButtons = screen.getAllByRole('button', { name: 'Supprimer' })
-      fireEvent.click(confirmButtons[confirmButtons.length - 1])
+      const dialog = screen.getByRole('dialog')
+      fireEvent.click(within(dialog).getByRole('button', { name: 'Supprimer' }))
 
       await waitFor(() => {
         expect(deleteBudgetSpy).toHaveBeenCalledWith(mockVehicle.id)
