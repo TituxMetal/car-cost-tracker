@@ -6,6 +6,8 @@ export {
   $filteredTotalCents,
   $hasExpenses,
   $isLoading,
+  $spentThisMonthCents,
+  $spentThisYearCents,
   $totalCents,
   $totalsByCategory,
   expenseActions

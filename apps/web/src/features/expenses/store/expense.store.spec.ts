@@ -1,5 +1,5 @@
 import type { Mock } from 'bun:test'
-import { afterEach, beforeEach, describe, expect, it, spyOn } from 'bun:test'
+import { afterEach, beforeEach, describe, expect, it, setSystemTime, spyOn } from 'bun:test'
 
 import { api } from '~/lib/apiRequest'
 import { cleanup } from '~/test-utils'
@@ -14,6 +14,8 @@ import {
   $filteredTotalCents,
   $hasExpenses,
   $isLoading,
+  $spentThisMonthCents,
+  $spentThisYearCents,
   $totalCents,
   $totalsByCategory,
   expenseActions
@@ -404,6 +406,91 @@ describe('Expense Store', () => {
       expenseActions.clearError()
 
       expect($error.get()).toBeNull()
+    })
+  })
+
+  describe('period-scoped spent atoms', () => {
+    beforeEach(() => {
+      setSystemTime(new Date('2026-04-15T12:00:00'))
+    })
+
+    afterEach(() => {
+      setSystemTime()
+    })
+
+    describe('$spentThisMonthCents', () => {
+      it('returns 0 when there are no expenses', () => {
+        const expenses: Expense[] = []
+        $expenses.set(expenses)
+
+        const result = $spentThisMonthCents.get()
+
+        expect(result).toBe(0)
+      })
+
+      it('sums only expenses whose occurredAt starts with the current year-month prefix', () => {
+        const expenses = [
+          mockExpense({ id: 'e1', occurredAt: '2026-04-01' }),
+          mockExpense({ id: 'e2', occurredAt: '2026-03-30' }),
+          mockExpense({ id: 'e3', occurredAt: '2025-04-15' }),
+          mockExpense({ id: 'e4', occurredAt: '2026-04-10' })
+        ]
+        $expenses.set(expenses)
+
+        const result = $spentThisMonthCents.get()
+
+        expect(result).toBe(expenses[0].amountCents + expenses[3].amountCents)
+      })
+
+      it('returns 0 when every expense is in a previous month', () => {
+        const expenses = [
+          mockExpense({ id: 'e1', occurredAt: '2026-03-31' }),
+          mockExpense({ id: 'e2', occurredAt: '2026-02-28' }),
+          mockExpense({ id: 'e3', occurredAt: '2025-04-15' })
+        ]
+        $expenses.set(expenses)
+
+        const result = $spentThisMonthCents.get()
+
+        expect(result).toBe(0)
+      })
+    })
+
+    describe('$spentThisYearCents', () => {
+      it('returns 0 when there are no expenses', () => {
+        const expenses: Expense[] = []
+        $expenses.set(expenses)
+
+        const result = $spentThisYearCents.get()
+
+        expect(result).toBe(0)
+      })
+
+      it('sums every expense whose occurredAt starts with the current year prefix', () => {
+        const expenses = [
+          mockExpense({ id: 'e1', occurredAt: '2026-04-01' }),
+          mockExpense({ id: 'e2', occurredAt: '2026-03-30' }),
+          mockExpense({ id: 'e3', occurredAt: '2025-04-15' }),
+          mockExpense({ id: 'e4', occurredAt: '2026-04-10' })
+        ]
+        $expenses.set(expenses)
+
+        const result = $spentThisYearCents.get()
+
+        expect(result).toBe(
+          expenses[0].amountCents + expenses[1].amountCents + expenses[3].amountCents
+        )
+      })
+
+      it('excludes expenses from a previous year even when the calendar day is recent', () => {
+        setSystemTime(new Date('2026-01-05T12:00:00'))
+        const expenses = [mockExpense({ id: 'e1', occurredAt: '2025-12-28' })]
+        $expenses.set(expenses)
+
+        const result = $spentThisYearCents.get()
+
+        expect(result).toBe(0)
+      })
     })
   })
 })
