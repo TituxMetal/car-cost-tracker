@@ -24,6 +24,35 @@ export const $filteredTotalCents = computed($filteredExpenses, expenses =>
   expenses.reduce((sum, expense) => sum + expense.amountCents, 0)
 )
 
+const getCurrentYearMonthPrefix = (date = new Date()): string => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+
+  return `${year}-${month}`
+}
+
+const getCurrentYearPrefix = (date = new Date()): string => {
+  const year = date.getFullYear()
+
+  return `${year}`
+}
+
+export const $spentThisMonthCents = computed($expenses, expenses => {
+  const prefix = getCurrentYearMonthPrefix()
+
+  return expenses
+    .filter(expense => expense.occurredAt.startsWith(prefix))
+    .reduce((sum, expense) => sum + expense.amountCents, 0)
+})
+
+export const $spentThisYearCents = computed($expenses, expenses => {
+  const prefix = getCurrentYearPrefix()
+
+  return expenses
+    .filter(expense => expense.occurredAt.startsWith(prefix))
+    .reduce((sum, expense) => sum + expense.amountCents, 0)
+})
+
 export const $totalsByCategory = computed($expenses, expenses => {
   const init: Record<ExpenseCategory, number> = {
     SERVICE: 0,
