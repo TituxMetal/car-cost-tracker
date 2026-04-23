@@ -17,6 +17,7 @@ const SUCCESS_MESSAGE_DELAY_MS = 3000
 
 export const BudgetContainer = () => {
   const [hasFetchedVehicle, setHasFetchedVehicle] = useState(false)
+  const [hasInitialized, setHasInitialized] = useState(false)
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
@@ -28,7 +29,6 @@ export const BudgetContainer = () => {
   const {
     budget,
     hasBudget,
-    isLoading,
     error,
     monthlyStatus,
     annualStatus,
@@ -52,10 +52,14 @@ export const BudgetContainer = () => {
       return
     }
     if (!vehicle) return
+    if (hasInitialized) return
 
-    fetchExpenses(vehicle.id)
-    fetchBudget(vehicle.id)
-  }, [hasFetchedVehicle, hasVehicle, vehicle, fetchExpenses, fetchBudget])
+    const load = async () => {
+      await Promise.all([fetchExpenses(vehicle.id), fetchBudget(vehicle.id)])
+      setHasInitialized(true)
+    }
+    load()
+  }, [hasFetchedVehicle, hasVehicle, vehicle, fetchExpenses, fetchBudget, hasInitialized])
 
   useEffect(
     () => () => {
@@ -106,7 +110,7 @@ export const BudgetContainer = () => {
     }
   }
 
-  if (!hasFetchedVehicle || isLoading) {
+  if (!hasFetchedVehicle) {
     return (
       <section className='mx-auto max-w-6xl p-6'>
         <h1 className='text-base-content text-2xl font-bold'>Mon budget</h1>
@@ -116,6 +120,15 @@ export const BudgetContainer = () => {
   }
 
   if (!hasVehicle || !vehicle) return null
+
+  if (!hasInitialized) {
+    return (
+      <section className='mx-auto max-w-6xl p-6'>
+        <h1 className='text-base-content text-2xl font-bold'>Mon budget</h1>
+        <p className='mt-4'>Chargement...</p>
+      </section>
+    )
+  }
 
   return (
     <section className='mx-auto flex max-w-6xl flex-col gap-6 p-6'>
