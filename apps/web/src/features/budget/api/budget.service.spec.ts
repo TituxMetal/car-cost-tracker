@@ -56,15 +56,22 @@ describe('budget.service', () => {
     })
 
     it('returns null when the server replies with 500 "Internal server error" (backend backlog workaround)', async () => {
-      getSpy.mockResolvedValueOnce({
-        success: false,
-        message: 'Internal server error',
-        status: 500
-      })
+      const warnSpy = spyOn(console, 'warn').mockImplementation(() => {})
 
-      const result = await getBudget('v1')
+      try {
+        getSpy.mockResolvedValueOnce({
+          success: false,
+          message: 'Internal server error',
+          status: 500
+        })
 
-      expect(result).toBeNull()
+        const result = await getBudget('v1')
+
+        expect(result).toBeNull()
+        expect(warnSpy).toHaveBeenCalled()
+      } finally {
+        warnSpy.mockRestore()
+      }
     })
 
     it('throws on non-404, non-generic-500 API failure', async () => {
