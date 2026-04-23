@@ -1,6 +1,5 @@
 import { ConfirmDialog } from '~/components/ui'
-
-import { formatEuros } from '../utils/amount.utils'
+import { formatEuros } from '~/shared/utils'
 
 export interface DeleteExpenseDialogProps {
   amountCents: number

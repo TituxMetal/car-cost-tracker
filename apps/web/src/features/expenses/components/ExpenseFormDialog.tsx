@@ -2,11 +2,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 
 import { Button, DialogShell, FormWrapper } from '~/components/ui'
+import { centsToInputEuros } from '~/shared/utils'
 
 import type { CreateExpenseFormValues, CreateExpenseSchema } from '../schemas'
 import { createExpenseSchema } from '../schemas'
 import type { Expense } from '../types'
-import { centsToInputEuros } from '../utils/amount.utils'
 import { getTodayLocalISO } from '../utils/date.utils'
 
 import { ExpenseForm } from './ExpenseForm'

@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
-import { formatEuros, parseEurosToCents } from '../utils/amount.utils'
+import { formatEuros, parseEurosToCents } from '~/shared/utils'
+
 import { getTodayLocalISO } from '../utils/date.utils'
 
 const AMOUNT_MAX_CENTS = 100000000 // 1 million euros

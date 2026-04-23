@@ -1,9 +1,9 @@
 import { Calendar, PencilLine, Trash2 } from 'lucide-react'
 
 import { Button } from '~/components/ui'
+import { formatEuros } from '~/shared/utils'
 
 import type { Expense } from '../types'
-import { formatEuros } from '../utils/amount.utils'
 import { CATEGORY_BADGE_CLASS, CATEGORY_LABELS } from '../utils/expenseCategory.utils'
 
 export interface ExpenseCardProps {
