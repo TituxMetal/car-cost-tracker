@@ -49,54 +49,54 @@
 
 ### Block 2: Frontend outside-in (Phases 6-11) — `feature/budget-frontend`
 
-#### Phase 6: Frontend shared utils refactor + page shell + navigation
+#### Phase 6: Frontend shared utils refactor + page shell + navigation ✅
 
-- [ ] Relocate `amount.utils.ts` (and its spec) from `features/expenses/utils/` to `shared/utils/`;
+- [x] Relocate `amount.utils.ts` (and its spec) from `features/expenses/utils/` to `shared/utils/`;
       update Expense imports, tests green
-- [ ] Astro page `/budget` (auth-gated)
-- [ ] Navigation link "Budget" in `Main.astro` (desktop + mobile, after "Dépenses")
-- [ ] Minimal `BudgetContainer` stub + test (visible in browser)
+- [x] Astro page `/budget` (auth-gated)
+- [x] Navigation link "Budget" in `Main.astro` (desktop + mobile, after "Dépenses")
+- [x] Minimal `BudgetContainer` stub + test (visible in browser)
 
-#### Phase 7: Frontend plumbing (types, schema, API, Expense store extension)
+#### Phase 7: Frontend plumbing (types, schema, API, Expense store extension) ✅
 
-- [ ] Types (`Budget`, `BudgetPeriod`, `UpsertBudgetInput`, `BudgetStatus`, `BudgetProgressState`)
-- [ ] Zod schema `upsertBudgetSchema` + tests (transform amount string → cents, period enum)
-- [ ] API service + tests (`GET`, `PUT`, `DELETE`, `getBudget` handles 404 as `null`)
-- [ ] Extend Expense store with `$spentThisMonthCents` and `$spentThisYearCents` computed atoms +
+- [x] Types (`Budget`, `BudgetPeriod`, `UpsertBudgetInput`, `BudgetStatus`, `BudgetProgressState`)
+- [x] Zod schema `upsertBudgetSchema` + tests (transform amount string → cents, period enum)
+- [x] API service + tests (`GET`, `PUT`, `DELETE`, `getBudget` handles 404 as `null`)
+- [x] Extend Expense store with `$spentThisMonthCents` and `$spentThisYearCents` computed atoms +
       tests (mocked clock, ISO prefix comparison, cross-year boundary cases)
 
-#### Phase 8: Frontend budget utilities (period + status)
+#### Phase 8: Frontend budget utilities (period + status) ✅
 
-- [ ] `budgetPeriod.utils.ts` (`PERIOD_LABELS`, `PERIOD_OPTIONS`) + tests
-- [ ] `budgetStatus.utils.ts` (`deriveMonthlyTargetCents`, `deriveAnnualTargetCents`,
+- [x] `budgetPeriod.utils.ts` (`PERIOD_LABELS`, `PERIOD_OPTIONS`) + tests
+- [x] `budgetStatus.utils.ts` (`deriveMonthlyTargetCents`, `deriveAnnualTargetCents`,
       `computeProgressState`, `computeBudgetStatus`) + tests (threshold boundaries 0.80 / 1.00,
       rounding on annual-to-monthly division, zero-target guard)
 
-#### Phase 9: Budget store + hook + first render (status + empty state)
+#### Phase 9: Budget store + hook + first render (status + empty state) ✅
 
-- [ ] Budget store (atoms, computed `$monthlyStatus` / `$annualStatus` integrating Expense store
+- [x] Budget store (atoms, computed `$monthlyStatus` / `$annualStatus` integrating Expense store
       spent atoms, actions) + tests
-- [ ] `useBudget` hook + tests (fetch-on-mount, triggers `useExpenses`)
-- [ ] `BudgetEmptyState` component + test
-- [ ] `BudgetStatus` dual-panel component + test (monthly + annual panels, derivation hint,
+- [x] `useBudget` hook + tests (fetch-on-mount, triggers `useExpenses`)
+- [x] `BudgetEmptyState` component + test
+- [x] `BudgetStatus` dual-panel component + test (monthly + annual panels, derivation hint,
       state-driven colour, progress bar cap)
-- [ ] Wire into `BudgetContainer` (empty state vs status rendering, loading/error paths)
+- [x] Wire into `BudgetContainer` (empty state vs status rendering, loading/error paths)
 
-#### Phase 10: Form + FormDialog + create flow
+#### Phase 10: Form + FormDialog + create flow ✅
 
-- [ ] `BudgetForm` (RHF + Zod, amount input + period select) + tests
-- [ ] `BudgetFormDialog` (Radix Dialog wrapper) + tests
-- [ ] Wire create flow in `BudgetContainer` (empty-state CTA opens dialog, success feedback, error
+- [x] `BudgetForm` (RHF + Zod, amount input + period select) + tests
+- [x] `BudgetFormDialog` (Radix Dialog wrapper) + tests
+- [x] Wire create flow in `BudgetContainer` (empty-state CTA opens dialog, success feedback, error
       handling) + container spec
 
-#### Phase 11: Edit + delete + header (complete feature)
+#### Phase 11: Edit + delete + header (complete feature) ✅
 
-- [ ] `BudgetHeader` component + test (page title + Modifier/Supprimer buttons)
-- [ ] Wire edit flow in `BudgetContainer` (reuse `BudgetFormDialog` pre-filled)
-- [ ] `DeleteBudgetDialog` (wraps existing `ConfirmDialog`) + test
-- [ ] Wire delete flow in `BudgetContainer` (container transitions back to empty state)
-- [ ] Container full-flow tests (create / edit / delete with feedback)
-- [ ] Feature barrel exports (`features/budget/index.ts`)
+- [x] `BudgetHeader` component + test (page title + Modifier/Supprimer buttons)
+- [x] Wire edit flow in `BudgetContainer` (reuse `BudgetFormDialog` pre-filled)
+- [x] `DeleteBudgetDialog` (wraps existing `ConfirmDialog`) + test
+- [x] Wire delete flow in `BudgetContainer` (container transitions back to empty state)
+- [x] Container full-flow tests (create / edit / delete with feedback)
+- [x] Feature barrel exports (`features/budget/index.ts`)
 
 ### Block 3: Docs & tracking (Phase 12)
 
@@ -152,6 +152,20 @@
 - [ ] Expenses: stricter `occurredAt` calendar validation in schema — `Date.parse` normalises
       impossible dates (e.g. `2026-02-30` → `2026-03-02`), so invalid calendar dates slip through
       when bypassing the native date input
+
+### From Feature 07 Block 2 review (low priority)
+
+- [ ] Budget: `getBudget` swallows any HTTP 500 whose body matches the Nest default
+      `{ statusCode:     500, message: 'Internal server error' }` and treats it as "no budget
+      defined". The workaround is needed because the backend currently returns 500 for
+      `BudgetNotFoundException` (no global `ExceptionFilter` yet — see the cross-cutting item
+      below). Remove the 500 branch in `budget.service.ts` once the ExceptionFilter maps
+      `BudgetNotFoundException` to HTTP 404.
+- [ ] Budget / Expenses: extract a shared `useServerError()` helper to cover the mutation-error
+      `catch` branches currently unreached by tests (`BudgetContainer.handleCreate/Update/Delete`
+      catches rely on `$error` from the store; `ExpensesContainer` keeps a local `serverError`). The
+      test harness (waitFor on role=alert inside a Radix portal) needs pinning down before the spec
+      can settle — the flaky attempt was dropped during Block 2.
 
 ### From Feature 07 Block 1 review (low priority)
 
