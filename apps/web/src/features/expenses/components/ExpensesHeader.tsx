@@ -1,9 +1,9 @@
 import { PlusCircle, Receipt } from 'lucide-react'
 
 import { Button } from '~/components/ui'
+import { formatEuros } from '~/shared/utils'
 
 import type { ExpenseCategory } from '../types'
-import { formatEuros } from '../utils/amount.utils'
 import {
   CATEGORY_BADGE_CLASS,
   CATEGORY_LABELS,
