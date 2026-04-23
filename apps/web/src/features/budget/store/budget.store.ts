@@ -39,6 +39,7 @@ export const budgetActions = {
       $budget.set(budget)
       return budget
     } catch (error) {
+      $budget.set(null)
       $error.set(error instanceof Error ? error.message : 'Erreur inconnue')
       return null
     } finally {
