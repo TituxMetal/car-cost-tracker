@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, mock } from 'bun:test'
 
 import { admin } from '~/lib/authClient'
-import { cleanup, render, screen, waitFor } from '~/test-utils'
+import { act, cleanup, render, screen, userEvent, waitFor } from '~/test-utils'
+import * as navigationUtils from '~/utils/navigation'
 
 import { UserList } from './UserList'
 
@@ -37,23 +38,35 @@ const mockUsers = [
 
 mock.module('~/lib/authClient', () => ({
   admin: {
-    listUsers: mock(() => Promise.resolve({ data: { users: mockUsers }, error: null }))
+    listUsers: mock(() => Promise.resolve({ data: { users: mockUsers }, error: null })),
+    createUser: mock(() => Promise.resolve({ data: { user: { id: 'user-new' } }, error: null }))
   }
+}))
+
+mock.module('~/utils/navigation', () => ({
+  redirect: mock(() => {})
 }))
 
 describe('UserList', () => {
   beforeEach(() => {
     cleanup()
     const mockListUsers = admin.listUsers as unknown as ReturnType<typeof mock>
+    const mockCreateUser = admin.createUser as unknown as ReturnType<typeof mock>
+    const mockRedirect = navigationUtils.redirect as unknown as ReturnType<typeof mock>
     mockListUsers.mockClear()
+    mockCreateUser.mockClear()
+    mockRedirect.mockClear()
     mockListUsers.mockResolvedValue({ data: { users: mockUsers }, error: null })
+    mockCreateUser.mockResolvedValue({ data: { user: { id: 'user-new' } }, error: null })
   })
 
-  it('should show loading state initially', () => {
+  it('should show loading state initially', async () => {
     const mockListUsers = admin.listUsers as unknown as ReturnType<typeof mock>
     mockListUsers.mockReturnValue(new Promise(() => {}))
 
-    render(<UserList />)
+    await act(async () => {
+      render(<UserList />)
+    })
 
     expect(screen.getByText(/loading users/i)).toBeInTheDocument()
   })
@@ -119,6 +132,93 @@ describe('UserList', () => {
 
     await waitFor(() => {
       expect(screen.getByText(/no users found/i)).toBeInTheDocument()
+    })
+  })
+
+  it('renders the page title h1', async () => {
+    render(<UserList />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { level: 1, name: /manage users/i })).toBeInTheDocument()
+    })
+  })
+
+  it('renders the "Ajouter un user" button', async () => {
+    render(<UserList />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /ajouter un user/i })).toBeInTheDocument()
+    })
+  })
+
+  it('opens the create dialog when "Ajouter un user" is clicked', async () => {
+    const user = userEvent.setup()
+    render(<UserList />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /ajouter un user/i })).toBeInTheDocument()
+    })
+
+    await user.click(screen.getByRole('button', { name: /ajouter un user/i }))
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+  })
+
+  it('calls admin.createUser with the correct payload and redirects', async () => {
+    const user = userEvent.setup()
+    render(<UserList />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /ajouter un user/i })).toBeInTheDocument()
+    })
+
+    await user.click(screen.getByRole('button', { name: /ajouter un user/i }))
+    await user.type(screen.getByLabelText(/username/i), 'newtester')
+    await user.type(screen.getByLabelText(/email/i), 'tester@example.com')
+    await user.type(screen.getByLabelText('Password'), 'secret123')
+    await user.click(screen.getByRole('button', { name: /créer/i }))
+
+    await waitFor(() => {
+      expect(admin.createUser).toHaveBeenCalledWith({
+        email: 'tester@example.com',
+        password: 'secret123',
+        name: 'newtester',
+        data: {
+          username: 'newtester',
+          firstName: null,
+          lastName: null,
+          emailVerified: true
+        }
+      })
+    })
+
+    await waitFor(() => {
+      expect(navigationUtils.redirect).toHaveBeenCalledWith('/admin/users/user-new')
+    })
+  })
+
+  it('surfaces inline error when createUser fails', async () => {
+    const mockCreateUser = admin.createUser as unknown as ReturnType<typeof mock>
+    mockCreateUser.mockResolvedValueOnce({
+      data: null,
+      error: { message: 'Email already in use' }
+    })
+
+    const user = userEvent.setup()
+    render(<UserList />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /ajouter un user/i })).toBeInTheDocument()
+    })
+
+    await user.click(screen.getByRole('button', { name: /ajouter un user/i }))
+    await user.type(screen.getByLabelText(/username/i), 'newtester')
+    await user.type(screen.getByLabelText(/email/i), 'tester@example.com')
+    await user.type(screen.getByLabelText('Password'), 'secret123')
+    await user.click(screen.getByRole('button', { name: /créer/i }))
+
+    await waitFor(() => {
+      expect(screen.getByText(/email already in use/i)).toBeInTheDocument()
     })
   })
 })
