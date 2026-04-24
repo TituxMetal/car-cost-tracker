@@ -23,7 +23,9 @@ mock.module('~/lib/authClient', () => ({
     setRole: mock(() => Promise.resolve({ error: null })),
     banUser: mock(() => Promise.resolve({ error: null })),
     unbanUser: mock(() => Promise.resolve({ error: null })),
-    removeUser: mock(() => Promise.resolve({ error: null }))
+    removeUser: mock(() => Promise.resolve({ error: null })),
+    updateUser: mock(() => Promise.resolve({ error: null })),
+    setUserPassword: mock(() => Promise.resolve({ error: null }))
   }
 }))
 
@@ -38,18 +40,24 @@ describe('UserManagement', () => {
     const mockBanUser = admin.banUser as unknown as ReturnType<typeof mock>
     const mockUnbanUser = admin.unbanUser as unknown as ReturnType<typeof mock>
     const mockRemoveUser = admin.removeUser as unknown as ReturnType<typeof mock>
+    const mockUpdateUser = admin.updateUser as unknown as ReturnType<typeof mock>
+    const mockSetPassword = admin.setUserPassword as unknown as ReturnType<typeof mock>
     const mockRedirect = navigationUtils.redirect as unknown as ReturnType<typeof mock>
 
     mockSetRole.mockClear()
     mockBanUser.mockClear()
     mockUnbanUser.mockClear()
     mockRemoveUser.mockClear()
+    mockUpdateUser.mockClear()
+    mockSetPassword.mockClear()
     mockRedirect.mockClear()
 
     mockSetRole.mockResolvedValue({ error: null })
     mockBanUser.mockResolvedValue({ error: null })
     mockUnbanUser.mockResolvedValue({ error: null })
     mockRemoveUser.mockResolvedValue({ error: null })
+    mockUpdateUser.mockResolvedValue({ error: null })
+    mockSetPassword.mockResolvedValue({ error: null })
   })
 
   it('should display user details', () => {
@@ -145,6 +153,125 @@ describe('UserManagement', () => {
 
     await waitFor(() => {
       expect(screen.getByText(/permission denied/i)).toBeInTheDocument()
+    })
+  })
+
+  it('shows "Valider l\'email" button when user is unverified', () => {
+    const unverified = { ...mockUser, emailVerified: false }
+    render(<UserManagement user={unverified} />)
+
+    expect(screen.getByRole('button', { name: /valider l'email/i })).toBeInTheDocument()
+  })
+
+  it('hides "Valider l\'email" button when user is already verified', () => {
+    render(<UserManagement user={mockUser} />)
+
+    expect(screen.queryByRole('button', { name: /valider l'email/i })).not.toBeInTheDocument()
+  })
+
+  it('renders "Réinitialiser le password" button for any user', () => {
+    render(<UserManagement user={mockUser} />)
+
+    expect(screen.getByRole('button', { name: /réinitialiser le password/i })).toBeInTheDocument()
+  })
+
+  it("calls admin.updateUser with emailVerified: true when Valider l'email clicked", async () => {
+    const unverified = { ...mockUser, emailVerified: false }
+    const user = userEvent.setup()
+    render(<UserManagement user={unverified} />)
+
+    await user.click(screen.getByRole('button', { name: /valider l'email/i }))
+
+    await waitFor(() => {
+      expect(admin.updateUser).toHaveBeenCalledWith({
+        userId: 'user-1',
+        data: { emailVerified: true }
+      })
+    })
+  })
+
+  it('hides the Valider button and flips the badge after success', async () => {
+    const unverified = { ...mockUser, emailVerified: false }
+    const user = userEvent.setup()
+    render(<UserManagement user={unverified} />)
+
+    await user.click(screen.getByRole('button', { name: /valider l'email/i }))
+
+    await waitFor(() => {
+      expect(screen.queryByRole('button', { name: /valider l'email/i })).not.toBeInTheDocument()
+      expect(screen.getByText('Verified')).toBeInTheDocument()
+    })
+  })
+
+  it('shows an inline success message after verify', async () => {
+    const unverified = { ...mockUser, emailVerified: false }
+    const user = userEvent.setup()
+    render(<UserManagement user={unverified} />)
+
+    await user.click(screen.getByRole('button', { name: /valider l'email/i }))
+
+    await waitFor(() => {
+      expect(screen.getByText(/email validé/i)).toBeInTheDocument()
+    })
+  })
+
+  it('shows an inline error when updateUser fails', async () => {
+    const mockUpdateUser = admin.updateUser as unknown as ReturnType<typeof mock>
+    mockUpdateUser.mockResolvedValueOnce({ error: { message: 'Permission denied' } })
+
+    const unverified = { ...mockUser, emailVerified: false }
+    const user = userEvent.setup()
+    render(<UserManagement user={unverified} />)
+
+    await user.click(screen.getByRole('button', { name: /valider l'email/i }))
+
+    await waitFor(() => {
+      expect(screen.getByText(/permission denied/i)).toBeInTheDocument()
+    })
+  })
+
+  it('opens the reset dialog when Réinitialiser le password clicked', async () => {
+    const user = userEvent.setup()
+    render(<UserManagement user={mockUser} />)
+
+    await user.click(screen.getByRole('button', { name: /réinitialiser le password/i }))
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+  })
+
+  it('calls admin.setUserPassword and shows out-of-band reminder after success', async () => {
+    const user = userEvent.setup()
+    render(<UserManagement user={mockUser} />)
+
+    await user.click(screen.getByRole('button', { name: /réinitialiser le password/i }))
+    await user.type(screen.getByLabelText(/nouveau password/i), 'newsecret123')
+    await user.click(screen.getByRole('button', { name: /enregistrer/i }))
+
+    await waitFor(() => {
+      expect(admin.setUserPassword).toHaveBeenCalledWith({
+        userId: 'user-1',
+        newPassword: 'newsecret123'
+      })
+    })
+
+    await waitFor(() => {
+      expect(screen.getByText(/transmettez-le vous-même/i)).toBeInTheDocument()
+    })
+  })
+
+  it('surfaces inline error when setUserPassword fails', async () => {
+    const mockSetPassword = admin.setUserPassword as unknown as ReturnType<typeof mock>
+    mockSetPassword.mockResolvedValueOnce({ error: { message: 'Password policy failure' } })
+
+    const user = userEvent.setup()
+    render(<UserManagement user={mockUser} />)
+
+    await user.click(screen.getByRole('button', { name: /réinitialiser le password/i }))
+    await user.type(screen.getByLabelText(/nouveau password/i), 'newsecret123')
+    await user.click(screen.getByRole('button', { name: /enregistrer/i }))
+
+    await waitFor(() => {
+      expect(screen.getByText(/password policy failure/i)).toBeInTheDocument()
     })
   })
 })
