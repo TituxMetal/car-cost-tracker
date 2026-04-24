@@ -67,31 +67,31 @@ Multi-user, multi-car version. Allows sharing with family/friends.
 
 ### 4. Check Logging
 
-- [ ] Log a completed check (date, optional notes)
-- [ ] System calculates next due date based on interval
-- [ ] View check history
-- [ ] View check history per check type
+- [x] Log a completed check (date, optional notes)
+- [x] System calculates next due date based on interval
+- [x] View check history
+- [x] View check history per check type
 
 ### 5. Dashboard
 
-- [ ] Vehicle summary (make, model, mileage)
-- [ ] Status: "All checks complete" or list of overdue/upcoming checks
-- [ ] Last check performed
-- [ ] Budget overview (spent vs budget)
-- [ ] Quick access to log a check
+- [x] Vehicle summary (make, model, mileage)
+- [x] Status: "All checks complete" or list of overdue/upcoming checks
+- [x] Last check performed
+- [ ] Budget overview (spent vs budget) — scheduled in Feature 09 Visual Refresh (Block 3)
+- [x] Quick access to log a check
 
 ### 6. Expenses
 
-- [ ] Add expense (date, amount, category, description)
-- [ ] Categories: Service, Parts, Labor, Other
-- [ ] View expense history
-- [ ] Total spent calculation
+- [x] Add expense (date, amount, category, description)
+- [x] Categories: Service, Parts, Labor, Other
+- [x] View expense history
+- [x] Total spent calculation
 
 ### 7. Budget
 
-- [ ] Set monthly or yearly budget
-- [ ] View spent vs budget
-- [ ] Visual indicator (remaining budget, overspent warning)
+- [x] Set monthly or yearly budget
+- [x] View spent vs budget
+- [x] Visual indicator (remaining budget, overspent warning)
 
 ---
 
@@ -125,7 +125,7 @@ Everything in MVP Core, plus:
 | Backend                   | NestJS 11.x (Clean/Hexagonal Architecture) |
 | Database                  | SQLite (dev & prod)                        |
 | ORM                       | Prisma 7.x                                 |
-| Auth                      | Better Auth 1.4.x                          |
+| Auth                      | Better Auth 1.5.x                          |
 | Frontend                  | Astro 5.x + React 19.x                     |
 | Styling                   | TailwindCSS v4 + DaisyUI 5.x (plugin)      |
 | Headless Primitives       | Radix UI                                   |
@@ -153,7 +153,7 @@ Everything in MVP Core, plus:
 
 - [ ] TanStack Query (data fetching & caching)
 - [ ] TanStack Form (form management)
-- [ ] Basic role/permissions system (admin vs user)
+- [x] Basic role/permissions system (admin vs user)
 
 ## Design System
 
@@ -241,20 +241,20 @@ Expense
 - [x] Auth works (register, login, logout)
 - [x] Can create and manage ONE vehicle
 - [x] Can create check types with intervals
-- [ ] Can log checks and see history
-- [ ] Dashboard shows vehicle status and upcoming checks
-- [ ] Can track expenses and see totals
-- [ ] Budget comparison works
-- [ ] Mobile-friendly (responsive)
-- [ ] Core features tested
-- [ ] Basic documentation (README with setup instructions)
+- [x] Can log checks and see history
+- [x] Dashboard shows vehicle status and upcoming checks
+- [x] Can track expenses and see totals
+- [x] Budget comparison works
+- [ ] Mobile-friendly (responsive) — pending Feature 09 Visual Refresh Block 7 QA audit
+- [x] Core features tested
+- [x] Basic documentation (README with setup instructions)
 
 ### MVP Full (Stretch Goal)
 
 - [ ] All MVP Core criteria met
 - [ ] Can create and manage MULTIPLE vehicles
 - [ ] Vehicle switcher in UI
-- [ ] Multiple users can use the app independently
+- [x] Multiple users can use the app independently
 
 ## Build Order (High-Level)
 
