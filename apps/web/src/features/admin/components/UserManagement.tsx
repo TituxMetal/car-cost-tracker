@@ -1,8 +1,13 @@
+import { Lock, MailCheck } from 'lucide-react'
 import { useState } from 'react'
 
 import { Button } from '~/components/ui'
 import { admin } from '~/lib/authClient'
 import { redirect } from '~/utils/navigation'
+
+import type { ResetPasswordSchema } from '../schemas'
+
+import { ResetPasswordDialog } from './ResetPasswordDialog'
 
 type UserData = {
   id: string
@@ -24,6 +29,28 @@ export const UserManagement = ({ user: initialUser }: Props) => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const [isResetOpen, setIsResetOpen] = useState(false)
+
+  const handleVerify = async () => {
+    setIsLoading(true)
+    setError(null)
+    setSuccess(null)
+
+    const result = await admin.updateUser({
+      userId: user.id,
+      data: { emailVerified: true }
+    })
+
+    if (result.error) {
+      setError(result.error.message ?? 'Failed to verify email')
+      setIsLoading(false)
+      return
+    }
+
+    setUser({ ...user, emailVerified: true })
+    setSuccess("Email validé — l'utilisateur peut désormais se connecter.")
+    setIsLoading(false)
+  }
 
   const handleSetRole = async (role: 'user' | 'admin') => {
     setIsLoading(true)
@@ -76,6 +103,28 @@ export const UserManagement = ({ user: initialUser }: Props) => {
 
     setUser({ ...user, banned: false })
     setSuccess('User unbanned')
+    setIsLoading(false)
+  }
+
+  const handleResetPassword = async (values: ResetPasswordSchema): Promise<void> => {
+    setIsLoading(true)
+    setError(null)
+    setSuccess(null)
+
+    const result = await admin.setUserPassword({
+      userId: user.id,
+      newPassword: values.password
+    })
+
+    if (result.error) {
+      setIsLoading(false)
+      throw new Error(result.error.message ?? 'Failed to reset password')
+    }
+
+    setIsResetOpen(false)
+    setSuccess(
+      `Password mis à jour pour ${user.username}. Transmettez-le vous-même au testeur — il n'est envoyé à personne.`
+    )
     setIsLoading(false)
   }
 
@@ -169,6 +218,13 @@ export const UserManagement = ({ user: initialUser }: Props) => {
               </Button>
             )}
 
+            {!user.emailVerified && (
+              <Button onClick={handleVerify} disabled={isLoading} className='gap-2'>
+                <MailCheck size={16} />
+                Valider l&apos;email
+              </Button>
+            )}
+
             {user.banned ? (
               <Button variant='outline' onClick={handleUnban} disabled={isLoading}>
                 Unban User
@@ -179,12 +235,30 @@ export const UserManagement = ({ user: initialUser }: Props) => {
               </Button>
             )}
 
+            <Button
+              variant='outline'
+              onClick={() => setIsResetOpen(true)}
+              disabled={isLoading}
+              className='gap-2'
+            >
+              <Lock size={16} />
+              Réinitialiser le password
+            </Button>
+
             <Button variant='destructive' onClick={handleDelete} disabled={isLoading}>
               Delete User
             </Button>
           </div>
         </div>
       </article>
+
+      {isResetOpen && (
+        <ResetPasswordDialog
+          username={user.username}
+          onCancel={() => setIsResetOpen(false)}
+          onSubmit={handleResetPassword}
+        />
+      )}
     </section>
   )
 }
