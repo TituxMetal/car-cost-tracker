@@ -4,40 +4,111 @@
   themes: cartracker --default;
 }
 
+/* ─────────────────────────────────────────────────────────────────────────
+ * CARTRACKER THEME — V1 "CLUSTER" (retro-modern dashboard)
+ *
+ * WCAG contrast ratios computed on base-100 and base-200:
+ *   base-content     → 15.30 / 14.09  AAA
+ *   base-content/70  →  7.86 /  7.24  AAA
+ *   base-content/50  →  5.37 /  4.95  AA strict
+ *   primary (amber)  →  9.84 /  9.06  AAA
+ *   warning          → 10.65 /  9.81  AAA
+ *   error            →  5.94 /  5.47  AA
+ *   success          → 10.05 /  9.25  AAA
+ *   info             →  9.71 /  8.94  AAA
+ *   primary-content on primary → 10.02  AAA
+ *
+ * Goal: strict AA (4.5:1) guaranteed everywhere, AAA (7:1) wherever possible.
+ * ─────────────────────────────────────────────────────────────────────── */
+
 @plugin 'daisyui/theme' {
   name: 'cartracker';
   default: true;
   color-scheme: dark;
 
-  --color-primary: oklch(79.5% 0.157 70.08);
-  --color-primary-content: oklch(17% 0.028 70.08);
+  /* — Accents — */
+  --color-primary: oklch(80% 0.16 75); /* cluster amber */
+  --color-primary-content: oklch(17% 0.03 75);
   --color-secondary: oklch(73.375% 0.165 35.353);
   --color-secondary-content: oklch(14.675% 0.033 35.353);
   --color-accent: oklch(74.229% 0.133 311.379);
   --color-accent-content: oklch(14.845% 0.026 311.379);
-  --color-neutral: oklch(24.731% 0.02 264.094);
-  --color-neutral-content: oklch(82.901% 0.031 222.959);
-  --color-base-100: oklch(30.857% 0.023 264.149);
-  --color-base-200: oklch(28.036% 0.019 264.182);
-  --color-base-300: oklch(26.346% 0.018 262.177);
-  --color-base-content: oklch(82.901% 0.031 222.959);
-  --color-info: oklch(86.078% 0.142 206.182);
-  --color-info-content: oklch(17.215% 0.028 206.182);
-  --color-success: oklch(86.171% 0.142 166.534);
-  --color-success-content: oklch(17.234% 0.028 166.534);
-  --color-warning: oklch(86.163% 0.142 94.818);
-  --color-warning-content: oklch(17.232% 0.028 94.818);
-  --color-error: oklch(82.418% 0.099 33.756);
-  --color-error-content: oklch(16.483% 0.019 33.756);
 
-  --radius-selector: 0.5rem;
-  --radius-field: 0.375rem;
-  --radius-box: 0.5rem;
+  /* — Neutrals / surfaces (darker than the old theme) — */
+  --color-neutral: oklch(24% 0.015 264);
+  --color-neutral-content: oklch(93% 0.015 85);
+  --color-base-100: oklch(18% 0.01 264); /* main bg */
+  --color-base-200: oklch(22% 0.012 264); /* panels, cards */
+  --color-base-300: oklch(28% 0.015 264); /* borders, tracks */
+  --color-base-content: oklch(93% 0.015 85); /* text — warm tint */
+
+  /* — States (telltale lights) — */
+  --color-info: oklch(78% 0.12 220);
+  --color-info-content: oklch(17% 0.025 220);
+  --color-success: oklch(78% 0.17 155);
+  --color-success-content: oklch(17% 0.03 155);
+  --color-warning: oklch(82% 0.17 85);
+  --color-warning-content: oklch(17% 0.03 85);
+  --color-error: oklch(70% 0.22 25);
+  --color-error-content: oklch(98% 0.01 25);
+
+  /* — Squarer radii (retro cluster) — */
+  --radius-selector: 0.25rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.375rem;
   --size-selector: 0.25rem;
   --size-field: 0.25rem;
   --border: 1px;
   --depth: 1;
   --noise: 0;
+}
+
+/* ─── Self-hosted fonts (see apps/web/public/fonts/) ──────────────────── */
+
+@font-face {
+  font-family: 'Oxanium';
+  src: url('/fonts/oxanium/Oxanium-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Oxanium';
+  src: url('/fonts/oxanium/Oxanium-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Oxanium';
+  src: url('/fonts/oxanium/Oxanium-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrains-mono/JetBrainsMono-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrains-mono/JetBrainsMono-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-sans: 'Oxanium', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Courier New', monospace;
+  --font-display: 'Oxanium', ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -72,6 +143,11 @@
     min-height: 100vh;
   }
 
+  /* Focus visible — required for keyboard navigation */
+  :focus-visible {
+    @apply outline-primary outline-2 outline-offset-2;
+  }
+
   @keyframes fade-in-up {
     from {
       opacity: 0;
@@ -85,5 +161,24 @@
 
   .animate-fade-in-up {
     animation: fade-in-up 0.3s ease-out both;
+  }
+
+  .gauge-progress {
+    transition: stroke-dasharray 400ms ease-out;
+  }
+
+  .pb-safe {
+    padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
