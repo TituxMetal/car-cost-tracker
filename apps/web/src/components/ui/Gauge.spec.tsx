@@ -50,4 +50,18 @@ describe('Gauge', () => {
     const { container } = render(<Gauge value={0} max={100} label='X' />)
     expect(container.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
   })
+
+  it('renders safely when max is 0 (no NaN, valuemax 0)', () => {
+    render(<Gauge value={5} max={0} label='X' />)
+    const meter = screen.getByRole('meter')
+    expect(meter).toHaveAttribute('aria-valuenow', '0')
+    expect(meter).toHaveAttribute('aria-valuemax', '0')
+  })
+
+  it('clamps a negative max to 0', () => {
+    render(<Gauge value={5} max={-3} label='X' />)
+    const meter = screen.getByRole('meter')
+    expect(meter).toHaveAttribute('aria-valuenow', '0')
+    expect(meter).toHaveAttribute('aria-valuemax', '0')
+  })
 })
