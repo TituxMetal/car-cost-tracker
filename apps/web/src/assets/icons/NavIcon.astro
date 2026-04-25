@@ -1,0 +1,70 @@
+---
+type NavIconName = 'dash' | 'auto' | 'checks' | 'logs' | 'expenses'
+
+interface Props {
+  name: NavIconName
+  class?: string
+}
+
+const { name, class: className = 'size-5' } = Astro.props
+---
+
+<svg
+  xmlns='http://www.w3.org/2000/svg'
+  viewBox='0 0 24 24'
+  fill='none'
+  stroke='currentColor'
+  stroke-width='2'
+  stroke-linecap='round'
+  stroke-linejoin='round'
+  class={className}
+  aria-hidden='true'
+  focusable='false'
+>
+  {
+    name === 'dash' && (
+      <>
+        <path d='M15.6 2.7a10 10 0 1 0 5.7 5.7' />
+        <circle cx='12' cy='12' r='2' />
+        <path d='M13.4 10.6 19 5' />
+      </>
+    )
+  }
+  {
+    name === 'auto' && (
+      <>
+        <path d='M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2' />
+        <circle cx='7' cy='17' r='2' />
+        <path d='M9 17h6' />
+        <circle cx='17' cy='17' r='2' />
+      </>
+    )
+  }
+  {
+    name === 'checks' && (
+      <>
+        <circle cx='12' cy='12' r='10' />
+        <path d='m9 12 2 2 4-4' />
+      </>
+    )
+  }
+  {
+    name === 'logs' && (
+      <>
+        <path d='M15 12h-5' />
+        <path d='M15 8h-5' />
+        <path d='M19 17V5a2 2 0 0 0-2-2H4' />
+        <path d='M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3' />
+      </>
+    )
+  }
+  {
+    name === 'expenses' && (
+      <>
+        <path d='M12 17V7' />
+        <path d='M16 8h-6a2 2 0 0 0 0 4h4a2 2 0 0 1 0 4H8' />
+        <path d='M4 3a1 1 0 0 1 1-1 1.3 1.3 0 0 1 .7.2l.933.6a1.3 1.3 0 0 0 1.4 0l.934-.6a1.3 1.3 0 0 1 1.4 0l.933.6a1.3 1.3 0 0 0 1.4 0l.933-.6a1.3 1.3 0 0 1 1.4 0l.934.6a1.3 1.3 0 0 0 1.4 0l.933-.6A1.3 1.3 0 0 1 19 2a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1 1.3 1.3 0 0 1-.7-.2l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.934.6a1.3 1.3 0 0 1-1.4 0l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-1.4 0l-.934-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-.7.2 1 1 0 0 1-1-1z' />
+      </>
+    )
+  }
+</svg>

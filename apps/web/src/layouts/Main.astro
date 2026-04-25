@@ -2,12 +2,39 @@
 import CoffeeIcon from '~/assets/icons/CoffeeIcon.astro'
 import CopyLeftIcon from '~/assets/icons/CopyLeftIcon.astro'
 import HeartIcon from '~/assets/icons/HeartIcon.astro'
-import MenuIcon from '~/assets/icons/MenuIcon.astro'
+import NavIcon from '~/assets/icons/NavIcon.astro'
 import '~/styles/globals.css'
 
 const isProduction = import.meta.env.PROD
 const { title } = Astro.props
 const { user } = Astro.locals
+
+const currentPath = Astro.url.pathname
+
+const now = new Date()
+const formattedDate = now
+  .toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+  .replace(/\//g, '.')
+const formattedTime = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+
+const initials = user ? user.username.slice(0, 2).toUpperCase() : ''
+
+const desktopNav = [
+  { href: '/', label: 'Dashboard' },
+  { href: '/vehicle', label: 'Véhicule' },
+  { href: '/check-types', label: 'Contrôles' },
+  { href: '/check-logs', label: 'Historique' },
+  { href: '/expenses', label: 'Dépenses' },
+  { href: '/budget', label: 'Budget' }
+] as const
+
+const mobileTabs = [
+  { href: '/', label: 'Dash', icon: 'dash' },
+  { href: '/vehicle', label: 'Auto', icon: 'auto' },
+  { href: '/check-types', label: 'Contrôles', icon: 'checks' },
+  { href: '/check-logs', label: 'Logs', icon: 'logs' },
+  { href: '/expenses', label: 'Dépenses', icon: 'expenses' }
+] as const
 ---
 
 <!doctype html>
@@ -17,7 +44,21 @@ const { user } = Astro.locals
     <meta name='viewport' content='width=device-width' />
     <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
     <meta name='generator' content={Astro.generator} />
-    <title>Fullstack Nest + Astro {title && `| ${title}`}</title>
+    <link
+      rel='preload'
+      href='/fonts/oxanium/Oxanium-SemiBold.woff2'
+      as='font'
+      type='font/woff2'
+      crossorigin
+    />
+    <link
+      rel='preload'
+      href='/fonts/jetbrains-mono/JetBrainsMono-Regular.woff2'
+      as='font'
+      type='font/woff2'
+      crossorigin
+    />
+    <title>{title ? `${title} | COST.LOG` : 'COST.LOG'}</title>
 
     {
       isProduction && (
@@ -31,91 +72,61 @@ const { user } = Astro.locals
     }
   </head>
   <body class='min-h-screen'>
-    <header class='navbar bg-base-300'>
-      <nav class='mx-auto flex w-full max-w-7xl items-center gap-4'>
-        <div class='flex-none'>
-          <a href='/' class='btn btn-ghost text-lg'>Home</a>
-        </div>
-        <ul class='menu menu-horizontal hidden flex-1 gap-1 lg:flex'>
-          {
-            user ? (
-              <>
+    <header class='border-base-300 bg-base-200 hidden border-b lg:block'>
+      <nav
+        class='mx-auto flex w-full max-w-7xl items-center gap-8 px-6 py-4'
+        aria-label='Main navigation'
+      >
+        <a href='/' class='flex items-center gap-2.5'>
+          <span
+            class='bg-primary inline-flex h-7 w-7 items-center justify-center rounded-sm'
+            aria-hidden='true'
+          >
+            <span class='border-base-100 inline-block h-3.5 w-3.5 rounded-full border-2'></span>
+          </span>
+          <span class='font-display text-base font-bold tracking-[0.15em]'>
+            COST<span class='text-primary'>.LOG</span>
+          </span>
+        </a>
+        {
+          user && (
+            <ul class='font-display flex gap-6 text-xs tracking-[0.15em] uppercase'>
+              {desktopNav.map(({ href, label }) => (
                 <li>
-                  <a href='/'>Tableau de bord</a>
-                </li>
-                <li>
-                  <a href='/vehicle'>Mon véhicule</a>
-                </li>
-                <li>
-                  <a href='/check-types'>Contrôles</a>
-                </li>
-                <li>
-                  <a href='/check-logs'>Historique</a>
-                </li>
-                <li>
-                  <a href='/expenses'>Dépenses</a>
-                </li>
-                <li>
-                  <a href='/budget'>Budget</a>
-                </li>
-              </>
-            ) : null
-          }
-        </ul>
-        <div class='hidden flex-none gap-1 lg:flex'>
-          {
-            user ? (
-              <>
-                <a href='/profile' class='btn btn-ghost'>
-                  {user.username.charAt(0).toUpperCase() + user.username.slice(1)}
-                </a>
-                {user.role === 'admin' && (
-                  <a href='/admin' class='btn btn-ghost'>
-                    Admin
+                  <a
+                    href={href}
+                    aria-current={currentPath === href ? 'page' : undefined}
+                    class:list={[
+                      'pb-1 transition-colors',
+                      currentPath === href
+                        ? 'border-primary text-primary border-b'
+                        : 'text-base-content/60 hover:text-base-content'
+                    ]}
+                  >
+                    {label}
                   </a>
-                )}
-                <a href='/auth/logout' class='btn btn-ghost'>
-                  Logout
-                </a>
-              </>
-            ) : (
-              <a href='/auth' class='btn btn-ghost'>
-                Login
-              </a>
-            )
-          }
-        </div>
-        <div class='flex flex-1 justify-end lg:hidden'>
-          <details class='dropdown dropdown-end'>
-            <summary class='btn btn-ghost' aria-label='Open main menu'>
-              <MenuIcon />
-            </summary>
-            <ul class='dropdown-content menu bg-base-200 rounded-box z-10 w-52 p-2 shadow'>
-              {
-                user ? (
-                  <>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+        <div class='ml-auto flex items-center gap-4'>
+          {
+            user ? (
+              <>
+                <span class='text-base-content/60 hidden font-mono text-xs xl:inline'>
+                  {formattedDate} · {formattedTime}
+                </span>
+                <details class='dropdown dropdown-end'>
+                  <summary
+                    class='border-base-300 bg-base-200 hover:bg-base-300 text-primary grid h-8 w-8 cursor-pointer place-items-center rounded-full border font-mono text-xs uppercase'
+                    aria-label='User menu'
+                  >
+                    {initials}
+                  </summary>
+                  <ul class='dropdown-content menu bg-base-200 border-base-300 z-10 mt-2 w-48 rounded-sm border p-2 shadow-lg'>
                     <li>
-                      <a href='/'>Tableau de bord</a>
-                    </li>
-                    <li>
-                      <a href='/vehicle'>Mon véhicule</a>
-                    </li>
-                    <li>
-                      <a href='/check-types'>Contrôles</a>
-                    </li>
-                    <li>
-                      <a href='/check-logs'>Historique</a>
-                    </li>
-                    <li>
-                      <a href='/expenses'>Dépenses</a>
-                    </li>
-                    <li>
-                      <a href='/budget'>Budget</a>
-                    </li>
-                    <li>
-                      <a href='/profile'>
-                        {user.username.charAt(0).toUpperCase() + user.username.slice(1)}
-                      </a>
+                      <a href='/profile'>Profil</a>
                     </li>
                     {user.role === 'admin' && (
                       <li>
@@ -123,24 +134,77 @@ const { user } = Astro.locals
                       </li>
                     )}
                     <li>
-                      <a href='/auth/logout'>Logout</a>
+                      <a href='/auth/logout'>Déconnexion</a>
                     </li>
-                  </>
-                ) : (
-                  <li>
-                    <a href='/auth'>Login</a>
-                  </li>
-                )
-              }
-            </ul>
-          </details>
+                  </ul>
+                </details>
+              </>
+            ) : (
+              <a href='/auth' class='btn btn-ghost font-display tracking-wider uppercase'>
+                Login
+              </a>
+            )
+          }
         </div>
       </nav>
     </header>
-    <main class='mx-auto flex w-full max-w-7xl flex-1 flex-col py-6'>
+
+    <header
+      class='border-base-300 bg-base-200 flex items-center justify-between border-b px-5 py-3 lg:hidden'
+    >
+      {
+        user ? (
+          <div class='flex flex-col leading-tight'>
+            <span class='text-base-content/60 font-mono text-[10px] tracking-[0.15em] uppercase'>
+              Bonjour · {user.username}
+            </span>
+          </div>
+        ) : (
+          <a href='/' class='font-display text-base font-bold tracking-[0.15em]'>
+            COST<span class='text-primary'>.LOG</span>
+          </a>
+        )
+      }
+      {
+        user ? (
+          <details class='dropdown dropdown-end'>
+            <summary
+              class='border-base-300 bg-base-200 text-primary grid h-9 w-9 cursor-pointer place-items-center rounded-full border font-mono text-xs uppercase'
+              aria-label='User menu'
+            >
+              {initials}
+            </summary>
+            <ul class='dropdown-content menu bg-base-200 border-base-300 z-20 mt-2 w-48 rounded-sm border p-2 shadow-lg'>
+              <li>
+                <a href='/profile'>Profil</a>
+              </li>
+              {user.role === 'admin' && (
+                <li>
+                  <a href='/admin'>Admin</a>
+                </li>
+              )}
+              <li>
+                <a href='/auth/logout'>Déconnexion</a>
+              </li>
+            </ul>
+          </details>
+        ) : (
+          <a href='/auth' class='btn btn-ghost btn-sm font-display tracking-wider uppercase'>
+            Login
+          </a>
+        )
+      }
+    </header>
+
+    <main
+      class='mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 pt-4 pb-20 lg:px-8 lg:pt-6 lg:pb-8'
+    >
       <slot />
     </main>
-    <footer class='footer footer-center bg-base-300 text-base-content p-6'>
+
+    <footer
+      class='footer footer-center bg-base-200 border-base-300 text-base-content/70 hidden border-t p-6 font-mono text-xs lg:grid'
+    >
       <div>
         <p class='flex items-center justify-center gap-1 font-semibold'>
           <CopyLeftIcon class='inline size-4' />
@@ -158,5 +222,32 @@ const { user } = Astro.locals
         </p>
       </div>
     </footer>
+
+    {
+      user && (
+        <nav
+          class='border-base-300 bg-base-200 pb-safe fixed right-0 bottom-0 left-0 z-30 flex items-center justify-around border-t px-2 pt-2 lg:hidden'
+          aria-label='Mobile primary navigation'
+        >
+          {mobileTabs.map(({ href, label, icon }) => (
+            <a
+              href={href}
+              aria-current={currentPath === href ? 'page' : undefined}
+              class:list={[
+                'flex flex-1 flex-col items-center gap-1 px-2 py-1.5 transition-colors',
+                currentPath === href
+                  ? 'text-primary'
+                  : 'text-base-content/50 hover:text-base-content'
+              ]}
+            >
+              <NavIcon name={icon} class='size-5' />
+              <span class='font-mono text-[9px] font-medium tracking-[0.15em] uppercase'>
+                {label}
+              </span>
+            </a>
+          ))}
+        </nav>
+      )
+    }
   </body>
 </html>
