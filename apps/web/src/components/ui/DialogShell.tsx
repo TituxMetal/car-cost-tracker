@@ -22,8 +22,10 @@ export const DialogShell = ({ title, onClose, children, description }: DialogShe
         onInteractOutside={event => event.preventDefault()}
         {...(!description && { 'aria-describedby': undefined })}
       >
-        <div className='modal-box'>
-          <Dialog.Title className='mb-4 text-lg font-bold'>{title}</Dialog.Title>
+        <div className='modal-box border-base-300 bg-base-200 border max-sm:h-screen max-sm:w-screen max-sm:max-w-full max-sm:rounded-none'>
+          <Dialog.Title className='font-display mb-4 text-lg font-bold tracking-wide uppercase'>
+            {title}
+          </Dialog.Title>
           {description && <Dialog.Description className='py-4'>{description}</Dialog.Description>}
           {children}
         </div>
