@@ -32,21 +32,22 @@ export const Gauge = ({
   strokeWidth = 12,
   className = ''
 }: GaugeProps) => {
-  const clamped = Math.max(0, Math.min(value, max))
+  const safeMax = Math.max(0, max)
+  const clamped = Math.max(0, Math.min(value, safeMax))
   const radius = (size - strokeWidth) / 2
   const circumference = 2 * Math.PI * radius
   const arcLength = circumference * 0.75
-  const progress = (clamped / max) * arcLength
+  const progress = safeMax > 0 ? (clamped / safeMax) * arcLength : 0
   const center = size / 2
 
-  const a11yLabel = description ?? `${label}, ${clamped} sur ${max}`
+  const a11yLabel = description ?? `${label}, ${clamped} sur ${safeMax}`
 
   return (
     <div
       role='meter'
       aria-valuenow={clamped}
       aria-valuemin={0}
-      aria-valuemax={max}
+      aria-valuemax={safeMax}
       aria-label={a11yLabel}
       className={`flex flex-col items-center gap-2 ${className}`}
     >
