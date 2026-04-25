@@ -54,6 +54,15 @@ describe('Button', () => {
     expect(button).toHaveClass('btn')
   })
 
+  it('should apply warning variant styling', () => {
+    const { getByRole } = render(<Button variant='warning'>Warning</Button>)
+
+    const button = getByRole('button', { name: 'Warning' })
+
+    expect(button).toHaveClass('btn-warning')
+    expect(button).toHaveClass('btn')
+  })
+
   it('should be disabled when disabled prop is true', () => {
     const { getByRole } = render(<Button disabled>Disabled</Button>)
 

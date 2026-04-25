@@ -1,7 +1,7 @@
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ElementType } from 'react'
 import React from 'react'
 
-export type ButtonVariant = 'default' | 'outline' | 'ghost' | 'destructive'
+export type ButtonVariant = 'default' | 'outline' | 'ghost' | 'destructive' | 'warning'
 
 type ButtonBaseProps = {
   variant?: ButtonVariant
@@ -18,12 +18,13 @@ export type ButtonProps = ButtonAsButton | (ButtonAsAnchor & { as: 'a' })
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = 'default', children, className = '', disabled, as, ...rest }, ref) => {
-    const baseClasses = 'btn'
+    const baseClasses = 'btn font-display uppercase tracking-wider'
     const variantClasses = {
       default: 'btn-primary',
       outline: 'btn-outline',
       ghost: 'btn-ghost',
-      destructive: 'btn-error'
+      destructive: 'btn-error',
+      warning: 'btn-warning'
     }
 
     const combinedClasses = `${baseClasses} ${variantClasses[variant]} ${className}`
