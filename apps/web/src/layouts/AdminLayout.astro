@@ -2,7 +2,8 @@
 import Main from './Main.astro'
 
 const { title } = Astro.props
-const currentPath = Astro.url.pathname
+const rawPath = Astro.url.pathname
+const currentPath = rawPath !== '/' && rawPath.endsWith('/') ? rawPath.slice(0, -1) : rawPath
 ---
 
 <Main title={title}>
