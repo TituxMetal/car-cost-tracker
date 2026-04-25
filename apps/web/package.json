@@ -9,7 +9,7 @@
     "build": "astro build",
     "docker:build": "../../scripts/docker-build.sh web",
     "docker:push": "docker push lgdweb/car-cost-tracker-web:latest",
-    "dev": "astro dev",
+    "dev": "astro dev --host",
     "start": "astro preview",
     "lint": "eslint . --fix",
     "lint:check": "eslint .",
