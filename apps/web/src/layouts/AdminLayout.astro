@@ -2,16 +2,39 @@
 import Main from './Main.astro'
 
 const { title } = Astro.props
+const currentPath = Astro.url.pathname
 ---
 
 <Main title={title}>
-  <nav class='border-base-300 mb-6 border-b pb-4' aria-label='Admin navigation'>
-    <ul class='menu menu-horizontal'>
+  <nav class='border-base-300 mb-6 border-b pb-3' aria-label='Admin navigation'>
+    <ul class='font-display flex gap-6 text-xs tracking-[0.15em] uppercase'>
       <li>
-        <a href='/admin'>Dashboard</a>
+        <a
+          href='/admin'
+          aria-current={currentPath === '/admin' ? 'page' : undefined}
+          class:list={[
+            'pb-1 transition-colors',
+            currentPath === '/admin'
+              ? 'border-primary text-primary border-b'
+              : 'text-base-content/60 hover:text-base-content'
+          ]}
+        >
+          Dashboard
+        </a>
       </li>
       <li>
-        <a href='/admin/users'>Users</a>
+        <a
+          href='/admin/users'
+          aria-current={currentPath.startsWith('/admin/users') ? 'page' : undefined}
+          class:list={[
+            'pb-1 transition-colors',
+            currentPath.startsWith('/admin/users')
+              ? 'border-primary text-primary border-b'
+              : 'text-base-content/60 hover:text-base-content'
+          ]}
+        >
+          Users
+        </a>
       </li>
     </ul>
   </nav>
