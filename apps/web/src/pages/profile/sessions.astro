@@ -9,14 +9,25 @@ if (!user) {
 }
 ---
 
-<Main title='Profile'>
-  <section class='container mx-auto px-4 py-10'>
-    <header class='mb-12 text-center'>
-      <h1 class='text-base-content text-4xl font-bold tracking-tight'>Active Sessions</h1>
-      <p class='text-base-content/70 mt-2 text-sm'>Manage your active sessions and devices</p>
+<Main title='Sessions actives'>
+  <section class='mx-auto w-full max-w-4xl px-4 py-10'>
+    <a
+      href='/profile'
+      class='text-base-content/60 hover:text-primary mb-6 inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] uppercase transition-colors'
+    >
+      ← Retour au profil
+    </a>
+    <header class='mb-10'>
+      <p class='text-base-content/60 font-mono text-[10px] tracking-[0.18em] uppercase'>// ACCÈS</p>
+      <h1
+        class='font-display text-base-content mt-2 text-3xl font-semibold tracking-tight sm:text-4xl'
+      >
+        Sessions actives
+      </h1>
+      <p class='text-base-content/60 mt-3 font-mono text-sm tracking-wide'>
+        Gérez les sessions ouvertes sur vos appareils.
+      </p>
     </header>
-    <div class='mx-auto flex max-w-2xl flex-col gap-8'>
-      <SessionList client:load />
-    </div>
+    <SessionList client:load />
   </section>
 </Main>
