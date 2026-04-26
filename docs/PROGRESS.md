@@ -66,12 +66,13 @@ Current state only. Deferred items live in [`BACKLOG.md`](./BACKLOG.md).
 - [x] New `Auth.astro` layout (no Main chrome) hosts the auth pages full-bleed
 - [x] `AuthContainer.tsx` rewritten as V1Login split-screen: `AuthHero` editorial column (kicker
       `// IGNITION` + 5xl/6xl headline + tag + version footer) + form column (`// ACCÈS PILOTE`
-      kicker + h1 `Connexion` / `Inscription` + `ClusterField` form + full-width button
+      kicker + h1 `Connexion` / `Inscription` + inlined `Input` fields + full-width button
       `Mettre le contact →` / `Créer le dashboard →` + switch link + `SystemStatusPanel` bottom)
-- [x] New helpers: `AuthHero.tsx`, `ClusterField.tsx`, `SystemStatusPanel.tsx` (mono labels,
-      telltale dots, real Better Auth v1.5.x / Prisma v7.x versions)
+- [x] New helpers: `AuthShell.tsx`, `AuthHeader.tsx`, `AuthHero.tsx`, `SystemStatusPanel.tsx` (mono
+      labels, telltale dots, plain `API en ligne · {date} {time}` / `Better Auth · OK` /
+      `Prisma · OK` — no hardcoded versions)
 - [x] Removed obsolete `LoginForm.tsx` / `SignupForm.tsx` + specs (their fields are inlined via
-      `ClusterField` directly in `AuthContainer`)
+      `Input` directly in `AuthContainer`)
 - [x] All UX strings translated to French; `AuthContainer.spec.tsx` rewritten for FR labels +
       heading + `SystemStatusPanel` assertions
 - [x] `pages/auth/index.astro` switched to `Auth.astro`
@@ -91,13 +92,15 @@ Current state only. Deferred items live in [`BACKLOG.md`](./BACKLOG.md).
 - [x] All four pages (`forgot-password`, `reset-password`, `verify-email`, `verification-pending`)
       switched to `Auth.astro` layout
 - [x] All five specs translated to FR + adapted to new structure
-- [x] Post-review fixes: `Input` / `Label` extended with `variant='cluster'` (default 100%
-      backwards-compatible); `ClusterField` dropped; new shared `AuthShell.tsx` + `AuthHeader.tsx`
-      collapse the previously duplicated shell/kicker/heading constants across 5 containers;
-      `<main>` landmark added on every auth surface; `SystemStatusPanel` time live (1-minute
-      interval) and versions dropped to plain `OK` to stop lying about hardcoded numbers;
-      `SessionList` revoke actions guarded against double-click via per-token + bulk in-flight
-      states; `auth.schema.ts` object-form normalised; `pages/profile/sessions.astro` lightly
+- [x] Post-review fixes: `Input` / `Label` / `FormWrapper` rewritten cluster-only (variant prop
+      removed, daisy classes gone, cluster typography baked in); shared `AuthShell.tsx` +
+      `AuthHeader.tsx` collapse the previously duplicated shell/kicker/heading constants across 5
+      containers; `<main>` landmark added on every auth surface; `SystemStatusPanel` shows live
+      `{date} {time}` (placeholder until mount to avoid Astro hydration mismatch, 1-minute refresh)
+      and dropped versions to plain `OK` to stop lying about hardcoded numbers; `SessionList` revoke
+      actions guarded against double-click via per-token + bulk in-flight states; `auth.schema.ts`
+      object-form normalised + dead signup `name` field dropped (Better Auth payload preserved via
+      `useAuth.ts:76` mapping `name: data.username`); `pages/profile/sessions.astro` lightly
       polished as a side-effect of `SessionList` testing — full Phase 23 refresh still pending
 
 ### Block 3: Vehicles — `feature/visual-refresh-vehicles`
