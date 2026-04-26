@@ -1,5 +1,7 @@
 export { DeleteVehicleDialog } from './DeleteVehicleDialog'
 export type { DeleteVehicleDialogProps } from './DeleteVehicleDialog'
+export { MileageHistoryCard } from './MileageHistoryCard'
+export type { MileageHistoryCardProps } from './MileageHistoryCard'
 export { QuickMileageUpdate } from './QuickMileageUpdate'
 export type { QuickMileageUpdateProps } from './QuickMileageUpdate'
 export { VehicleContainer } from './VehicleContainer'
