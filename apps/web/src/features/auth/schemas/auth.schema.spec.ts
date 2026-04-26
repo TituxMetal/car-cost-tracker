@@ -25,7 +25,7 @@ describe('loginSchema', () => {
     expect(result.success).toBe(false)
 
     if (!result.success) {
-      expect(result.error.issues[0].message).toBe('Invalid email address')
+      expect(result.error.issues[0].message).toBe('Adresse email invalide')
     }
   })
 
@@ -40,7 +40,7 @@ describe('loginSchema', () => {
     expect(result.success).toBe(false)
 
     if (!result.success) {
-      expect(result.error.issues[0].message).toBe('Password is required')
+      expect(result.error.issues[0].message).toBe('Mot de passe requis')
     }
   })
 
@@ -55,7 +55,9 @@ describe('loginSchema', () => {
     expect(result.success).toBe(false)
 
     if (!result.success) {
-      expect(result.error.issues[0].message).toBe('Password must be at least 8 characters')
+      expect(result.error.issues[0].message).toBe(
+        'Le mot de passe doit contenir au moins 8 caractères'
+      )
     }
   })
 })
@@ -63,7 +65,6 @@ describe('loginSchema', () => {
 describe('signupSchema', () => {
   it('should validate a valid signup request', () => {
     const validSignup = {
-      name: 'Test User',
       username: 'testuser',
       email: 'test@example.com',
       password: 'password123'
@@ -76,7 +77,6 @@ describe('signupSchema', () => {
 
   it('should reject empty username', () => {
     const invalidSignup = {
-      name: 'Test User',
       username: '',
       email: 'test@example.com',
       password: 'password123'
@@ -87,13 +87,12 @@ describe('signupSchema', () => {
     expect(result.success).toBe(false)
 
     if (!result.success) {
-      expect(result.error.issues[0].message).toBe('Username is required')
+      expect(result.error.issues[0].message).toBe("Nom d'utilisateur requis")
     }
   })
 
   it('should reject short username', () => {
     const invalidSignup = {
-      name: 'Test User',
       username: 'ab',
       email: 'test@example.com',
       password: 'password123'
@@ -104,13 +103,14 @@ describe('signupSchema', () => {
     expect(result.success).toBe(false)
 
     if (!result.success) {
-      expect(result.error.issues[0].message).toBe('Username must be at least 3 characters long')
+      expect(result.error.issues[0].message).toBe(
+        "Le nom d'utilisateur doit contenir au moins 3 caractères"
+      )
     }
   })
 
   it('should reject too long username', () => {
     const invalidSignup = {
-      name: 'Test User',
       username: 'a'.repeat(51),
       email: 'test@example.com',
       password: 'password123'
@@ -121,13 +121,14 @@ describe('signupSchema', () => {
     expect(result.success).toBe(false)
 
     if (!result.success) {
-      expect(result.error.issues[0].message).toBe('Username must not exceed 50 characters')
+      expect(result.error.issues[0].message).toBe(
+        "Le nom d'utilisateur ne doit pas dépasser 50 caractères"
+      )
     }
   })
 
   it('should reject invalid email format', () => {
     const invalidSignup = {
-      name: 'Test User',
       username: 'testuser',
       email: 'not-an-email',
       password: 'password123'
@@ -138,13 +139,12 @@ describe('signupSchema', () => {
     expect(result.success).toBe(false)
 
     if (!result.success) {
-      expect(result.error.issues[0].message).toBe('Invalid email address')
+      expect(result.error.issues[0].message).toBe('Adresse email invalide')
     }
   })
 
   it('should reject empty password', () => {
     const invalidSignup = {
-      name: 'Test User',
       username: 'testuser',
       email: 'test@example.com',
       password: ''
@@ -155,13 +155,12 @@ describe('signupSchema', () => {
     expect(result.success).toBe(false)
 
     if (!result.success) {
-      expect(result.error.issues[0].message).toBe('Password is required')
+      expect(result.error.issues[0].message).toBe('Mot de passe requis')
     }
   })
 
   it('should reject short password', () => {
     const invalidSignup = {
-      name: 'Test User',
       username: 'testuser',
       email: 'test@example.com',
       password: 'pass'
@@ -172,7 +171,9 @@ describe('signupSchema', () => {
     expect(result.success).toBe(false)
 
     if (!result.success) {
-      expect(result.error.issues[0].message).toBe('Password must be at least 8 characters')
+      expect(result.error.issues[0].message).toBe(
+        'Le mot de passe doit contenir au moins 8 caractères'
+      )
     }
   })
 })

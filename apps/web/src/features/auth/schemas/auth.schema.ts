@@ -2,45 +2,44 @@ import { z } from 'zod'
 
 // Login schema
 export const loginSchema = z.object({
-  email: z.email({ error: 'Invalid email address' }),
+  email: z.email({ error: 'Adresse email invalide' }),
   password: z
     .string()
-    .min(1, { error: 'Password is required' })
-    .min(8, { error: 'Password must be at least 8 characters' })
+    .min(1, { error: 'Mot de passe requis' })
+    .min(8, { error: 'Le mot de passe doit contenir au moins 8 caractères' })
 })
 
 // Signup schema
 export const signupSchema = z.object({
-  name: z.string().optional(),
   username: z
     .string()
-    .min(1, { error: 'Username is required' })
-    .min(3, { error: 'Username must be at least 3 characters long' })
-    .max(50, { error: 'Username must not exceed 50 characters' })
+    .min(1, { error: "Nom d'utilisateur requis" })
+    .min(3, { error: "Le nom d'utilisateur doit contenir au moins 3 caractères" })
+    .max(50, { error: "Le nom d'utilisateur ne doit pas dépasser 50 caractères" })
     .regex(/^[a-zA-Z0-9_]+$/, {
-      error: 'Username can only contain letters, numbers, and underscores'
+      error: "Le nom d'utilisateur ne peut contenir que des lettres, chiffres et tirets bas"
     }),
-  email: z.email('Invalid email address'),
+  email: z.email({ error: 'Adresse email invalide' }),
   password: z
     .string()
-    .min(1, { error: 'Password is required' })
-    .min(8, { error: 'Password must be at least 8 characters' })
+    .min(1, { error: 'Mot de passe requis' })
+    .min(8, { error: 'Le mot de passe doit contenir au moins 8 caractères' })
 })
 
 export const forgotPasswordSchema = z.object({
-  email: z.email({ error: 'Invalid email address' })
+  email: z.email({ error: 'Adresse email invalide' })
 })
 
 export const resetPasswordSchema = z
   .object({
     password: z
       .string()
-      .min(1, { error: 'Password is required' })
-      .min(8, { error: 'Password must be at least 8 characters' }),
-    confirmPassword: z.string().min(1, { error: 'Please confirm your password' })
+      .min(1, { error: 'Mot de passe requis' })
+      .min(8, { error: 'Le mot de passe doit contenir au moins 8 caractères' }),
+    confirmPassword: z.string().min(1, { error: 'Veuillez confirmer votre mot de passe' })
   })
   .refine(data => data.password === data.confirmPassword, {
-    error: 'Passwords do not match',
+    error: 'Les mots de passe ne correspondent pas',
     path: ['confirmPassword']
   })
 
