@@ -16,7 +16,16 @@ describe('Input', () => {
     const input = getByRole('textbox')
 
     expect(input).toBeInTheDocument()
-    expect(input).toHaveClass('input')
+  })
+
+  it('should apply the cluster baseline classes', () => {
+    const { getByRole } = render(<Input />)
+
+    const input = getByRole('textbox')
+
+    expect(input).toHaveClass('font-mono')
+    expect(input).toHaveClass('bg-base-100')
+    expect(input).not.toHaveClass('input')
   })
 
   it('should render with a label when provided', () => {
@@ -25,6 +34,15 @@ describe('Input', () => {
     const input = getByLabelText('Test Label')
 
     expect(input).toBeInTheDocument()
+  })
+
+  it('should render the cluster typography on the label', () => {
+    const { getByText } = render(<Input label='E-MAIL' />)
+
+    const label = getByText('E-MAIL')
+
+    expect(label).toHaveClass('font-mono')
+    expect(label).toHaveClass('uppercase')
   })
 
   it('should use default type of text', () => {
@@ -49,8 +67,16 @@ describe('Input', () => {
     const errorMessage = getByText('Test Error')
 
     expect(errorMessage).toBeInTheDocument()
-    expect(errorMessage).toHaveClass('text-sm')
     expect(errorMessage).toHaveClass('text-error')
+    expect(errorMessage).toHaveClass('font-mono')
+  })
+
+  it('should apply cluster error border when error is provided', () => {
+    const { getByRole } = render(<Input error='Test Error' />)
+
+    const input = getByRole('textbox')
+
+    expect(input).toHaveClass('border-error')
   })
 
   it('should set aria-invalid when error is present', () => {

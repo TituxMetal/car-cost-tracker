@@ -1,22 +1,26 @@
-import type { FormEvent, ReactNode } from 'react'
+import type { ReactNode, SyntheticEvent } from 'react'
 
 export interface FormWrapperProps {
   children: ReactNode
-  onSubmit: (e: FormEvent) => void
+  onSubmit: (event: SyntheticEvent<HTMLFormElement>) => void
   error?: string | null
   isLoading?: boolean
   className?: string
 }
 
+const defaultFormClasses = 'grid w-full gap-5'
+const errorClasses =
+  'border-error/50 bg-error/10 text-error border px-4 py-3 font-mono text-xs tracking-wide'
+
 export const FormWrapper = ({
   children,
   onSubmit,
   error,
-  className = 'mx-auto mt-6 grid w-full max-w-md gap-4'
+  className = defaultFormClasses
 }: FormWrapperProps) => (
   <form onSubmit={onSubmit} className={className} role='form' noValidate>
     {error && (
-      <p className='alert alert-error' role='alert'>
+      <p className={errorClasses} role='alert'>
         {error}
       </p>
     )}

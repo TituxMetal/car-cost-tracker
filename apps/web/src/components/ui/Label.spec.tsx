@@ -18,12 +18,13 @@ describe('Label', () => {
     expect(label).toBeInTheDocument()
   })
 
-  it('should apply base styling classes', () => {
+  it('should apply the cluster typography baseline', () => {
     const { getByText } = render(<Label>Test Label</Label>)
 
     const label = getByText('Test Label')
 
-    expect(label).toHaveClass('font-medium')
+    expect(label).toHaveClass('font-mono')
+    expect(label).toHaveClass('uppercase')
   })
 
   it('should show required indicator when required is true', () => {
