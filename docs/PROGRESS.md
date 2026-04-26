@@ -105,14 +105,41 @@ Current state only. Deferred items live in [`BACKLOG.md`](./BACKLOG.md).
 
 ### Block 3: Vehicles — `feature/visual-refresh-vehicles`
 
-#### Phase 10: `VehicleProfile` + `QuickMileageUpdate` + `VehicleContainer` + specs
+#### Phase 10: `VehicleProfile` + `QuickMileageUpdate` + `VehicleContainer` + new `MileageHistoryCard` + history utilities
 
-- [ ] Markup preserved, classes updated; 2-col grid on desktop view mode; delete button has
-      `aria-describedby` pointing to `.sr-only` warning
+- [ ] `VehicleProfile.tsx` restructured per the mockup `Profil véhicule (vue)` (Image #3): kicker
+      `Fiche véhicule`, h1 display `{make} {model}`, composed sub line `— {year} · {engineType}`
+      (handles `engineType === null`), striped photo placeholder, mono uppercase `<dt>` kickers +
+      sans-serif `<dd>` grid, footer with `Modifier fiche` and `Supprimer` (the latter carries
+      `aria-describedby` to a `.sr-only` warning)
+- [ ] `QuickMileageUpdate.tsx` rebuilt as `COMPTEUR KILOMÉTRIQUE` card: kicker, inner panel with
+      current km in `font-mono text-primary` + label, `Nouvelle valeur` input (`font-mono text-lg`),
+      live delta below when watched value `> currentMileage`, full-width `Valider` button — copy
+      change `Mettre à jour` → `Valider`
+- [ ] `VehicleContainer.tsx`: view mode renders `lg:grid-cols-3` with `lg:col-span-2` profile +
+      `<aside lg:col-span-1>` stack (compteur + history); standalone `<h1>` dropped in view mode
+      (lives in `VehicleProfile`); cluster kickers above create / edit form cards; nested
+      `max-w-2xl` wrappers removed across the 3 modes; mileage-history `append` wired after each
+      successful `updateMileage`
+- [ ] New `MileageHistoryCard.tsx` + spec — kicker, empty state mono dimmed, populated entries 3-col
+      grid (`<time>` · mileage · `+ delta`)
+- [ ] New `useMileageHistory.ts` hook + spec, `mileageHistory.utils.ts` + spec, and atom-only
+      `mileageHistory.store.ts` — frontend-only stub backed by `localStorage` keyed
+      `mileage-history:{vehicleId}`, capped at 20 entries (the real cross-device backend feature
+      lives in `BACKLOG.md` as `Mileage Log`, post-Visual-Refresh)
+- [ ] Spec updates: `VehicleContainer` view-mode h1 assertion split (year moves to sub line),
+      `Valider` / `Nouvelle valeur` copy adjustments, `toHaveAccessibleDescription` on delete,
+      `MileageHistoryCard` empty state assertion
 
 #### Phase 11: `VehicleForm` + `DeleteVehicleDialog` + `VehicleEmptyState` + specs
 
-- [ ] Markup preserved, classes updated
+- [ ] `VehicleForm.tsx`: daisy `fieldset` / `fieldset-legend` classes replaced with cluster mono
+      uppercase typography on legends; kilométrage input gets `font-mono text-lg` for the odometer
+      screen look
+- [ ] `DeleteVehicleDialog.tsx`: no code change — inherits the cluster `ConfirmDialog` already
+      shipped in Block 1; verification only
+- [ ] `VehicleEmptyState.tsx`: cluster kicker `Créer votre fiche` above the icon, mono dimmed body,
+      primary amber CTA
 
 ### Block 4: Checks (Types + Logs) — `feature/visual-refresh-checks`
 

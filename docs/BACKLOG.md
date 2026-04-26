@@ -71,6 +71,19 @@ shape are NOT listed here — they live in the shape.
       test harness (`waitFor` on `role=alert` inside a Radix portal) needs pinning down before the
       spec can settle — the flaky attempt was dropped during Block 2.
 
+## Vehicle / mileage history (post Visual Refresh)
+
+- [ ] **Mileage Log feature** — backend entity
+      `MileageLog (id, vehicleId, mileage, recordedAt,     source: 'MANUAL_UPDATE' | 'CHECK_LOG')` +
+      Prisma migration. Write a row on every `vehicle.updateMileage` call AND on every
+      `check-log.create` call (capturing the vehicle's current mileage at the time of the check).
+      Frontend reads via a real `useMileageHistory` hook backed by a service call, replacing the
+      Block 3 frontend-only `localStorage` stub on `MileageHistoryCard`. Survives across devices and
+      browsers; complements check logs as the primary source of mileage history. Required because
+      `CheckLog` does not currently record `mileageAtCheck` and `Vehicle.mileage` is overwritten on
+      each update — no historical signal exists today. Defer until Visual Refresh ships
+      (frontend-only contract per `docs/features/09-visual-refresh.md`).
+
 ## Documentation (optional, future)
 
 - [ ] Consider adding a short "About this document" blurb to `docs/MVP.md` and to each feature shape
