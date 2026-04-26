@@ -12,7 +12,7 @@ const mockSessions = [
     token: 'token-1',
     expiresAt: new Date('2025-12-31'),
     createdAt: new Date('2025-01-01'),
-    userAgent: 'Chrome on Windows',
+    userAgent: 'Chrome sous Windows',
     ipAddress: '192.168.1.1'
   },
   {
@@ -20,7 +20,7 @@ const mockSessions = [
     token: 'token-2',
     expiresAt: new Date('2025-12-31'),
     createdAt: new Date('2025-01-02'),
-    userAgent: 'Firefox on Mac',
+    userAgent: 'Firefox sous Mac',
     ipAddress: '192.168.1.2'
   }
 ]
@@ -58,7 +58,6 @@ describe('SessionList', () => {
     mockRevokeOtherSessions.mockClear()
     mockRevokeSessions.mockClear()
 
-    // Reset to default mock implementations
     mockListSessions.mockResolvedValue({ data: mockSessions, error: null })
     mockGetSession.mockResolvedValue({ data: { session: { token: 'token-1' } }, error: null })
     mockRevokeSession.mockResolvedValue({ error: null })
@@ -72,15 +71,24 @@ describe('SessionList', () => {
 
     render(<SessionList />)
 
-    expect(screen.getByText(/loading sessions/i)).toBeInTheDocument()
+    expect(screen.getByText(/chargement des sessions/i)).toBeInTheDocument()
+  })
+
+  it('should render the index summary with the session count after loading', async () => {
+    render(<SessionList />)
+
+    await waitFor(() => {
+      expect(screen.getByText(/index sessions/i)).toBeInTheDocument()
+      expect(screen.getByText('2')).toBeInTheDocument()
+    })
   })
 
   it('should render sessions after loading', async () => {
     render(<SessionList />)
 
     await waitFor(() => {
-      expect(screen.getByText(/chrome on windows/i)).toBeInTheDocument()
-      expect(screen.getByText(/firefox on mac/i)).toBeInTheDocument()
+      expect(screen.getByText(/chrome sous windows/i)).toBeInTheDocument()
+      expect(screen.getByText(/firefox sous mac/i)).toBeInTheDocument()
     })
   })
 
@@ -88,7 +96,7 @@ describe('SessionList', () => {
     render(<SessionList />)
 
     await waitFor(() => {
-      expect(screen.getByText(/current/i)).toBeInTheDocument()
+      expect(screen.getByText(/session actuelle/i)).toBeInTheDocument()
     })
   })
 
@@ -96,16 +104,18 @@ describe('SessionList', () => {
     render(<SessionList />)
 
     await waitFor(() => {
-      const revokeButtons = screen.getAllByRole('button', { name: /revoke/i })
+      const revokeButtons = screen.getAllByRole('button', { name: /révoquer/i })
       expect(revokeButtons).toHaveLength(1)
     })
   })
 
-  it('should show log out other devices button when multiple sessions', async () => {
+  it('should show "log out other devices" button when multiple sessions', async () => {
     render(<SessionList />)
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /log out other devices/i })).toBeInTheDocument()
+      expect(
+        screen.getByRole('button', { name: /déconnecter les autres appareils/i })
+      ).toBeInTheDocument()
     })
   })
 
@@ -114,10 +124,10 @@ describe('SessionList', () => {
     render(<SessionList />)
 
     await waitFor(() => {
-      expect(screen.getByText(/firefox on mac/i)).toBeInTheDocument()
+      expect(screen.getByText(/firefox sous mac/i)).toBeInTheDocument()
     })
 
-    await user.click(screen.getByRole('button', { name: /revoke/i }))
+    await user.click(screen.getByRole('button', { name: /révoquer/i }))
 
     await waitFor(() => {
       expect(authClient.revokeSession).toHaveBeenCalledWith({ token: 'token-2' })
@@ -129,25 +139,27 @@ describe('SessionList', () => {
     render(<SessionList />)
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /log out other devices/i })).toBeInTheDocument()
+      expect(
+        screen.getByRole('button', { name: /déconnecter les autres appareils/i })
+      ).toBeInTheDocument()
     })
 
-    await user.click(screen.getByRole('button', { name: /log out other devices/i }))
+    await user.click(screen.getByRole('button', { name: /déconnecter les autres appareils/i }))
 
     await waitFor(() => {
       expect(authClient.revokeOtherSessions).toHaveBeenCalled()
     })
   })
 
-  it('should redirect to auth when log out everywhere clicked', async () => {
+  it('should redirect to /auth when log out everywhere clicked', async () => {
     const user = userEvent.setup()
     render(<SessionList />)
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /log out everywhere/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /tout déconnecter/i })).toBeInTheDocument()
     })
 
-    await user.click(screen.getByRole('button', { name: /log out everywhere/i }))
+    await user.click(screen.getByRole('button', { name: /tout déconnecter/i }))
 
     await waitFor(() => {
       expect(authClient.revokeSessions).toHaveBeenCalled()
@@ -157,12 +169,12 @@ describe('SessionList', () => {
 
   it('should show error message when loading fails', async () => {
     const mockListSessions = authClient.listSessions as unknown as ReturnType<typeof mock>
-    mockListSessions.mockResolvedValue({ data: null, error: { message: 'Network error' } })
+    mockListSessions.mockResolvedValue({ data: null, error: { message: 'Erreur réseau' } })
 
     render(<SessionList />)
 
     await waitFor(() => {
-      expect(screen.getByText(/network error/i)).toBeInTheDocument()
+      expect(screen.getByText(/erreur réseau/i)).toBeInTheDocument()
     })
   })
 })
