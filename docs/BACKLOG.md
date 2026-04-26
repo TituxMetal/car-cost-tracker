@@ -84,6 +84,16 @@ shape are NOT listed here — they live in the shape.
       each update — no historical signal exists today. Defer until Visual Refresh ships
       (frontend-only contract per `docs/features/09-visual-refresh.md`).
 
+## UI / dialog button consistency (post Visual Refresh)
+
+- [ ] **`ConfirmDialog` action buttons full-width on mobile** — currently `Annuler` / confirm
+      buttons inside `<div className='modal-action'>` keep their natural width even on small
+      viewports, which is inconsistent with the in-page action buttons that all expand to
+      `w-full md:w-auto` since Block 3 (Vehicles). Touching `ConfirmDialog` cascades on every
+      consumer (`DeleteVehicleDialog`, `DeleteCheckTypeDialog`, `DeleteCheckLogDialog`,
+      `DeleteExpenseDialog`, `DeleteBudgetDialog`, `DeleteAccountDialog`, `ResetPasswordDialog`,
+      etc.) — defer to a dedicated cross-feature pass once the visual refresh ships.
+
 ## Documentation (optional, future)
 
 - [ ] Consider adding a short "About this document" blurb to `docs/MVP.md` and to each feature shape
