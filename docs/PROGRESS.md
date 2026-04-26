@@ -59,15 +59,46 @@ Current state only. Deferred items live in [`BACKLOG.md`](./BACKLOG.md).
 - [ ] Inner-feature `max-width` wrappers — deferred to per-feature blocks (2-8) where each container
       is class-refreshed in its own block, avoids merge conflicts with later work
 
-### Block 2: Auth — `feature/visual-refresh-auth`
+### Block 2: Auth — `feature/visual-refresh-auth` ✅
 
-#### Phase 8: `AuthContainer` + `LoginForm` + `SignupForm` + specs
+#### Phase 8: `AuthContainer` + login/signup surfaces + specs
 
-- [ ] Markup preserved, classes updated
+- [x] New `Auth.astro` layout (no Main chrome) hosts the auth pages full-bleed
+- [x] `AuthContainer.tsx` rewritten as V1Login split-screen: `AuthHero` editorial column (kicker
+      `// IGNITION` + 5xl/6xl headline + tag + version footer) + form column (`// ACCÈS PILOTE`
+      kicker + h1 `Connexion` / `Inscription` + `ClusterField` form + full-width button
+      `Mettre le contact →` / `Créer le dashboard →` + switch link + `SystemStatusPanel` bottom)
+- [x] New helpers: `AuthHero.tsx`, `ClusterField.tsx`, `SystemStatusPanel.tsx` (mono labels,
+      telltale dots, real Better Auth v1.5.x / Prisma v7.x versions)
+- [x] Removed obsolete `LoginForm.tsx` / `SignupForm.tsx` + specs (their fields are inlined via
+      `ClusterField` directly in `AuthContainer`)
+- [x] All UX strings translated to French; `AuthContainer.spec.tsx` rewritten for FR labels +
+      heading + `SystemStatusPanel` assertions
+- [x] `pages/auth/index.astro` switched to `Auth.astro`
 
 #### Phase 9: `ForgotPasswordContainer` + `ResetPasswordContainer` + `VerifyEmailContainer` + `VerificationPendingContainer` + `SessionList` + specs
 
-- [ ] Markup preserved, classes updated
+- [x] Four standalone containers reuse the V1 split-screen pattern (`AuthHero` left, form column
+      right with cluster kicker + h1 + status-aware notice/form blocks); kickers
+      `// MOT DE PASSE OUBLIÉ`, `// RÉINITIALISER`, `// VÉRIFICATION`, `// EN ATTENTE`
+- [x] `VerificationPendingContainer` info text wrapped in `info` notice box with `role='note'`;
+      success/error inline alerts colour-tagged
+- [x] `VerifyEmailContainer` status-driven copy table (verifying / success / error / no-token) with
+      semantic notice boxes
+- [x] `SessionList.tsx` aligned to cluster vocabulary: square `bg-base-200 border-base-300` panel,
+      mono row labels, `Révoquer` / `Tout déconnecter` buttons in FR, current-session badge
+      `Session actuelle`
+- [x] All four pages (`forgot-password`, `reset-password`, `verify-email`, `verification-pending`)
+      switched to `Auth.astro` layout
+- [x] All five specs translated to FR + adapted to new structure
+- [x] Post-review fixes: `Input` / `Label` extended with `variant='cluster'` (default 100%
+      backwards-compatible); `ClusterField` dropped; new shared `AuthShell.tsx` + `AuthHeader.tsx`
+      collapse the previously duplicated shell/kicker/heading constants across 5 containers;
+      `<main>` landmark added on every auth surface; `SystemStatusPanel` time live (1-minute
+      interval) and versions dropped to plain `OK` to stop lying about hardcoded numbers;
+      `SessionList` revoke actions guarded against double-click via per-token + bulk in-flight
+      states; `auth.schema.ts` object-form normalised; `pages/profile/sessions.astro` lightly
+      polished as a side-effect of `SessionList` testing — full Phase 23 refresh still pending
 
 ### Block 3: Vehicles — `feature/visual-refresh-vehicles`
 
