@@ -37,7 +37,7 @@ describe('VehicleSummaryCard', () => {
     render(<VehicleSummaryCard vehicle={mockVehicle} />)
 
     expect(screen.getByText(/1990/)).toBeInTheDocument()
-    expect(screen.getByText(/120000 kms/)).toBeInTheDocument()
+    expect(screen.getByText(/120000 km/)).toBeInTheDocument()
   })
 
   it('renders a details link pointing to /vehicle', () => {
