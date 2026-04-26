@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, spyOn } from 'bun:test'
 
-import { cleanup, fireEvent, render, screen, userEvent, waitFor } from '~/test-utils'
+import { act, cleanup, fireEvent, render, screen, userEvent, waitFor } from '~/test-utils'
 
-import { $error, $isLoading, $vehicle, vehicleActions } from '../store'
+import { $error, $isLoading, $mileageHistoryTick, $vehicle, vehicleActions } from '../store'
 import type { Vehicle } from '../types'
 
 import { VehicleContainer } from './VehicleContainer'
@@ -33,17 +33,22 @@ describe('VehicleContainer', () => {
   beforeEach(() => {
     cleanup()
     document.body.innerHTML = ''
+    window.localStorage.clear()
 
-    // Reset store atoms to default loading state
     $vehicle.set(null)
     $isLoading.set(true)
     $error.set(null)
+    act(() => {
+      $mileageHistoryTick.set(0)
+    })
 
-    // Spy on vehicleActions to prevent real API calls
     fetchSpy = spyOn(vehicleActions, 'fetchVehicle').mockResolvedValue(undefined)
     createSpy = spyOn(vehicleActions, 'create').mockResolvedValue(mockVehicle)
     updateSpy = spyOn(vehicleActions, 'update').mockResolvedValue(mockVehicle)
-    updateMileageSpy = spyOn(vehicleActions, 'updateMileage').mockResolvedValue(mockVehicle)
+    updateMileageSpy = spyOn(vehicleActions, 'updateMileage').mockResolvedValue({
+      ...mockVehicle,
+      mileage: 92500
+    })
     removeSpy = spyOn(vehicleActions, 'remove').mockResolvedValue(undefined)
   })
 
@@ -53,6 +58,7 @@ describe('VehicleContainer', () => {
     updateSpy.mockRestore()
     updateMileageSpy.mockRestore()
     removeSpy.mockRestore()
+    window.localStorage.clear()
   })
 
   describe('loading + empty mode', () => {
@@ -78,30 +84,31 @@ describe('VehicleContainer', () => {
   })
 
   describe('create mode', () => {
-    it('should display a title in create mode', () => {
+    it('should display the create-mode kicker and heading', () => {
       $isLoading.set(false)
 
       render(<VehicleContainer />)
-      fireEvent.click(screen.getByText('Ajouter mon véhicule'))
+      fireEvent.click(screen.getByRole('button', { name: /ajouter mon véhicule/i }))
 
-      expect(screen.getByText('Ajouter mon véhicule')).toBeInTheDocument()
+      expect(screen.getByText(/créer votre fiche/i)).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/ajouter mon véhicule/i)
     })
 
     it('should switch to create form when "Ajouter" is clicked', () => {
       $isLoading.set(false)
 
       render(<VehicleContainer />)
-      fireEvent.click(screen.getByText('Ajouter mon véhicule'))
+      fireEvent.click(screen.getByRole('button', { name: /ajouter mon véhicule/i }))
 
-      expect(screen.getByText('Enregistrer')).toBeInTheDocument()
-      expect(screen.getByText('Annuler')).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /enregistrer/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /annuler/i })).toBeInTheDocument()
     })
 
     it('should render all form fields in create mode', () => {
       $isLoading.set(false)
 
       render(<VehicleContainer />)
-      fireEvent.click(screen.getByText('Ajouter mon véhicule'))
+      fireEvent.click(screen.getByRole('button', { name: /ajouter mon véhicule/i }))
 
       expect(screen.getByLabelText('Marque', { exact: false })).toBeInTheDocument()
       expect(screen.getByLabelText('Modèle', { exact: false })).toBeInTheDocument()
@@ -118,8 +125,8 @@ describe('VehicleContainer', () => {
       $isLoading.set(false)
 
       render(<VehicleContainer />)
-      fireEvent.click(screen.getByText('Ajouter mon véhicule'))
-      fireEvent.click(screen.getByText('Annuler'))
+      fireEvent.click(screen.getByRole('button', { name: /ajouter mon véhicule/i }))
+      fireEvent.click(screen.getByRole('button', { name: /annuler/i }))
 
       expect(screen.getByText('Aucun véhicule enregistré')).toBeInTheDocument()
     })
@@ -129,7 +136,7 @@ describe('VehicleContainer', () => {
 
       const user = userEvent.setup()
       render(<VehicleContainer />)
-      fireEvent.click(screen.getByText('Ajouter mon véhicule'))
+      fireEvent.click(screen.getByRole('button', { name: /ajouter mon véhicule/i }))
 
       await user.type(screen.getByLabelText('Marque', { exact: false }), 'Mini')
       await user.type(screen.getByLabelText('Modèle', { exact: false }), 'Cooper S Coupé')
@@ -141,20 +148,22 @@ describe('VehicleContainer', () => {
       await user.type(screen.getByLabelText("Date d'achat"), '2025-07-08')
       await user.type(screen.getByLabelText('Kilométrage'), '92300')
 
-      fireEvent.click(screen.getByText('Enregistrer'))
+      fireEvent.click(screen.getByRole('button', { name: /enregistrer/i }))
 
       await waitFor(() => expect(createSpy).toHaveBeenCalled())
     })
   })
 
   describe('view mode', () => {
-    it('should display vehicle name as title in view mode', () => {
+    it('should render the view-mode heading inside the profile (no year suffix)', () => {
       $isLoading.set(false)
       $vehicle.set(mockVehicle)
 
       render(<VehicleContainer />)
 
-      expect(screen.getByText('Mini Cooper S Coupé (2012)')).toBeInTheDocument()
+      const heading = screen.getByRole('heading', { level: 1 })
+      expect(heading).toHaveTextContent(/mini cooper s coupé/i)
+      expect(heading).not.toHaveTextContent(/\(2012\)/)
     })
 
     it('should show VehicleProfile when vehicle exists', () => {
@@ -168,27 +177,44 @@ describe('VehicleContainer', () => {
       expect(screen.getByText('Année')).toBeInTheDocument()
     })
 
-    it('should show QuickMileageUpdate below the profile', () => {
+    it('should show QuickMileageUpdate alongside the profile', () => {
       $isLoading.set(false)
       $vehicle.set(mockVehicle)
 
       render(<VehicleContainer />)
 
-      expect(screen.getByLabelText('Kilométrage')).toBeInTheDocument()
-      expect(screen.getByText('Mettre à jour')).toBeInTheDocument()
+      expect(screen.getByLabelText('Nouvelle valeur')).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /valider/i })).toBeInTheDocument()
     })
 
-    it('should call updateMileage when mileage form is submitted', async () => {
+    it('should render MileageHistoryCard with its empty state on first visit', () => {
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+
+      render(<VehicleContainer />)
+
+      expect(screen.getByText(/historique compteur/i)).toBeInTheDocument()
+      expect(screen.getByText(/aucune mise à jour/i)).toBeInTheDocument()
+    })
+
+    it('should call updateMileage and append a history entry when a higher value is submitted', async () => {
       $isLoading.set(false)
       $vehicle.set(mockVehicle)
 
       const user = userEvent.setup()
       render(<VehicleContainer />)
 
-      await user.type(screen.getByLabelText('Kilométrage'), '92305')
-      fireEvent.click(screen.getByText('Mettre à jour'))
+      const input = screen.getByLabelText('Nouvelle valeur')
+      await user.clear(input)
+      await user.type(input, '92500')
+      fireEvent.click(screen.getByRole('button', { name: /valider/i }))
 
       await waitFor(() => expect(updateMileageSpy).toHaveBeenCalled())
+      await waitFor(() => {
+        expect(screen.queryByText(/aucune mise à jour/i)).not.toBeInTheDocument()
+      })
+      expect(screen.getByText('92500 km')).toBeInTheDocument()
+      expect(screen.getByText('+ 200')).toBeInTheDocument()
     })
   })
 
@@ -198,20 +224,22 @@ describe('VehicleContainer', () => {
       $vehicle.set(mockVehicle)
 
       render(<VehicleContainer />)
-      fireEvent.click(screen.getByText('Modifier'))
+      fireEvent.click(screen.getByRole('button', { name: /modifier fiche/i }))
 
-      expect(screen.getByText('Modifier Mini Cooper S Coupé (2012)')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+        /modifier mini cooper s coupé \(2012\)/i
+      )
     })
 
-    it('should switch to edit form when "Modifier" is clicked', () => {
+    it('should switch to edit form when "Modifier fiche" is clicked', () => {
       $isLoading.set(false)
       $vehicle.set(mockVehicle)
 
       render(<VehicleContainer />)
-      fireEvent.click(screen.getByText('Modifier'))
+      fireEvent.click(screen.getByRole('button', { name: /modifier fiche/i }))
 
-      expect(screen.getByText('Enregistrer')).toBeInTheDocument()
-      expect(screen.getByText('Annuler')).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /enregistrer/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /annuler/i })).toBeInTheDocument()
     })
 
     it('should pre-fill form with vehicle data', () => {
@@ -219,7 +247,7 @@ describe('VehicleContainer', () => {
       $vehicle.set(mockVehicle)
 
       render(<VehicleContainer />)
-      fireEvent.click(screen.getByText('Modifier'))
+      fireEvent.click(screen.getByRole('button', { name: /modifier fiche/i }))
 
       expect(screen.getByDisplayValue('Mini')).toBeInTheDocument()
       expect(screen.getByDisplayValue('Cooper S Coupé')).toBeInTheDocument()
@@ -231,7 +259,7 @@ describe('VehicleContainer', () => {
       $vehicle.set(mockVehicle)
 
       render(<VehicleContainer />)
-      fireEvent.click(screen.getByText('Modifier'))
+      fireEvent.click(screen.getByRole('button', { name: /modifier fiche/i }))
 
       expect(screen.queryByLabelText('Kilométrage')).not.toBeInTheDocument()
     })
@@ -241,8 +269,8 @@ describe('VehicleContainer', () => {
       $vehicle.set(mockVehicle)
 
       render(<VehicleContainer />)
-      fireEvent.click(screen.getByText('Modifier'))
-      fireEvent.click(screen.getByText('Annuler'))
+      fireEvent.click(screen.getByRole('button', { name: /modifier fiche/i }))
+      fireEvent.click(screen.getByRole('button', { name: /annuler/i }))
 
       expect(screen.getByText('Marque')).toBeInTheDocument()
       expect(screen.getByText('Modèle')).toBeInTheDocument()
@@ -255,10 +283,10 @@ describe('VehicleContainer', () => {
 
       const user = userEvent.setup()
       render(<VehicleContainer />)
-      fireEvent.click(screen.getByText('Modifier'))
+      fireEvent.click(screen.getByRole('button', { name: /modifier fiche/i }))
 
       await user.type(screen.getByLabelText('Type de moteur'), '1.6l Turbo')
-      fireEvent.click(screen.getByText('Enregistrer'))
+      fireEvent.click(screen.getByRole('button', { name: /enregistrer/i }))
 
       await waitFor(() => expect(updateSpy).toHaveBeenCalled())
     })
@@ -279,7 +307,7 @@ describe('VehicleContainer', () => {
       $vehicle.set(mockVehicle)
 
       render(<VehicleContainer />)
-      fireEvent.click(screen.getByText('Supprimer'))
+      fireEvent.click(screen.getByRole('button', { name: /^supprimer$/i }))
 
       expect(screen.getByText('Supprimer le véhicule')).toBeInTheDocument()
     })
@@ -289,8 +317,8 @@ describe('VehicleContainer', () => {
       $vehicle.set(mockVehicle)
 
       render(<VehicleContainer />)
-      fireEvent.click(screen.getByText('Supprimer'))
-      fireEvent.click(screen.getByText('Annuler'))
+      fireEvent.click(screen.getByRole('button', { name: /^supprimer$/i }))
+      fireEvent.click(screen.getByRole('button', { name: /annuler/i }))
 
       expect(screen.queryByText('Supprimer le véhicule')).not.toBeInTheDocument()
     })
@@ -300,9 +328,9 @@ describe('VehicleContainer', () => {
       $vehicle.set(mockVehicle)
 
       render(<VehicleContainer />)
-      fireEvent.click(screen.getByText('Supprimer'))
-      const dialogDeleteButton = screen.getAllByText('Supprimer')[1]
-      fireEvent.click(dialogDeleteButton)
+      fireEvent.click(screen.getByRole('button', { name: /^supprimer$/i }))
+      const confirmButtons = screen.getAllByRole('button', { name: /^supprimer$/i })
+      fireEvent.click(confirmButtons[confirmButtons.length - 1] as HTMLElement)
 
       await waitFor(() => expect(removeSpy).toHaveBeenCalled())
     })
@@ -315,10 +343,26 @@ describe('VehicleContainer', () => {
       updateSpy.mockRejectedValueOnce(new Error('Update failed'))
 
       render(<VehicleContainer />)
-      fireEvent.click(screen.getByText('Modifier'))
-      fireEvent.click(screen.getByText('Enregistrer'))
+      fireEvent.click(screen.getByRole('button', { name: /modifier fiche/i }))
+      fireEvent.click(screen.getByRole('button', { name: /enregistrer/i }))
 
       await waitFor(() => expect(screen.getByText('Update failed')).toBeInTheDocument())
+    })
+
+    it('should display server error when updateMileage fails', async () => {
+      $isLoading.set(false)
+      $vehicle.set(mockVehicle)
+      updateMileageSpy.mockRejectedValueOnce(new Error('Mileage update failed'))
+
+      const user = userEvent.setup()
+      render(<VehicleContainer />)
+
+      const input = screen.getByLabelText('Nouvelle valeur')
+      await user.clear(input)
+      await user.type(input, '92500')
+      fireEvent.click(screen.getByRole('button', { name: /valider/i }))
+
+      await waitFor(() => expect(screen.getByText('Mileage update failed')).toBeInTheDocument())
     })
   })
 })
