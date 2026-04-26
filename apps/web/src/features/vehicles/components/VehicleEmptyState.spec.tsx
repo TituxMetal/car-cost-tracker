@@ -10,6 +10,13 @@ describe('VehicleEmptyState', () => {
     document.body.innerHTML = ''
   })
 
+  it('should render the cluster kicker label', () => {
+    const action = mock(() => {})
+    render(<VehicleEmptyState onCreateClick={action} />)
+
+    expect(screen.getByText(/créer votre fiche/i)).toBeInTheDocument()
+  })
+
   it('should render a heading message', () => {
     const action = mock(() => {})
     render(<VehicleEmptyState onCreateClick={action} />)

@@ -7,6 +7,9 @@ import { FUEL_TYPE_LABELS } from '../types'
 
 const fuelTypeOptions = Object.entries(FUEL_TYPE_LABELS).map(([value, label]) => ({ value, label }))
 
+const legendClasses =
+  'text-base-content/60 col-span-full mb-3 font-mono text-xs tracking-widest uppercase'
+
 export interface VehicleFormProps {
   form: UseFormReturn<CreateVehicleSchema>
   showMileage?: boolean
@@ -14,8 +17,8 @@ export interface VehicleFormProps {
 
 export const VehicleForm = ({ form, showMileage = true }: VehicleFormProps) => (
   <>
-    <fieldset className='fieldset grid grid-cols-1 gap-4 md:grid-cols-2'>
-      <legend className='fieldset-legend col-span-full'>Identité du véhicule</legend>
+    <fieldset className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+      <legend className={legendClasses}>Identité du véhicule</legend>
       <Input
         label='Marque'
         required
@@ -30,8 +33,8 @@ export const VehicleForm = ({ form, showMileage = true }: VehicleFormProps) => (
       />
     </fieldset>
 
-    <fieldset className='fieldset grid grid-cols-1 gap-4 md:grid-cols-3'>
-      <legend className='fieldset-legend col-span-full'>Caractéristiques techniques</legend>
+    <fieldset className='grid grid-cols-1 gap-4 md:grid-cols-3'>
+      <legend className={legendClasses}>Caractéristiques techniques</legend>
       <Input
         label='Année'
         type='number'
@@ -55,8 +58,8 @@ export const VehicleForm = ({ form, showMileage = true }: VehicleFormProps) => (
 
     <Input label='VIN' {...form.register('vin')} error={form.formState.errors.vin?.message} />
 
-    <fieldset className='fieldset grid grid-cols-1 gap-4 md:grid-cols-2'>
-      <legend className='fieldset-legend col-span-full'>Informations administratives</legend>
+    <fieldset className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+      <legend className={legendClasses}>Informations administratives</legend>
       <Input
         label="Plaque d'immatriculation"
         {...form.register('licensePlate')}
@@ -71,9 +74,10 @@ export const VehicleForm = ({ form, showMileage = true }: VehicleFormProps) => (
     </fieldset>
 
     {showMileage && (
-      <fieldset className='fieldset'>
-        <legend className='fieldset-legend col-span-full'>Usage</legend>
+      <fieldset>
+        <legend className={legendClasses}>Usage</legend>
         <Input
+          className='font-mono text-lg'
           label='Kilométrage'
           type='number'
           {...form.register('mileage', { valueAsNumber: true })}
