@@ -17,40 +17,45 @@ describe('VerificationPendingContainer', () => {
     mock.restore()
   })
 
-  it('should render check your email message', () => {
+  it('should render the cluster heading and email notice', () => {
     render(<VerificationPendingContainer email='test@example.com' />)
 
-    expect(screen.getByText(/check your email/i)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/vérifiez votre email/i)
     expect(screen.getByText('test@example.com')).toBeInTheDocument()
   })
 
-  it('should show email placeholder when email is null', () => {
+  it('should show generic placeholder when email is null', () => {
     render(<VerificationPendingContainer email={null} />)
 
-    const emailPlaceholder = screen.getByText('your email')
-
-    expect(emailPlaceholder.tagName).toBe('STRONG')
+    const placeholder = screen.getByText('votre email')
+    expect(placeholder.tagName).toBe('STRONG')
   })
 
   it('should not show resend button when email is null', () => {
     render(<VerificationPendingContainer email={null} />)
 
-    expect(screen.queryByRole('button', { name: /resend/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /renvoyer le lien/i })).not.toBeInTheDocument()
   })
 
   it('should show resend button when email is provided', () => {
     render(<VerificationPendingContainer email='test@example.com' />)
 
-    expect(screen.getByRole('button', { name: /resend verification email/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /renvoyer le lien/i })).toBeInTheDocument()
   })
 
-  it('should show back to login link', () => {
+  it('should expose the back-to-login link', () => {
     render(<VerificationPendingContainer email='test@example.com' />)
 
-    expect(screen.getByRole('link', { name: /back to login/i })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /retour à la connexion/i })).toHaveAttribute(
       'href',
       '/auth?mode=login'
     )
+  })
+
+  it('should render the system status panel', () => {
+    render(<VerificationPendingContainer email='test@example.com' />)
+
+    expect(screen.getByRole('status', { name: /état système/i })).toBeInTheDocument()
   })
 
   describe('resend functionality', () => {
@@ -61,7 +66,7 @@ describe('VerificationPendingContainer', () => {
 
       render(<VerificationPendingContainer email='test@example.com' />)
 
-      await user.click(screen.getByRole('button', { name: /resend verification email/i }))
+      await user.click(screen.getByRole('button', { name: /renvoyer le lien/i }))
 
       await waitFor(() => {
         expect(authClient.sendVerificationEmail).toHaveBeenCalledWith({ email: 'test@example.com' })
@@ -75,24 +80,24 @@ describe('VerificationPendingContainer', () => {
 
       render(<VerificationPendingContainer email='test@example.com' />)
 
-      await user.click(screen.getByRole('button', { name: /resend verification email/i }))
+      await user.click(screen.getByRole('button', { name: /renvoyer le lien/i }))
 
       await waitFor(() => {
-        expect(screen.getByText(/verification email sent/i)).toBeInTheDocument()
+        expect(screen.getByText(/lien renvoyé/i)).toBeInTheDocument()
       })
     })
 
     it('should show error message when resend fails', async () => {
       const user = userEvent.setup()
       const mockSendVerification = authClient.sendVerificationEmail as ReturnType<typeof mock>
-      mockSendVerification.mockResolvedValue({ error: { message: 'Rate limited' } })
+      mockSendVerification.mockResolvedValue({ error: { message: 'Trop de demandes' } })
 
       render(<VerificationPendingContainer email='test@example.com' />)
 
-      await user.click(screen.getByRole('button', { name: /resend verification email/i }))
+      await user.click(screen.getByRole('button', { name: /renvoyer le lien/i }))
 
       await waitFor(() => {
-        expect(screen.getByText(/rate limited/i)).toBeInTheDocument()
+        expect(screen.getByText(/trop de demandes/i)).toBeInTheDocument()
       })
     })
 
@@ -103,9 +108,9 @@ describe('VerificationPendingContainer', () => {
 
       render(<VerificationPendingContainer email='test@example.com' />)
 
-      await user.click(screen.getByRole('button', { name: /resend verification email/i }))
+      await user.click(screen.getByRole('button', { name: /renvoyer le lien/i }))
 
-      expect(screen.getByRole('button', { name: /sending/i })).toBeDisabled()
+      expect(screen.getByRole('button', { name: /^envoi…$/i })).toBeDisabled()
     })
   })
 })
