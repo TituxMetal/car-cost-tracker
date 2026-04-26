@@ -47,8 +47,10 @@ describe('FormWrapper', () => {
       </FormWrapper>
     )
 
-    expect(screen.getByText(errorMessage)).toBeInTheDocument()
-    expect(screen.getByRole('alert')).toHaveClass('alert alert-error')
+    const alert = screen.getByRole('alert')
+    expect(alert).toHaveTextContent(errorMessage)
+    expect(alert).toHaveClass('border-error/50')
+    expect(alert).toHaveClass('font-mono')
   })
 
   it('should not display error message when error is null', () => {
@@ -89,7 +91,7 @@ describe('FormWrapper', () => {
     expect(form).toHaveClass(customClass)
   })
 
-  it('should apply default className when no className provided', () => {
+  it('should apply default cluster className when no className provided', () => {
     const handleSubmit = mock(() => {})
 
     render(
@@ -98,7 +100,10 @@ describe('FormWrapper', () => {
       </FormWrapper>
     )
 
-    expect(screen.getByRole('form')).toHaveClass('mx-auto mt-6 grid w-full max-w-md gap-4')
+    const form = screen.getByRole('form')
+    expect(form).toHaveClass('grid')
+    expect(form).toHaveClass('gap-5')
+    expect(form).toHaveClass('w-full')
   })
 
   it('should be accessible with proper form role', () => {
