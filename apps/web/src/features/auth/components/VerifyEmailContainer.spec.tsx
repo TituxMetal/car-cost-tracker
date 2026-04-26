@@ -18,25 +18,32 @@ describe('VerifyEmailContainer', () => {
   })
 
   describe('when token is null', () => {
-    it('should render invalid link message', () => {
+    it('should render the no-token cluster panel', () => {
       render(<VerifyEmailContainer token={null} />)
 
-      expect(screen.getByText(/invalid link/i)).toBeInTheDocument()
-      expect(screen.getByRole('link', { name: /go to login/i })).toHaveAttribute(
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/lien introuvable/i)
+      expect(screen.getByText(/jeton absent/i)).toBeInTheDocument()
+      expect(screen.getByRole('link', { name: /aller à la connexion/i })).toHaveAttribute(
         'href',
         '/auth?mode=login'
       )
+    })
+
+    it('should render the system status panel', () => {
+      render(<VerifyEmailContainer token={null} />)
+
+      expect(screen.getByRole('status', { name: /état système/i })).toBeInTheDocument()
     })
   })
 
   describe('when token is provided', () => {
     it('should show verifying message initially', () => {
       const mockVerifyEmail = authClient.verifyEmail as ReturnType<typeof mock>
-      mockVerifyEmail.mockReturnValue(new Promise(() => {})) // Never resolves
+      mockVerifyEmail.mockReturnValue(new Promise(() => {}))
 
       render(<VerifyEmailContainer token='valid-token' />)
 
-      expect(screen.getByText(/verifying your email/i)).toBeInTheDocument()
+      expect(screen.getByText(/validation du jeton/i)).toBeInTheDocument()
     })
 
     it('should show success message when verification succeeds', async () => {
@@ -46,10 +53,10 @@ describe('VerifyEmailContainer', () => {
       render(<VerifyEmailContainer token='valid-token' />)
 
       await waitFor(() => {
-        expect(screen.getByText(/email verified/i)).toBeInTheDocument()
+        expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/email vérifié/i)
       })
 
-      expect(screen.getByRole('link', { name: /go to login/i })).toHaveAttribute(
+      expect(screen.getByRole('link', { name: /aller à la connexion/i })).toHaveAttribute(
         'href',
         '/auth?mode=login'
       )
@@ -57,16 +64,16 @@ describe('VerifyEmailContainer', () => {
 
     it('should show error message when verification fails', async () => {
       const mockVerifyEmail = authClient.verifyEmail as ReturnType<typeof mock>
-      mockVerifyEmail.mockResolvedValue({ error: { message: 'Token expired' } })
+      mockVerifyEmail.mockResolvedValue({ error: { message: 'Jeton expiré' } })
 
       render(<VerifyEmailContainer token='expired-token' />)
 
       await waitFor(() => {
-        expect(screen.getByText(/verification failed/i)).toBeInTheDocument()
-        expect(screen.getByText(/token expired/i)).toBeInTheDocument()
+        expect(screen.getByText(/vérification échouée/i)).toBeInTheDocument()
+        expect(screen.getByText(/jeton expiré/i)).toBeInTheDocument()
       })
 
-      expect(screen.getByRole('link', { name: /request new link/i })).toHaveAttribute(
+      expect(screen.getByRole('link', { name: /demander un nouveau lien/i })).toHaveAttribute(
         'href',
         '/auth/verification-pending'
       )
@@ -79,7 +86,7 @@ describe('VerifyEmailContainer', () => {
       render(<VerifyEmailContainer token='bad-token' />)
 
       await waitFor(() => {
-        expect(screen.getByText(/the link may have expired/i)).toBeInTheDocument()
+        expect(screen.getByText(/le lien a peut-être expiré/i)).toBeInTheDocument()
       })
     })
 

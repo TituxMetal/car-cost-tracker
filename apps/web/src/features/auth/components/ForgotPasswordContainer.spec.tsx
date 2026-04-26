@@ -17,20 +17,27 @@ describe('ForgotPasswordContainer', () => {
     mock.restore()
   })
 
-  it('should render email input and submit button', () => {
+  it('should render the cluster heading and the email field', () => {
     render(<ForgotPasswordContainer />)
 
-    expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /send reset link/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/récupération du compte/i)
+    expect(screen.getByLabelText(/e-mail/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /envoyer le lien/i })).toBeInTheDocument()
   })
 
-  it('should show back to login link', () => {
+  it('should expose the back-to-login link', () => {
     render(<ForgotPasswordContainer />)
 
-    expect(screen.getByRole('link', { name: /back to login/i })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /retour à la connexion/i })).toHaveAttribute(
       'href',
       '/auth?mode=login'
     )
+  })
+
+  it('should render the system status panel', () => {
+    render(<ForgotPasswordContainer />)
+
+    expect(screen.getByRole('status', { name: /état système/i })).toBeInTheDocument()
   })
 
   it('should call requestPasswordReset on submit', async () => {
@@ -41,8 +48,8 @@ describe('ForgotPasswordContainer', () => {
 
     render(<ForgotPasswordContainer />)
 
-    await user.type(screen.getByLabelText(/email/i), 'test@example.com')
-    await user.click(screen.getByRole('button', { name: /send reset link/i }))
+    await user.type(screen.getByLabelText(/e-mail/i), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /envoyer le lien/i }))
 
     await waitFor(() => {
       expect(authClient.requestPasswordReset).toHaveBeenCalledWith({
@@ -60,27 +67,27 @@ describe('ForgotPasswordContainer', () => {
 
     render(<ForgotPasswordContainer />)
 
-    await user.type(screen.getByLabelText(/email/i), 'test@example.com')
-    await user.click(screen.getByRole('button', { name: /send reset link/i }))
+    await user.type(screen.getByLabelText(/e-mail/i), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /envoyer le lien/i }))
 
     await waitFor(() => {
-      expect(screen.getByText(/check your email/i)).toBeInTheDocument()
+      expect(screen.getByText(/lien envoyé/i)).toBeInTheDocument()
     })
   })
 
   it('should show error message on failure', async () => {
     const user = userEvent.setup()
     void (authClient.requestPasswordReset as ReturnType<typeof mock>).mockResolvedValue({
-      error: { message: 'Something went wrong' }
+      error: { message: 'Erreur réseau' }
     })
 
     render(<ForgotPasswordContainer />)
 
-    await user.type(screen.getByLabelText(/email/i), 'test@example.com')
-    await user.click(screen.getByRole('button', { name: /send reset link/i }))
+    await user.type(screen.getByLabelText(/e-mail/i), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /envoyer le lien/i }))
 
     await waitFor(() => {
-      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
+      expect(screen.getByRole('alert')).toHaveTextContent(/erreur réseau/i)
     })
   })
 })

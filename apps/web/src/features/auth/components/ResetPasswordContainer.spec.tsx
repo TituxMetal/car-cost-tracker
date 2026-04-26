@@ -17,19 +17,28 @@ describe('ResetPasswordContainer', () => {
   })
 
   describe('when token is missing', () => {
-    it('should show invalid link message', () => {
+    it('should show invalid link cluster panel', () => {
       render(<ResetPasswordContainer token={null} />)
 
-      expect(screen.getByText(/invalid reset link/i)).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+        /réinitialisation impossible/i
+      )
+      expect(screen.getByText(/jeton absent/i)).toBeInTheDocument()
     })
 
-    it('should show request new link button', () => {
+    it('should expose the request-new-link route', () => {
       render(<ResetPasswordContainer token={null} />)
 
-      expect(screen.getByRole('link', { name: /request new link/i })).toHaveAttribute(
+      expect(screen.getByRole('link', { name: /demander un nouveau lien/i })).toHaveAttribute(
         'href',
         '/auth/forgot-password'
       )
+    })
+
+    it('should render the system status panel even on the no-token state', () => {
+      render(<ResetPasswordContainer token={null} />)
+
+      expect(screen.getByRole('status', { name: /état système/i })).toBeInTheDocument()
     })
   })
 
@@ -37,14 +46,15 @@ describe('ResetPasswordContainer', () => {
     it('should render password inputs', () => {
       render(<ResetPasswordContainer token='valid-token' />)
 
-      expect(screen.getByLabelText('New Password')).toBeInTheDocument()
-      expect(screen.getByLabelText('Confirm Password')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/renouveler votre accès/i)
+      expect(screen.getByLabelText(/nouveau mot de passe/i)).toBeInTheDocument()
+      expect(screen.getByLabelText(/confirmation/i)).toBeInTheDocument()
     })
 
-    it('should show reset password button', () => {
+    it('should show submit button', () => {
       render(<ResetPasswordContainer token='valid-token' />)
 
-      expect(screen.getByRole('button', { name: /reset password/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /^réinitialiser →$/i })).toBeInTheDocument()
     })
 
     it('should call resetPassword on submit', async () => {
@@ -56,11 +66,11 @@ describe('ResetPasswordContainer', () => {
 
       render(<ResetPasswordContainer token='valid-token' />)
 
-      await user.type(screen.getByLabelText('New Password'), 'newpassword123')
+      await user.type(screen.getByLabelText(/nouveau mot de passe/i), 'newpassword123')
 
-      await user.type(screen.getByLabelText('Confirm Password'), 'newpassword123')
+      await user.type(screen.getByLabelText(/confirmation/i), 'newpassword123')
 
-      await user.click(screen.getByRole('button', { name: /reset password/i }))
+      await user.click(screen.getByRole('button', { name: /^réinitialiser →$/i }))
 
       await waitFor(() => {
         expect(authClient.resetPassword).toHaveBeenCalledWith({
@@ -78,29 +88,29 @@ describe('ResetPasswordContainer', () => {
 
       render(<ResetPasswordContainer token='valid-token' />)
 
-      await user.type(screen.getByLabelText('New Password'), 'newpassword123')
-      await user.type(screen.getByLabelText('Confirm Password'), 'newpassword123')
-      await user.click(screen.getByRole('button', { name: /reset password/i }))
+      await user.type(screen.getByLabelText(/nouveau mot de passe/i), 'newpassword123')
+      await user.type(screen.getByLabelText(/confirmation/i), 'newpassword123')
+      await user.click(screen.getByRole('button', { name: /^réinitialiser →$/i }))
 
       await waitFor(() => {
-        expect(screen.getByText(/password has been successfully reset/i)).toBeInTheDocument()
+        expect(screen.getByText(/mot de passe mis à jour/i)).toBeInTheDocument()
       })
     })
 
     it('should show error message on failure', async () => {
       const user = userEvent.setup()
       void (authClient.resetPassword as unknown as ReturnType<typeof mock>).mockResolvedValue({
-        error: { message: 'Token expired' }
+        error: { message: 'Jeton expiré' }
       })
 
       render(<ResetPasswordContainer token='valid-token' />)
 
-      await user.type(screen.getByLabelText('New Password'), 'newpassword123')
-      await user.type(screen.getByLabelText('Confirm Password'), 'newpassword123')
-      await user.click(screen.getByRole('button', { name: /reset password/i }))
+      await user.type(screen.getByLabelText(/nouveau mot de passe/i), 'newpassword123')
+      await user.type(screen.getByLabelText(/confirmation/i), 'newpassword123')
+      await user.click(screen.getByRole('button', { name: /^réinitialiser →$/i }))
 
       await waitFor(() => {
-        expect(screen.getByText(/token expired/i)).toBeInTheDocument()
+        expect(screen.getByRole('alert')).toHaveTextContent(/jeton expiré/i)
       })
     })
   })

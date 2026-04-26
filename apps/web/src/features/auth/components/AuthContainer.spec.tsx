@@ -7,7 +7,6 @@ import { useAuth } from '../hooks/useAuth'
 
 import { AuthContainer } from './AuthContainer'
 
-// Mock modules
 mock.module('../hooks/useAuth', () => ({
   useAuth: mock(() => {})
 }))
@@ -37,30 +36,31 @@ describe('AuthContainer', () => {
   })
 
   describe('Login Mode', () => {
-    it('should render login form by default', () => {
+    it('should render login surface by default', () => {
       render(<AuthContainer />)
 
-      expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
-      expect(screen.getByLabelText(/password/i)).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument()
-      expect(screen.getByText(/need an account/i)).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/connexion/i)
+      expect(screen.getByLabelText(/e-mail/i)).toBeInTheDocument()
+      expect(screen.getByLabelText(/mot de passe/i)).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /mettre le contact/i })).toBeInTheDocument()
+      expect(screen.getByText(/créer votre dashboard/i)).toBeInTheDocument()
     })
 
-    it('should render login form when mode is explicitly set to login', () => {
+    it('should render login surface when mode is explicitly set to login', () => {
       render(<AuthContainer mode='login' />)
 
-      expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
-      expect(screen.getByLabelText(/password/i)).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument()
+      expect(screen.getByLabelText(/e-mail/i)).toBeInTheDocument()
+      expect(screen.getByLabelText(/mot de passe/i)).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /mettre le contact/i })).toBeInTheDocument()
     })
 
     it('should call login with form data when login form is submitted', async () => {
       const user = userEvent.setup()
       render(<AuthContainer mode='login' />)
 
-      await user.type(screen.getByLabelText(/email/i), 'test@example.com')
-      await user.type(screen.getByLabelText(/password/i), 'password123')
-      await user.click(screen.getByRole('button', { name: /login/i }))
+      await user.type(screen.getByLabelText(/e-mail/i), 'test@example.com')
+      await user.type(screen.getByLabelText(/mot de passe/i), 'password123')
+      await user.click(screen.getByRole('button', { name: /mettre le contact/i }))
 
       await waitFor(() => {
         expect(mockUseAuth.login).toHaveBeenCalledWith(
@@ -77,9 +77,9 @@ describe('AuthContainer', () => {
       const user = userEvent.setup()
       render(<AuthContainer mode='login' redirectPath='/dashboard' />)
 
-      await user.type(screen.getByLabelText(/email/i), 'test@example.com')
-      await user.type(screen.getByLabelText(/password/i), 'password123')
-      await user.click(screen.getByRole('button', { name: /login/i }))
+      await user.type(screen.getByLabelText(/e-mail/i), 'test@example.com')
+      await user.type(screen.getByLabelText(/mot de passe/i), 'password123')
+      await user.click(screen.getByRole('button', { name: /mettre le contact/i }))
 
       await waitFor(() => {
         expect(mockUseAuth.login).toHaveBeenCalledWith(
@@ -94,15 +94,15 @@ describe('AuthContainer', () => {
 
     it('should show error message when login fails', async () => {
       const user = userEvent.setup()
-      mockUseAuth.login.mockRejectedValueOnce(new Error('Invalid credentials'))
+      mockUseAuth.login.mockRejectedValueOnce(new Error('Identifiants invalides'))
       render(<AuthContainer mode='login' />)
 
-      await user.type(screen.getByLabelText(/email/i), 'test@example.com')
-      await user.type(screen.getByLabelText(/password/i), 'wrongpassword')
-      await user.click(screen.getByRole('button', { name: /login/i }))
+      await user.type(screen.getByLabelText(/e-mail/i), 'test@example.com')
+      await user.type(screen.getByLabelText(/mot de passe/i), 'wrongpassword')
+      await user.click(screen.getByRole('button', { name: /mettre le contact/i }))
 
       await waitFor(() => {
-        expect(screen.getByText('Invalid credentials')).toBeInTheDocument()
+        expect(screen.getByRole('alert')).toHaveTextContent(/identifiants invalides/i)
       })
     })
 
@@ -115,42 +115,60 @@ describe('AuthContainer', () => {
 
       render(<AuthContainer mode='login' />)
 
-      expect(screen.getByRole('button', { name: /loading/i })).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /loading/i })).toBeDisabled()
+      expect(screen.getByRole('button', { name: /connexion…/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /connexion…/i })).toBeDisabled()
     })
 
-    it('should show correct navigation link for login form', () => {
+    it('should link "Créer votre dashboard" to signup', () => {
       render(<AuthContainer mode='login' />)
 
-      const link = screen.getByText(/need an account/i).closest('a')
+      const link = screen.getByRole('link', { name: /créer votre dashboard/i })
       expect(link).toHaveAttribute('href', expect.stringContaining('signup'))
+    })
+
+    it('should expose forgot password link', () => {
+      render(<AuthContainer mode='login' />)
+
+      expect(screen.getByRole('link', { name: /mot de passe oublié/i })).toHaveAttribute(
+        'href',
+        '/auth/forgot-password'
+      )
+    })
+
+    it('should render the system status panel', () => {
+      render(<AuthContainer mode='login' />)
+
+      const panel = screen.getByRole('status', { name: /état système/i })
+      expect(panel).toBeInTheDocument()
+      expect(panel).toHaveTextContent(/api en ligne/i)
+      expect(panel).toHaveTextContent(/better auth/i)
+      expect(panel).toHaveTextContent(/prisma/i)
     })
   })
 
   describe('Signup Mode', () => {
-    it('should render signup form when mode is set to signup', () => {
+    it('should render signup surface when mode is set to signup', () => {
       render(<AuthContainer mode='signup' />)
 
-      expect(screen.getByLabelText(/username/i)).toBeInTheDocument()
-      expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
-      expect(screen.getByLabelText(/password/i)).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /sign up/i })).toBeInTheDocument()
-      expect(screen.getByText(/already have an account/i)).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/inscription/i)
+      expect(screen.getByLabelText(/utilisateur/i)).toBeInTheDocument()
+      expect(screen.getByLabelText(/e-mail/i)).toBeInTheDocument()
+      expect(screen.getByLabelText(/mot de passe/i)).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /créer le dashboard/i })).toBeInTheDocument()
     })
 
     it('should call register with form data when signup form is submitted', async () => {
       const user = userEvent.setup()
       render(<AuthContainer mode='signup' />)
 
-      await user.type(screen.getByLabelText(/username/i), 'testuser')
-      await user.type(screen.getByLabelText(/email/i), 'test@example.com')
-      await user.type(screen.getByLabelText(/password/i), 'password123')
-      await user.click(screen.getByRole('button', { name: /sign up/i }))
+      await user.type(screen.getByLabelText(/utilisateur/i), 'testuser')
+      await user.type(screen.getByLabelText(/e-mail/i), 'test@example.com')
+      await user.type(screen.getByLabelText(/mot de passe/i), 'password123')
+      await user.click(screen.getByRole('button', { name: /créer le dashboard/i }))
 
       await waitFor(() => {
         expect(mockUseAuth.register).toHaveBeenCalledWith(
           {
-            name: '', // name field removed from form, defaults to empty
             username: 'testuser',
             email: 'test@example.com',
             password: 'password123'
@@ -164,15 +182,14 @@ describe('AuthContainer', () => {
       const user = userEvent.setup()
       render(<AuthContainer mode='signup' redirectPath='/welcome' />)
 
-      await user.type(screen.getByLabelText(/username/i), 'testuser')
-      await user.type(screen.getByLabelText(/email/i), 'test@example.com')
-      await user.type(screen.getByLabelText(/password/i), 'password123')
-      await user.click(screen.getByRole('button', { name: /sign up/i }))
+      await user.type(screen.getByLabelText(/utilisateur/i), 'testuser')
+      await user.type(screen.getByLabelText(/e-mail/i), 'test@example.com')
+      await user.type(screen.getByLabelText(/mot de passe/i), 'password123')
+      await user.click(screen.getByRole('button', { name: /créer le dashboard/i }))
 
       await waitFor(() => {
         expect(mockUseAuth.register).toHaveBeenCalledWith(
           {
-            name: '', // name field removed from form, defaults to empty
             username: 'testuser',
             email: 'test@example.com',
             password: 'password123'
@@ -184,16 +201,16 @@ describe('AuthContainer', () => {
 
     it('should show error message when registration fails', async () => {
       const user = userEvent.setup()
-      mockUseAuth.register.mockRejectedValueOnce(new Error('Email already exists'))
+      mockUseAuth.register.mockRejectedValueOnce(new Error('Email déjà utilisé'))
       render(<AuthContainer mode='signup' />)
 
-      await user.type(screen.getByLabelText(/username/i), 'testuser')
-      await user.type(screen.getByLabelText(/email/i), 'existing@example.com')
-      await user.type(screen.getByLabelText(/password/i), 'password123')
-      await user.click(screen.getByRole('button', { name: /sign up/i }))
+      await user.type(screen.getByLabelText(/utilisateur/i), 'testuser')
+      await user.type(screen.getByLabelText(/e-mail/i), 'existing@example.com')
+      await user.type(screen.getByLabelText(/mot de passe/i), 'password123')
+      await user.click(screen.getByRole('button', { name: /créer le dashboard/i }))
 
       await waitFor(() => {
-        expect(screen.getByText('Email already exists')).toBeInTheDocument()
+        expect(screen.getByRole('alert')).toHaveTextContent(/email déjà utilisé/i)
       })
     })
 
@@ -206,15 +223,21 @@ describe('AuthContainer', () => {
 
       render(<AuthContainer mode='signup' />)
 
-      expect(screen.getByRole('button', { name: /loading/i })).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /loading/i })).toBeDisabled()
+      expect(screen.getByRole('button', { name: /création…/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /création…/i })).toBeDisabled()
     })
 
-    it('should show correct navigation link for signup form', () => {
+    it('should link back to login from signup mode', () => {
       render(<AuthContainer mode='signup' />)
 
-      const link = screen.getByText(/already have an account/i).closest('a')
+      const link = screen.getByRole('link', { name: /^connexion$/i })
       expect(link).toHaveAttribute('href', expect.stringContaining('login'))
+    })
+
+    it('should also render the system status panel in signup mode', () => {
+      render(<AuthContainer mode='signup' />)
+
+      expect(screen.getByRole('status', { name: /état système/i })).toBeInTheDocument()
     })
   })
 
@@ -223,11 +246,10 @@ describe('AuthContainer', () => {
       const user = userEvent.setup()
       render(<AuthContainer mode='login' />)
 
-      // Submit empty form to trigger validation
-      await user.click(screen.getByRole('button', { name: /login/i }))
+      await user.click(screen.getByRole('button', { name: /mettre le contact/i }))
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /login/i })).toBeDisabled()
+        expect(screen.getByRole('button', { name: /mettre le contact/i })).toBeDisabled()
       })
     })
 
@@ -235,11 +257,10 @@ describe('AuthContainer', () => {
       const user = userEvent.setup()
       render(<AuthContainer mode='signup' />)
 
-      // Submit empty form to trigger validation
-      await user.click(screen.getByRole('button', { name: /sign up/i }))
+      await user.click(screen.getByRole('button', { name: /créer le dashboard/i }))
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /sign up/i })).toBeDisabled()
+        expect(screen.getByRole('button', { name: /créer le dashboard/i })).toBeDisabled()
       })
     })
   })

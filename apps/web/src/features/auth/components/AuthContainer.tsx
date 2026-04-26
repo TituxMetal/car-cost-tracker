@@ -2,21 +2,29 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
-import { Button } from '~/components/ui'
-import { FormWrapper } from '~/components/ui/FormWrapper'
+import { Button, FormWrapper, Input } from '~/components/ui'
 
 import { useAuth } from '../hooks/useAuth'
 import type { LoginSchema, SignupSchema } from '../schemas/auth.schema'
 import { loginSchema, signupSchema } from '../schemas/auth.schema'
 import { routes } from '../utils/routes'
 
-import { LoginForm } from './LoginForm'
-import { SignupForm } from './SignupForm'
+import { AuthHeader } from './AuthHeader'
+import { AuthShell } from './AuthShell'
+import { SystemStatusPanel } from './SystemStatusPanel'
 
 export interface AuthContainerProps {
   mode?: 'login' | 'signup'
   redirectPath?: string
 }
+
+const submitButtonClasses =
+  'h-auto min-h-0 w-full justify-center py-4 text-[13px] font-bold tracking-[0.2em]'
+const switchLinkClasses =
+  'text-base-content/60 block text-center font-mono text-[11px] tracking-wider'
+const switchLinkAccentClasses = 'text-primary hover:underline'
+
+const HEADING_ID = 'auth-heading'
 
 export const AuthContainer = ({ mode = 'login', redirectPath }: AuthContainerProps) => {
   const { login, register, isLoading } = useAuth()
@@ -31,7 +39,7 @@ export const AuthContainer = ({ mode = 'login', redirectPath }: AuthContainerPro
 
   const signupForm = useForm<SignupSchema>({
     resolver: zodResolver(signupSchema),
-    defaultValues: { name: '', username: '', email: '', password: '' },
+    defaultValues: { username: '', email: '', password: '' },
     mode: 'onTouched',
     criteriaMode: 'all'
   })
@@ -41,7 +49,7 @@ export const AuthContainer = ({ mode = 'login', redirectPath }: AuthContainerPro
     try {
       await login(data, redirectPath)
     } catch (error) {
-      setServerError(error instanceof Error ? error.message : 'Login failed')
+      setServerError(error instanceof Error ? error.message : 'Échec de la connexion')
     }
   })
 
@@ -50,7 +58,7 @@ export const AuthContainer = ({ mode = 'login', redirectPath }: AuthContainerPro
     try {
       await register(data, redirectPath)
     } catch (error) {
-      setServerError(error instanceof Error ? error.message : 'Registration failed')
+      setServerError(error instanceof Error ? error.message : "Échec de l'inscription")
     }
   })
 
@@ -58,49 +66,96 @@ export const AuthContainer = ({ mode = 'login', redirectPath }: AuthContainerPro
     const isFormError = loginForm.formState.isSubmitted && !loginForm.formState.isValid
 
     return (
-      <FormWrapper onSubmit={handleLoginSubmit} error={serverError} isLoading={isLoading}>
-        <LoginForm form={loginForm} />
+      <AuthShell headingId={HEADING_ID}>
+        <AuthHeader kicker='// ACCÈS PILOTE' heading='Connexion' headingId={HEADING_ID} />
 
-        <div className='flex items-center justify-between'>
-          <Button type='submit' disabled={isFormError || isLoading}>
-            {isLoading ? 'Loading...' : 'Login'}
+        <FormWrapper onSubmit={handleLoginSubmit} error={serverError}>
+          <Input
+            label='E-MAIL'
+            type='email'
+            autoComplete='email'
+            placeholder='vous@exemple.fr'
+            error={loginForm.formState.errors.email?.message}
+            {...loginForm.register('email')}
+          />
+
+          <Input
+            label='MOT DE PASSE'
+            type='password'
+            autoComplete='current-password'
+            error={loginForm.formState.errors.password?.message}
+            {...loginForm.register('password')}
+          />
+
+          <Button type='submit' disabled={isFormError || isLoading} className={submitButtonClasses}>
+            {isLoading ? 'Connexion…' : 'Mettre le contact →'}
           </Button>
 
-          <a
-            href={routes.auth.getOppositeModeUrl('login')}
-            className='link link-primary font-semibold'
-          >
-            Need an account?
-          </a>
-        </div>
-        <div className='text-center'>
-          <a href='/auth/forgot-password' className='link link-hover text-sm'>
-            Forgot your password?
-          </a>
-        </div>
-      </FormWrapper>
+          <p className={switchLinkClasses}>
+            <a href='/auth/forgot-password' className={switchLinkAccentClasses}>
+              Mot de passe oublié ?
+            </a>
+          </p>
+
+          <p className={switchLinkClasses}>
+            Pas de compte ?{' '}
+            <a href={routes.auth.getOppositeModeUrl('login')} className={switchLinkAccentClasses}>
+              Créer votre dashboard
+            </a>
+          </p>
+        </FormWrapper>
+
+        <SystemStatusPanel />
+      </AuthShell>
     )
   }
 
-  // Signup mode
   const isFormError = signupForm.formState.isSubmitted && !signupForm.formState.isValid
 
   return (
-    <FormWrapper onSubmit={handleSignupSubmit} error={serverError} isLoading={isLoading}>
-      <SignupForm form={signupForm} />
+    <AuthShell headingId={HEADING_ID}>
+      <AuthHeader kicker='// NOUVEAU PILOTE' heading='Inscription' headingId={HEADING_ID} />
 
-      <div className='flex items-center justify-between'>
-        <Button type='submit' disabled={isFormError || isLoading}>
-          {isLoading ? 'Loading...' : 'Sign Up'}
+      <FormWrapper onSubmit={handleSignupSubmit} error={serverError}>
+        <Input
+          label="NOM D'UTILISATEUR"
+          type='text'
+          autoComplete='username'
+          placeholder='votre_pseudo'
+          error={signupForm.formState.errors.username?.message}
+          {...signupForm.register('username')}
+        />
+
+        <Input
+          label='E-MAIL'
+          type='email'
+          autoComplete='email'
+          placeholder='vous@exemple.fr'
+          error={signupForm.formState.errors.email?.message}
+          {...signupForm.register('email')}
+        />
+
+        <Input
+          label='MOT DE PASSE'
+          type='password'
+          autoComplete='new-password'
+          error={signupForm.formState.errors.password?.message}
+          {...signupForm.register('password')}
+        />
+
+        <Button type='submit' disabled={isFormError || isLoading} className={submitButtonClasses}>
+          {isLoading ? 'Création…' : 'Créer le dashboard →'}
         </Button>
 
-        <a
-          href={routes.auth.getOppositeModeUrl('signup')}
-          className='link link-primary font-semibold'
-        >
-          Already have an account?
-        </a>
-      </div>
-    </FormWrapper>
+        <p className={switchLinkClasses}>
+          Déjà un compte ?{' '}
+          <a href={routes.auth.getOppositeModeUrl('signup')} className={switchLinkAccentClasses}>
+            Connexion
+          </a>
+        </p>
+      </FormWrapper>
+
+      <SystemStatusPanel />
+    </AuthShell>
   )
 }

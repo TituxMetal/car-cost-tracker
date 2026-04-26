@@ -1,16 +1,10 @@
 ---
 import { AuthContainer, isValidAuthMode } from '~/features/auth'
-import Main from '~/layouts/Main.astro'
+import Auth from '~/layouts/Auth.astro'
 
-const AUTH_TEXT = {
-  login: {
-    title: 'Login',
-    heading: 'Login to your account'
-  },
-  signup: {
-    title: 'Sign Up',
-    heading: 'Create your account'
-  }
+const AUTH_TITLE = {
+  login: 'Connexion',
+  signup: 'Inscription'
 } as const
 
 const mode = Astro.url.searchParams.get('mode') ?? 'login'
@@ -20,12 +14,9 @@ if (mode !== null && !isValidAuthMode(mode)) {
 }
 
 const authMode = isValidAuthMode(mode) ? mode : 'login'
-const { title, heading } = AUTH_TEXT[authMode]
+const title = AUTH_TITLE[authMode]
 ---
 
-<Main title={title}>
-  <section class='container mx-auto px-4 py-8'>
-    <h1 class='text-base-content mb-8 text-center text-4xl font-bold'>{heading}</h1>
-    <AuthContainer client:load mode={authMode} redirectPath={redirectPath} />
-  </section>
-</Main>
+<Auth title={title}>
+  <AuthContainer client:load mode={authMode} redirectPath={redirectPath} />
+</Auth>

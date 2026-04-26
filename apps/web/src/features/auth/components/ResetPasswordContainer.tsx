@@ -8,9 +8,24 @@ import { authClient } from '~/lib/authClient'
 import type { ResetPasswordSchema } from '../schemas/auth.schema'
 import { resetPasswordSchema } from '../schemas/auth.schema'
 
+import { AuthHeader } from './AuthHeader'
+import { AuthShell } from './AuthShell'
+import { SystemStatusPanel } from './SystemStatusPanel'
+
 interface ResetPasswordContainerProps {
   token: string | null
 }
+
+const submitButtonClasses =
+  'h-auto min-h-0 w-full justify-center py-4 text-[13px] font-bold tracking-[0.2em]'
+const switchLinkClasses =
+  'text-base-content/60 block text-center font-mono text-[11px] tracking-wider'
+const switchLinkAccentClasses = 'text-primary hover:underline'
+const noticeBoxClasses =
+  'grid gap-2 border px-4 py-4 font-mono text-xs leading-relaxed tracking-wide'
+const noticeLabelClasses = 'font-mono text-[10px] tracking-[0.2em] uppercase'
+
+const HEADING_ID = 'reset-heading'
 
 export const ResetPasswordContainer = ({ token }: ResetPasswordContainerProps) => {
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
@@ -32,7 +47,7 @@ export const ResetPasswordContainer = ({ token }: ResetPasswordContainerProps) =
 
     if (error) {
       setStatus('error')
-      setErrorMessage(error.message ?? 'Failed to reset password')
+      setErrorMessage(error.message ?? 'Échec de la réinitialisation')
       return
     }
 
@@ -41,60 +56,85 @@ export const ResetPasswordContainer = ({ token }: ResetPasswordContainerProps) =
 
   if (!token) {
     return (
-      <section className='card bg-base-200 mx-auto max-w-md text-center'>
-        <div className='card-body'>
-          <h2 className='text-error mb-4 text-2xl font-bold'>Invalid Reset Link</h2>
-          <p className='text-base-content/70 mb-6'>
-            This password reset link is invalid or has expired.
-          </p>
-          <Button as='a' href='/auth/forgot-password'>
-            Request New Link
-          </Button>
-        </div>
-      </section>
-    )
-  }
+      <AuthShell headingId={HEADING_ID}>
+        <AuthHeader
+          kicker='// LIEN INVALIDE'
+          heading='Réinitialisation impossible'
+          headingId={HEADING_ID}
+        />
 
-  if (status === 'success') {
-    return (
-      <section className='card bg-base-200 mx-auto max-w-md text-center'>
-        <div className='card-body'>
-          <h2 className='mb-4 text-2xl font-bold'>Password Reset</h2>
-          <p className='text-base-content/70 mb-6'>Your password has been successfully reset.</p>
-          <Button as='a' href='/auth?mode=login'>
-            Go to Login
-          </Button>
+        <div className={`${noticeBoxClasses} border-error/50 bg-error/10 text-error`} role='alert'>
+          <p className={`text-error ${noticeLabelClasses}`}>JETON ABSENT</p>
+          <p className='text-base-content/70'>
+            Ce lien de réinitialisation est invalide ou a expiré. Demandez un nouveau lien pour
+            recommencer.
+          </p>
         </div>
-      </section>
+
+        <p className={switchLinkClasses}>
+          <a href='/auth/forgot-password' className={switchLinkAccentClasses}>
+            Demander un nouveau lien
+          </a>
+        </p>
+
+        <SystemStatusPanel />
+      </AuthShell>
     )
   }
 
   return (
-    <FormWrapper onSubmit={handleSubmit} error={errorMessage}>
-      <Input
-        {...form.register('password')}
-        type='password'
-        label='New Password'
-        placeholder='Enter your new password'
-        error={form.formState.errors.password?.message}
-        autoComplete='new-password'
+    <AuthShell headingId={HEADING_ID}>
+      <AuthHeader
+        kicker='// RÉINITIALISER'
+        heading='Renouveler votre accès'
+        headingId={HEADING_ID}
       />
-      <Input
-        {...form.register('confirmPassword')}
-        type='password'
-        label='Confirm Password'
-        placeholder='Confirm your new password'
-        error={form.formState.errors.confirmPassword?.message}
-        autoComplete='new-password'
-      />
-      <div className='flex items-center justify-between'>
-        <Button type='submit' disabled={form.formState.isSubmitting}>
-          {form.formState.isSubmitting ? 'Resetting...' : 'Reset Password'}
-        </Button>
-        <a href='/auth?mode=login' className='link link-primary font-semibold'>
-          Back to Login
+
+      {status === 'success' ? (
+        <div
+          className={`${noticeBoxClasses} border-success/50 bg-success/10 text-success`}
+          role='status'
+        >
+          <p className={`text-success ${noticeLabelClasses}`}>MOT DE PASSE MIS À JOUR</p>
+          <p className='text-base-content/70'>
+            Votre mot de passe a été réinitialisé avec succès. Vous pouvez vous reconnecter.
+          </p>
+        </div>
+      ) : (
+        <FormWrapper onSubmit={handleSubmit} error={status === 'error' ? errorMessage : null}>
+          <Input
+            label='NOUVEAU MOT DE PASSE'
+            type='password'
+            autoComplete='new-password'
+            error={form.formState.errors.password?.message}
+            {...form.register('password')}
+          />
+
+          <Input
+            label='CONFIRMATION'
+            type='password'
+            autoComplete='new-password'
+            error={form.formState.errors.confirmPassword?.message}
+            {...form.register('confirmPassword')}
+          />
+
+          <Button
+            type='submit'
+            disabled={form.formState.isSubmitting}
+            className={submitButtonClasses}
+          >
+            {form.formState.isSubmitting ? 'Réinitialisation…' : 'Réinitialiser →'}
+          </Button>
+        </FormWrapper>
+      )}
+
+      <p className={switchLinkClasses}>
+        <a href='/auth?mode=login' className={switchLinkAccentClasses}>
+          Retour à la connexion
         </a>
-      </div>
-    </FormWrapper>
+      </p>
+
+      <SystemStatusPanel />
+    </AuthShell>
   )
 }
