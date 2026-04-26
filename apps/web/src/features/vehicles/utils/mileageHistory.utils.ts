@@ -28,5 +28,9 @@ export const appendMileageHistory = (vehicleId: string, entry: MileageHistoryEnt
   if (typeof window === 'undefined') return
 
   const next = [entry, ...getMileageHistory(vehicleId)].slice(0, MAX_ENTRIES)
-  window.localStorage.setItem(storageKey(vehicleId), JSON.stringify(next))
+  try {
+    window.localStorage.setItem(storageKey(vehicleId), JSON.stringify(next))
+  } catch (error) {
+    console.warn(`mileageHistory: failed to persist history for ${vehicleId}`, error)
+  }
 }
