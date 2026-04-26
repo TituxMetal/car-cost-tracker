@@ -16,9 +16,10 @@ const formatTime = (date: Date) =>
 const REFRESH_MS = 60_000
 
 export const SystemStatusPanel = () => {
-  const [now, setNow] = useState(() => new Date())
+  const [now, setNow] = useState<Date | null>(null)
 
   useEffect(() => {
+    setNow(new Date())
     const id = setInterval(() => setNow(new Date()), REFRESH_MS)
     return () => clearInterval(id)
   }, [])
@@ -30,7 +31,7 @@ export const SystemStatusPanel = () => {
         <span className={dotClasses} aria-hidden='true'>
           ◉
         </span>
-        API en ligne · {formatDate(now)} {formatTime(now)}
+        API en ligne · {now ? `${formatDate(now)} ${formatTime(now)}` : '—'}
       </p>
       <p>
         <span className={dotClasses} aria-hidden='true'>
