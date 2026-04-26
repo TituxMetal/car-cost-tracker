@@ -103,43 +103,50 @@ Current state only. Deferred items live in [`BACKLOG.md`](./BACKLOG.md).
       `useAuth.ts:76` mapping `name: data.username`); `pages/profile/sessions.astro` lightly
       polished as a side-effect of `SessionList` testing — full Phase 23 refresh still pending
 
-### Block 3: Vehicles — `feature/visual-refresh-vehicles`
+### Block 3: Vehicles — `feature/visual-refresh-vehicles` ✅
 
 #### Phase 10: `VehicleProfile` + `QuickMileageUpdate` + `VehicleContainer` + new `MileageHistoryCard` + history utilities
 
-- [ ] `VehicleProfile.tsx` restructured per the mockup `Profil véhicule (vue)` (Image #3): kicker
+- [x] `VehicleProfile.tsx` restructured per the mockup `Profil véhicule (vue)` (Image #3): kicker
       `Fiche véhicule`, h1 display `{make} {model}`, composed sub line `— {year} · {engineType}`
       (handles `engineType === null`), striped photo placeholder, mono uppercase `<dt>` kickers +
       sans-serif `<dd>` grid, footer with `Modifier fiche` and `Supprimer` (the latter carries
       `aria-describedby` to a `.sr-only` warning)
-- [ ] `QuickMileageUpdate.tsx` rebuilt as `COMPTEUR KILOMÉTRIQUE` card: kicker, inner panel with
+- [x] `QuickMileageUpdate.tsx` rebuilt as `COMPTEUR KILOMÉTRIQUE` card: kicker, inner panel with
       current km in `font-mono text-primary` + label, `Nouvelle valeur` input (`font-mono text-lg`),
       live delta below when watched value `> currentMileage`, full-width `Valider` button — copy
       change `Mettre à jour` → `Valider`
-- [ ] `VehicleContainer.tsx`: view mode renders `lg:grid-cols-3` with `lg:col-span-2` profile +
+- [x] `VehicleContainer.tsx`: view mode renders `lg:grid-cols-3` with `lg:col-span-2` profile +
       `<aside lg:col-span-1>` stack (compteur + history); standalone `<h1>` dropped in view mode
       (lives in `VehicleProfile`); cluster kickers above create / edit form cards; nested
       `max-w-2xl` wrappers removed across the 3 modes; mileage-history `append` wired after each
-      successful `updateMileage`
-- [ ] New `MileageHistoryCard.tsx` + spec — kicker, empty state mono dimmed, populated entries 3-col
-      grid (`<time>` · mileage · `+ delta`)
-- [ ] New `useMileageHistory.ts` hook + spec, `mileageHistory.utils.ts` + spec, and atom-only
+      successful `updateMileage` (only when `delta > 0`)
+- [x] New `MileageHistoryCard.tsx` + spec — kicker, empty state mono dimmed, populated entries 3-col
+      grid (`<time>` · mileage · `+ delta`), capped at 10 visible
+- [x] New `useMileageHistory.ts` hook + spec, `mileageHistory.utils.ts` + spec, and atom-only
       `mileageHistory.store.ts` — frontend-only stub backed by `localStorage` keyed
       `mileage-history:{vehicleId}`, capped at 20 entries (the real cross-device backend feature
       lives in `BACKLOG.md` as `Mileage Log`, post-Visual-Refresh)
-- [ ] Spec updates: `VehicleContainer` view-mode h1 assertion split (year moves to sub line),
+- [x] Spec updates: `VehicleContainer` view-mode h1 assertion split (year moves to sub line),
       `Valider` / `Nouvelle valeur` copy adjustments, `toHaveAccessibleDescription` on delete,
-      `MileageHistoryCard` empty state assertion
+      `MileageHistoryCard` empty state assertion + populated history after submit
 
 #### Phase 11: `VehicleForm` + `DeleteVehicleDialog` + `VehicleEmptyState` + specs
 
-- [ ] `VehicleForm.tsx`: daisy `fieldset` / `fieldset-legend` classes replaced with cluster mono
+- [x] `VehicleForm.tsx`: daisy `fieldset` / `fieldset-legend` classes replaced with cluster mono
       uppercase typography on legends; kilométrage input gets `font-mono text-lg` for the odometer
       screen look
-- [ ] `DeleteVehicleDialog.tsx`: no code change — inherits the cluster `ConfirmDialog` already
+- [x] `DeleteVehicleDialog.tsx`: no code change — inherits the cluster `ConfirmDialog` already
       shipped in Block 1; verification only
-- [ ] `VehicleEmptyState.tsx`: cluster kicker `Créer votre fiche` above the icon, mono dimmed body,
+- [x] `VehicleEmptyState.tsx`: cluster kicker `Créer votre fiche` above the icon, mono dimmed body,
       primary amber CTA
+
+#### Block 3 implementation notes
+
+- `VehicleProfile` destructive button uses `className='btn-outline'` locally (option b in the plan)
+  to keep the change surgical; existing `Button` `destructive` variant remains solid `btn-error` and
+  unchanged for the rest of the codebase. Same pattern used for the cancel buttons in
+  `VehicleContainer` create/edit modes.
 
 ### Block 4: Checks (Types + Logs) — `feature/visual-refresh-checks`
 
