@@ -9,7 +9,7 @@ const STRIPE_BG =
 
 const KICKER_CLASSES = 'text-base-content/60 font-mono text-xs tracking-widest uppercase'
 const VALUE_CLASSES = 'text-base-content font-medium'
-const ROW_CLASSES = 'grid grid-cols-1 md:grid-cols-2 md:gap-x-8'
+const SPEC_LIST_CLASSES = 'grid grid-cols-1 md:grid-cols-2 md:gap-x-8'
 const CELL_CLASSES = 'border-base-300 border-b py-4'
 
 export interface VehicleProfileProps {
@@ -52,8 +52,6 @@ export const VehicleProfile = ({ vehicle, onEdit, onDelete }: VehicleProfileProp
       </header>
 
       <div
-        role='presentation'
-        aria-hidden='true'
         className={`border-base-300 bg-base-300/30 flex h-56 items-center justify-center border ${STRIPE_BG}`}
       >
         <span className='text-base-content/50 font-mono text-xs tracking-widest uppercase'>
@@ -61,26 +59,16 @@ export const VehicleProfile = ({ vehicle, onEdit, onDelete }: VehicleProfileProp
         </span>
       </div>
 
-      <dl role='list' className='flex flex-col'>
-        <div className={ROW_CLASSES}>
-          <SpecCell label='Marque' value={vehicle.make} />
-          <SpecCell label='Modèle' value={vehicle.model} />
-        </div>
-        <div className={ROW_CLASSES}>
-          <SpecCell label='Année' value={vehicle.year} />
-          <SpecCell label='Type moteur' value={vehicle.engineType ?? '-'} />
-        </div>
-        <div className={ROW_CLASSES}>
-          <SpecCell label='Carburant' value={fuelTypeLabel} />
-          <SpecCell label='VIN' value={vehicle.vin ?? '-'} />
-        </div>
-        <div className={ROW_CLASSES}>
-          <SpecCell label='Plaque' value={vehicle.licensePlate ?? '-'} />
-          <SpecCell label="Date d'achat" value={purchaseDateLabel} />
-        </div>
-        <div className={ROW_CLASSES}>
-          <SpecCell label='Kilométrage' value={formatMileage(vehicle.mileage)} />
-        </div>
+      <dl role='list' className={SPEC_LIST_CLASSES}>
+        <SpecCell label='Marque' value={vehicle.make} />
+        <SpecCell label='Modèle' value={vehicle.model} />
+        <SpecCell label='Année' value={vehicle.year} />
+        <SpecCell label='Type moteur' value={vehicle.engineType ?? '-'} />
+        <SpecCell label='Carburant' value={fuelTypeLabel} />
+        <SpecCell label='VIN' value={vehicle.vin ?? '-'} />
+        <SpecCell label='Plaque' value={vehicle.licensePlate ?? '-'} />
+        <SpecCell label="Date d'achat" value={purchaseDateLabel} />
+        <SpecCell label='Kilométrage' value={formatMileage(vehicle.mileage)} />
       </dl>
 
       <p id='delete-vehicle-warning' className='sr-only'>
