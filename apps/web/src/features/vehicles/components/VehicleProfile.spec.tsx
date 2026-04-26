@@ -100,7 +100,7 @@ describe('VehicleProfile', () => {
     expect(screen.getByText('75000 km')).toBeInTheDocument()
   })
 
-  it('should display mileage with km singular or plural suffix', () => {
+  it('should display mileage with the invariant km suffix', () => {
     const actions = mock(() => {})
     const vehicleWith1Km: Vehicle = { ...mockVehicle, mileage: 1 }
     render(<VehicleProfile vehicle={vehicleWith1Km} onEdit={actions} onDelete={actions} />)
