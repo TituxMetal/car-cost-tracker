@@ -1,4 +1,3 @@
-import { ClipboardList } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import { useCheckTypes } from '~/features/check-types'
@@ -52,13 +51,18 @@ export const CheckLogContainer = () => {
     ? logs.filter(log => log.checkTypeId === selectedCheckTypeId)
     : logs
 
+  const selectedCheckTypeName =
+    selectedCheckTypeId && checkTypes.find(ct => ct.id === selectedCheckTypeId)?.name
+
+  const periodLabel = selectedCheckTypeName ?? 'Tous les contrôles'
+
   const handleDeleteConfirm = async () => {
     if (!vehicle || !deletingCheckLog) return
 
     try {
       await remove(vehicle.id, deletingCheckLog.id)
       setDeletingCheckLog(null)
-    } catch (error) {
+    } catch (_error) {
       setDeletingCheckLog(null)
     }
   }
@@ -70,17 +74,19 @@ export const CheckLogContainer = () => {
   return (
     <section className='mx-auto max-w-6xl p-6'>
       <header className='mb-6'>
-        <h1 className='text-base-content flex items-center gap-2 text-2xl font-bold'>
-          <ClipboardList size={24} className='text-primary' />
-          Historique des contrôles
+        <p className='font-display text-base-content/60 text-xs tracking-wider uppercase'>
+          ARCHIVES · JOURNAL DES CONTRÔLES
+        </p>
+        <h1 className='font-display mt-1 text-3xl font-bold tracking-wider md:text-4xl'>
+          {filteredLogs.length} entrées · {periodLabel}
         </h1>
       </header>
       {error && (
-        <p className='alert alert-error' role='alert'>
+        <div className='alert alert-error mb-6' role='alert'>
           {error}
-        </p>
+        </div>
       )}
-      <aside className='mb-6'>
+      <aside className='mb-6 max-w-xs'>
         <CheckTypeFilter
           checkTypes={checkTypes}
           selectedCheckTypeId={selectedCheckTypeId}

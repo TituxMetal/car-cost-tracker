@@ -50,11 +50,15 @@ describe('CheckLogList', () => {
     expect(screen.queryByText('Aucun contrôle enregistré')).toBeNull()
   })
 
-  it('should use grid layout', () => {
+  it('should render desktop column header with DATE/TYPE/ODO/NOTES/PROCHAIN labels', () => {
     const { container } = render(<CheckLogList checkLogs={[mockCheckLog1]} onDelete={() => {}} />)
 
-    const grid = container.querySelector('.grid')
-
-    expect(grid).toBeInTheDocument()
+    const header = container.querySelector('header')
+    expect(header).not.toBeNull()
+    expect(header?.textContent).toContain('DATE')
+    expect(header?.textContent).toContain('TYPE')
+    expect(header?.textContent).toContain('ODO')
+    expect(header?.textContent).toContain('NOTES')
+    expect(header?.textContent).toContain('PROCHAIN')
   })
 })

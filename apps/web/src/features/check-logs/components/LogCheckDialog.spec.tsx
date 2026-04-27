@@ -1,8 +1,19 @@
 import { beforeEach, describe, expect, it, mock } from 'bun:test'
 
+import type { CheckType } from '~/features/check-types/types'
 import { cleanup, fireEvent, render, screen, waitFor } from '~/test-utils'
 
 import { LogCheckDialog } from './LogCheckDialog'
+
+const mockCheckType: CheckType = {
+  id: 'ct-1',
+  vehicleId: 'v-1',
+  name: 'Vidange',
+  description: null,
+  intervalDays: 14,
+  createdAt: '2026-01-01',
+  updatedAt: '2026-01-01'
+}
 
 const renderDialog = async (props: Partial<Parameters<typeof LogCheckDialog>[0]> = {}) => {
   const result = render(
@@ -10,6 +21,8 @@ const renderDialog = async (props: Partial<Parameters<typeof LogCheckDialog>[0]>
       checkTypeName={props.checkTypeName ?? 'Vidange'}
       onSubmit={props.onSubmit ?? (() => {})}
       onCancel={props.onCancel ?? (() => {})}
+      checkType={props.checkType}
+      status={props.status}
     />
   )
 
@@ -26,10 +39,13 @@ describe('LogCheckDialog', () => {
     document.body.innerHTML = ''
   })
 
-  it('should render the dialog with check type name in title', async () => {
+  it('should render the cluster header with kicker and h2', async () => {
     await renderDialog()
 
-    expect(screen.getByText(/Enregistrer un contrôle: Vidange/i)).toBeInTheDocument()
+    expect(screen.getByText('// Nouvelle entrée')).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { level: 2, name: /^Journaliser un contrôle/ })
+    ).toBeInTheDocument()
   })
 
   it('should render the form with date and notes fields', async () => {
@@ -73,5 +89,13 @@ describe('LogCheckDialog', () => {
     expect(dialog).toHaveClass('modal-open')
     expect(dialog.querySelector('.modal-box')).toBeInTheDocument()
     expect(dialog.querySelector('.modal-action')).toBeInTheDocument()
+  })
+
+  it('should render the type panel and PROCHAIN panel when checkType is provided', async () => {
+    await renderDialog({ checkType: mockCheckType, status: 'overdue' })
+
+    expect(screen.getByLabelText('Type de contrôle')).toBeInTheDocument()
+    expect(screen.getByText('Tous les 14 jrs')).toBeInTheDocument()
+    expect(screen.getByText('Prochain contrôle calculé')).toBeInTheDocument()
   })
 })
