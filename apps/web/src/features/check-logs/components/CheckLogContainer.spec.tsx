@@ -115,7 +115,7 @@ describe('CheckLogContainer', () => {
     expect(screen.getByText('Chargement...')).toBeInTheDocument()
   })
 
-  it('should render the list with title and filter after loading', async () => {
+  it('should render the list with kicker, composite h1 and filter after loading', async () => {
     $vehicle.set(mockVehicle)
     $checkLogs.set(mockCheckLogs)
     $checkTypes.set(mockCheckTypes)
@@ -123,11 +123,12 @@ describe('CheckLogContainer', () => {
     render(<CheckLogContainer />)
 
     await waitFor(() => {
-      expect(screen.getByText('Historique des contrôles')).toBeInTheDocument()
+      expect(screen.getByText('ARCHIVES · JOURNAL DES CONTRÔLES')).toBeInTheDocument()
+      expect(
+        screen.getByRole('heading', { level: 1, name: /2 entrées · Tous les contrôles/i })
+      ).toBeInTheDocument()
       expect(screen.getByText('Filtrer par type')).toBeInTheDocument()
       expect(screen.getByText('All good')).toBeInTheDocument()
-      expect(screen.getByText(/Effectué le 2026-03-15/)).toBeInTheDocument()
-      expect(screen.getByText(/Effectué le 2026-03-10/)).toBeInTheDocument()
     })
   })
 
@@ -139,15 +140,15 @@ describe('CheckLogContainer', () => {
     render(<CheckLogContainer />)
 
     await waitFor(() => {
-      expect(screen.getByText(/Effectué le 2026-03-15/)).toBeInTheDocument()
-      expect(screen.getByText(/Effectué le 2026-03-10/)).toBeInTheDocument()
+      expect(screen.getByText('15.03.2026')).toBeInTheDocument()
+      expect(screen.getByText('10.03.2026')).toBeInTheDocument()
     })
 
     fireEvent.change(screen.getByLabelText('Filtrer par type'), { target: { value: 'ct-1' } })
 
     await waitFor(() => {
-      expect(screen.getByText(/Effectué le 2026-03-15/)).toBeInTheDocument()
-      expect(screen.queryByText(/Effectué le 2026-03-10/)).not.toBeInTheDocument()
+      expect(screen.getByText('15.03.2026')).toBeInTheDocument()
+      expect(screen.queryByText('10.03.2026')).not.toBeInTheDocument()
     })
   })
 
@@ -159,21 +160,21 @@ describe('CheckLogContainer', () => {
     render(<CheckLogContainer />)
 
     await waitFor(() => {
-      expect(screen.getByText(/Effectué le 2026-03-15/)).toBeInTheDocument()
-      expect(screen.getByText(/Effectué le 2026-03-10/)).toBeInTheDocument()
+      expect(screen.getByText('15.03.2026')).toBeInTheDocument()
+      expect(screen.getByText('10.03.2026')).toBeInTheDocument()
     })
 
     fireEvent.change(screen.getByLabelText('Filtrer par type'), { target: { value: 'ct-1' } })
 
     await waitFor(() => {
-      expect(screen.queryByText(/Effectué le 2026-03-10/)).not.toBeInTheDocument()
+      expect(screen.queryByText('10.03.2026')).not.toBeInTheDocument()
     })
 
     fireEvent.change(screen.getByLabelText('Filtrer par type'), { target: { value: '' } })
 
     await waitFor(() => {
-      expect(screen.getByText(/Effectué le 2026-03-15/)).toBeInTheDocument()
-      expect(screen.getByText(/Effectué le 2026-03-10/)).toBeInTheDocument()
+      expect(screen.getByText('15.03.2026')).toBeInTheDocument()
+      expect(screen.getByText('10.03.2026')).toBeInTheDocument()
     })
   })
 
