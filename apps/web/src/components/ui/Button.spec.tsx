@@ -54,6 +54,16 @@ describe('Button', () => {
     expect(button).toHaveClass('btn')
   })
 
+  it('should apply destructive-outline variant styling', () => {
+    const { getByRole } = render(<Button variant='destructive-outline'>Destructive Outline</Button>)
+
+    const button = getByRole('button', { name: 'Destructive Outline' })
+
+    expect(button).toHaveClass('btn-outline')
+    expect(button).toHaveClass('btn-error')
+    expect(button).toHaveClass('btn')
+  })
+
   it('should apply warning variant styling', () => {
     const { getByRole } = render(<Button variant='warning'>Warning</Button>)
 

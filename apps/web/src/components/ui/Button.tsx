@@ -1,7 +1,13 @@
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ElementType } from 'react'
 import React from 'react'
 
-export type ButtonVariant = 'default' | 'outline' | 'ghost' | 'destructive' | 'warning'
+export type ButtonVariant =
+  | 'default'
+  | 'outline'
+  | 'ghost'
+  | 'destructive'
+  | 'destructive-outline'
+  | 'warning'
 
 type ButtonBaseProps = {
   variant?: ButtonVariant
@@ -24,6 +30,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       outline: 'btn-outline',
       ghost: 'btn-ghost',
       destructive: 'btn-error',
+      'destructive-outline': 'btn-outline btn-error',
       warning: 'btn-warning'
     }
 
