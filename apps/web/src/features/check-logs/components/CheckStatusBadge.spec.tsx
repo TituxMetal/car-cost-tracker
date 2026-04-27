@@ -37,12 +37,22 @@ describe('CheckStatusBadge', () => {
     expect(badge).toHaveClass('badge-error')
   })
 
-  it('should render "Jamais effectué" with badge-info for never status', () => {
+  it('should render "Jamais" with badge-info for never status', () => {
     render(<CheckStatusBadge status='never' />)
 
-    const badge = screen.getByText('Jamais effectué')
+    const badge = screen.getByText('Jamais')
 
     expect(badge).toBeInTheDocument()
     expect(badge).toHaveClass('badge-info')
+  })
+
+  it('should prefix the label with an aria-hidden telltale dot', () => {
+    const { container } = render(<CheckStatusBadge status='on-time' />)
+
+    const telltale = container.querySelector('[aria-hidden="true"]')
+
+    expect(telltale).not.toBeNull()
+    expect(telltale).toHaveClass('rounded-full')
+    expect(telltale).toHaveClass('bg-current')
   })
 })
