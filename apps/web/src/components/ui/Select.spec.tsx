@@ -27,7 +27,8 @@ describe('Select', () => {
     })
 
     const select = getByRole('combobox')
-    expect(select).toHaveClass('select')
+    expect(select).toHaveClass('font-mono')
+    expect(select).toHaveClass('border-base-300')
   })
 
   it('should render with a label when provided', () => {
@@ -81,7 +82,7 @@ describe('Select', () => {
     const select = getByRole('combobox')
 
     expect(select).toHaveAttribute('aria-invalid', 'true')
-    expect(select).toHaveClass('select-error')
+    expect(select).toHaveClass('border-error')
   })
 
   it('should not set aria-invalid when no error is present', () => {
