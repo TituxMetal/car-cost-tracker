@@ -152,74 +152,146 @@ Current state only. Deferred items live in [`BACKLOG.md`](./BACKLOG.md).
 
 #### Phase 12: `CheckStatusBadge` (with telltale dot) + `CheckTypeFilter` + specs
 
-- [ ] Status badge prefixed by `aria-hidden` circular dot, semantic colours preserved
+- [ ] `CheckStatusBadge.tsx`: prefix label with `aria-hidden` circular telltale `<span>`
+      (`inline-block h-2 w-2 rounded-full bg-current`), semantic badge colours preserved (no
+      outline+opacity)
+- [ ] `CheckTypeFilter.tsx`: adopt refreshed `Select` primitive, label uses
+      `font-display uppercase tracking-wide text-sm`
 
-#### Phase 13: Check-types surface refresh (6 components + 6 specs)
+#### Phase 13: Check-types surface refresh (6 components + 6 specs) + `Button` `destructive-outline` variant
 
-- [ ] `CheckTypeCard` / `CheckTypeForm` / `CheckTypeList` / `CheckTypeContainer` /
-      `DeleteCheckTypeDialog` / `SuggestedCheckTypes`
+- [ ] `Button.tsx`: introduce `variant='destructive-outline'` (`btn-outline btn-error`) + spec —
+      must land before any card refresh in this phase; Block 3 local overrides (`VehicleProfile`
+      Supprimer + `VehicleContainer` cancel) migrated in same commit OR deferred to Block 8
+- [ ] `CheckTypeCard.tsx`: status-driven left border
+      (`border-l-error`/`warning`/`success`/`base-content/30`), `<h3>` cluster + `CheckStatusBadge`
+      in title row, 3-col mono mini-table `INTERV. · DERNIER · PROCHAIN`, footer split
+      (`JOURNALISER` outline ≈ 90% + `…` overflow ≈ 10%)
+- [ ] `CheckTypeForm.tsx`: cluster mono uppercase legends, kilométrage / interval input gets
+      `font-mono text-lg`
+- [ ] `CheckTypeList.tsx`: thin wrapper renders children grid; container owns the grid
+- [ ] `CheckTypeContainer.tsx`: kicker `CONFIGURATION · TYPES DE CONTRÔLE`, composite h1
+      `{count} contrôles programmés`, `+ NOUVEAU TYPE` button (`w-full md:w-auto`), `serverError`
+      banner pattern (4 mutations: create / update / delete / suggest-create), grid
+      `md:grid-cols-2 xl:grid-cols-3`
+- [ ] `DeleteCheckTypeDialog.tsx`: inherits cluster `ConfirmDialog`; verification only
+- [ ] `SuggestedCheckTypes.tsx`: chip-style buttons
+      `btn btn-sm btn-outline font-display uppercase tracking-wide`, `flex flex-wrap gap-2`
 
 #### Phase 14: Check-logs surface refresh (6 components + 6 specs)
 
-- [ ] `CheckLogCard` / `CheckLogList` / `CheckLogContainer` / `LogCheckForm` / `LogCheckDialog` /
-      `DeleteCheckLogDialog`
+- [ ] `CheckLogContainer.tsx`: kicker `ARCHIVES · JOURNAL DES CONTRÔLES`, composite h1
+      `{count} entrées · {periodLabel}`, NO top-right action button (logs created from Dashboard /
+      `CheckTypeCard`), `serverError` banner pattern (3 mutations: create / update / delete)
+- [ ] `CheckLogList.tsx`: desktop = TABLE-style via Path A (CSS-grid on `<ul>` keeping `<article>`
+      semantics); mobile = card stack — fall back to Path B (real `<table>`) only if pixels don't
+      match after coding
+- [ ] `CheckLogCard.tsx`: status-driven left border, lucide icons `text-primary`, `font-mono` on
+      date / ODO / prochain, `hover:-translate-y-0.5` mobile only
+- [ ] `LogCheckForm.tsx`: enriched type selector (status badge + interval inline via radix
+      `Popover` + `<select>` fallback), 2-col DATE / KILOMÉTRAGE grid (`font-mono     text-lg`), NEW
+      `PROCHAIN CONTRÔLE CALCULÉ` info panel computed live from `intervalDays` + entered date
+- [ ] `LogCheckDialog.tsx`: cluster header (kicker `// NOUVELLE ENTRÉE` + h2
+      `Journaliser un contrôle`), full-width primary on mobile (`w-full md:w-auto md:ml-auto`)
+- [ ] `DeleteCheckLogDialog.tsx`: inherits cluster `ConfirmDialog`; verification only
 
 ### Block 5: Dashboard + new widgets — `feature/visual-refresh-dashboard`
 
+> Recipes below are the legacy class-swap version. `block-5-dashboard-{desktop,mobile}.png`
+> screenshots are on disk — **amend recipes against pixels before coding** (Block 4 precedent: 7+
+> markup/logic discrepancies surfaced when amended).
+
 #### Phase 15: Refresh existing dashboard components (7 components + specs)
 
-- [ ] `DashboardContainer` / `VehicleSummaryCard` / `StatusOverview` (with `Gauge`) /
-      `ActionItemsList` / `ActionItemCard` / `RecentActivityList` / `DashboardEmptyState`
+- [ ] `DashboardContainer.tsx`: cluster refresh
+- [ ] `VehicleSummaryCard.tsx`: cluster refresh
+- [ ] `StatusOverview.tsx`: cluster refresh, integrates `Gauge` primitive (Block 1)
+- [ ] `ActionItemsList.tsx`: cluster refresh
+- [ ] `ActionItemCard.tsx`: cluster refresh
+- [ ] `RecentActivityList.tsx`: cluster refresh
+- [ ] `DashboardEmptyState.tsx`: cluster refresh
 
 #### Phase 16: New `BudgetWidget` component + spec
 
-- [ ] Composes `useBudget` (`monthlyStatus`), renders nothing if `!hasBudget`, links to `/budget`
+- [ ] `BudgetWidget.tsx`: composes `useBudget` (`monthlyStatus`), renders nothing if `!hasBudget`,
+      links to `/budget`
 
 #### Phase 17: New `RecentExpensesWidget` component + spec
 
-- [ ] Composes `useExpenses` + `$spentThisMonthCents`, renders nothing if `!hasExpenses`, links to
-      `/expenses`
+- [ ] `RecentExpensesWidget.tsx`: composes `useExpenses` + `$spentThisMonthCents`, renders nothing
+      if `!hasExpenses`, links to `/expenses`
 
 #### Phase 18: Wire both widgets into `DashboardContainer` + spec update
 
-- [ ] Both widgets render inside `vehicle && hasCheckTypes` branch; barrel updated
+- [ ] `DashboardContainer.tsx`: render both widgets inside `vehicle && hasCheckTypes` branch + spec
+      update
+- [ ] `components/index.ts`: export `BudgetWidget` + `RecentExpensesWidget`
 
 ### Block 6: Expenses — `feature/visual-refresh-expenses`
 
+> No V01 mockup captured yet — capture from `index.html` V1Expenses or ask the user before coding.
+> **Amend recipes against pixels** (Block 4 precedent).
+
 #### Phase 19: List + filter + cards + empty state (6 components + specs)
 
-- [ ] `ExpensesContainer` / `ExpensesHeader` / `ExpensesFilter` / `ExpensesList` / `ExpenseCard` /
-      `ExpensesEmptyState`
+- [ ] `ExpensesContainer.tsx`: cluster refresh
+- [ ] `ExpensesHeader.tsx`: cluster refresh
+- [ ] `ExpensesFilter.tsx`: cluster refresh
+- [ ] `ExpensesList.tsx`: cluster refresh
+- [ ] `ExpenseCard.tsx`: cluster refresh
+- [ ] `ExpensesEmptyState.tsx`: cluster refresh
 
 #### Phase 20: Forms + dialogs (3 components + specs)
 
-- [ ] `ExpenseForm` / `ExpenseFormDialog` / `DeleteExpenseDialog`
+- [ ] `ExpenseForm.tsx`: cluster refresh
+- [ ] `ExpenseFormDialog.tsx`: cluster refresh
+- [ ] `DeleteExpenseDialog.tsx`: inherits cluster `ConfirmDialog`; verification only
 
 ### Block 7: Budget — `feature/visual-refresh-budget`
 
+> No V01 mockup captured yet — capture from `index.html` V1Budget or ask the user before coding.
+> **Amend recipes against pixels** (Block 4 precedent).
+
 #### Phase 21: Container + header + status + empty state (4 components + specs)
 
-- [ ] `BudgetContainer` / `BudgetHeader` / `BudgetStatus` (linear `<progress>` + `.sr-only` per
-      status) / `BudgetEmptyState`
+- [ ] `BudgetContainer.tsx`: cluster refresh
+- [ ] `BudgetHeader.tsx`: cluster refresh
+- [ ] `BudgetStatus.tsx`: cluster refresh, linear `<progress>` + `.sr-only` per status
+- [ ] `BudgetEmptyState.tsx`: cluster refresh
 
 #### Phase 22: Forms + dialogs (3 components + specs)
 
-- [ ] `BudgetForm` / `BudgetFormDialog` / `DeleteBudgetDialog`
+- [ ] `BudgetForm.tsx`: cluster refresh
+- [ ] `BudgetFormDialog.tsx`: cluster refresh
+- [ ] `DeleteBudgetDialog.tsx`: inherits cluster `ConfirmDialog`; verification only
 
 ### Block 8: Profile + Admin — `feature/visual-refresh-profile-admin`
 
+> No V01 mockup captured yet — capture from `index.html` V1Profile / V1Admin or ask the user before
+> coding. **Amend recipes against pixels** (Block 4 precedent).
+
 #### Phase 23: Profile main views (4 components + specs)
 
-- [ ] `ProfileView` / `EditProfileContainer` / `EditProfileForm` / `ChangePasswordForm`
+- [ ] `ProfileView.tsx`: cluster refresh
+- [ ] `EditProfileContainer.tsx`: cluster refresh
+- [ ] `EditProfileForm.tsx`: cluster refresh
+- [ ] `ChangePasswordForm.tsx`: cluster refresh
 
 #### Phase 24: Profile danger zone (2 components + specs)
 
-- [ ] `DeleteAccountSection` / `DeleteAccountDialog`
+- [ ] `DeleteAccountSection.tsx`: cluster refresh
+- [ ] `DeleteAccountDialog.tsx`: inherits cluster `ConfirmDialog`; verification only
 
 #### Phase 25: Admin surfaces (8 components + specs)
 
-- [ ] `AdminDashboard` / `UserList` / `UserManagement` / `UserDetailContainer` / `CreateUserForm` /
-      `CreateUserDialog` / `ResetPasswordForm` / `ResetPasswordDialog`
+- [ ] `AdminDashboard.tsx`: cluster refresh
+- [ ] `UserList.tsx`: cluster refresh
+- [ ] `UserManagement.tsx`: cluster refresh
+- [ ] `UserDetailContainer.tsx`: cluster refresh
+- [ ] `CreateUserForm.tsx`: cluster refresh
+- [ ] `CreateUserDialog.tsx`: inherits cluster `DialogShell`; verification only
+- [ ] `ResetPasswordForm.tsx`: cluster refresh
+- [ ] `ResetPasswordDialog.tsx`: inherits cluster `DialogShell`; verification only
 
 ---
 
