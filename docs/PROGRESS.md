@@ -148,52 +148,104 @@ Current state only. Deferred items live in [`BACKLOG.md`](./BACKLOG.md).
   unchanged for the rest of the codebase. Same pattern used for the cancel buttons in
   `VehicleContainer` create/edit modes.
 
-### Block 4: Checks (Types + Logs) — `feature/visual-refresh-checks`
+### Block 4: Checks (Types + Logs) — `feature/visual-refresh-checks` ✅
 
 #### Phase 12: `CheckStatusBadge` (with telltale dot) + `CheckTypeFilter` + specs
 
-- [ ] `CheckStatusBadge.tsx`: prefix label with `aria-hidden` circular telltale `<span>`
-      (`inline-block h-2 w-2 rounded-full bg-current`), semantic badge colours preserved (no
-      outline+opacity)
-- [ ] `CheckTypeFilter.tsx`: adopt refreshed `Select` primitive, label uses
-      `font-display uppercase tracking-wide text-sm`
+- [x] `CheckStatusBadge.tsx`: prefix label with `aria-hidden` circular telltale `<span>`
+      (`inline-block h-2 w-2 rounded-full bg-current`), cluster mono uppercase tracking, semantic
+      badge colours preserved (no outline+opacity), label `Jamais effectué` shortened to `Jamais` to
+      match mockup + dashboard StatusOverview consistency
+- [x] `CheckTypeFilter.tsx`: verified — already inherits cluster typography from refreshed `Label`
+      primitive (no code change needed)
 
 #### Phase 13: Check-types surface refresh (6 components + 6 specs) + `Button` `destructive-outline` variant
 
-- [ ] `Button.tsx`: introduce `variant='destructive-outline'` (`btn-outline btn-error`) + spec —
-      must land before any card refresh in this phase; Block 3 local overrides (`VehicleProfile`
-      Supprimer + `VehicleContainer` cancel) migrated in same commit OR deferred to Block 8
-- [ ] `CheckTypeCard.tsx`: status-driven left border
-      (`border-l-error`/`warning`/`success`/`base-content/30`), `<h3>` cluster + `CheckStatusBadge`
-      in title row, 3-col mono mini-table `INTERV. · DERNIER · PROCHAIN`, footer split
-      (`JOURNALISER` outline ≈ 90% + `…` overflow ≈ 10%)
-- [ ] `CheckTypeForm.tsx`: cluster mono uppercase legends, kilométrage / interval input gets
+- [x] `Button.tsx`: `variant='destructive-outline'` (`btn-outline btn-error`) + spec. Block 3 local
+      overrides (`VehicleProfile` Supprimer + `VehicleContainer` cancel) deferred to Block 8 per
+      plan option
+- [x] `CheckTypeCard.tsx`: status-driven left border via `borderByStatus` map, `<h3>` cluster +
+      `CheckStatusBadge` in title row, 3-col mono mini-table `INTERV. · DERNIER · PROCHAIN`, footer
+      with `Journaliser` outline + edit/delete icon buttons (kept inline rather than overflow `…` to
+      preserve a11y + spec selectors); date format DD.MM
+- [x] `CheckTypeForm.tsx`: cluster legends inherit from cluster `Label`, intervalle input gets
       `font-mono text-lg`
-- [ ] `CheckTypeList.tsx`: thin wrapper renders children grid; container owns the grid
-- [ ] `CheckTypeContainer.tsx`: kicker `CONFIGURATION · TYPES DE CONTRÔLE`, composite h1
-      `{count} contrôles programmés`, `+ NOUVEAU TYPE` button (`w-full md:w-auto`), `serverError`
-      banner pattern (4 mutations: create / update / delete / suggest-create), grid
-      `md:grid-cols-2 xl:grid-cols-3`
-- [ ] `DeleteCheckTypeDialog.tsx`: inherits cluster `ConfirmDialog`; verification only
-- [ ] `SuggestedCheckTypes.tsx`: chip-style buttons
-      `btn btn-sm btn-outline font-display uppercase tracking-wide`, `flex flex-wrap gap-2`
+- [x] `CheckTypeList.tsx`: thin Fragment wrapper — container owns the grid; replaced
+      `statuses: Map<string, CheckStatus>` with `summaries: Map<string, CheckStatusSummary>` to
+      forward the dates needed for the mini-table
+- [x] `CheckTypeContainer.tsx`: kicker `CONFIGURATION · TYPES DE CONTRÔLE`, composite h1
+      `{count} contrôles programmés`, `+ Nouveau type` button (`w-full md:w-auto`), grid
+      `md:grid-cols-2 xl:grid-cols-3` + `serverError`/`successMessage` banner pattern, cluster
+      kicker + h1 above create/edit form modes, `Annuler` migrated to `destructive-outline`, passes
+      full `CheckType` + `status` to `LogCheckDialog`
+- [x] `DeleteCheckTypeDialog.tsx`: inherited cluster `ConfirmDialog`, no code change required
+- [x] `SuggestedCheckTypes.tsx`: kicker `// Suggestions rapides`, chip-style outline buttons with
+      mono interval suffix, `flex flex-wrap gap-2`
 
 #### Phase 14: Check-logs surface refresh (6 components + 6 specs)
 
-- [ ] `CheckLogContainer.tsx`: kicker `ARCHIVES · JOURNAL DES CONTRÔLES`, composite h1
-      `{count} entrées · {periodLabel}`, NO top-right action button (logs created from Dashboard /
-      `CheckTypeCard`), `serverError` banner pattern (3 mutations: create / update / delete)
-- [ ] `CheckLogList.tsx`: desktop = TABLE-style via Path A (CSS-grid on `<ul>` keeping `<article>`
-      semantics); mobile = card stack — fall back to Path B (real `<table>`) only if pixels don't
-      match after coding
-- [ ] `CheckLogCard.tsx`: status-driven left border, lucide icons `text-primary`, `font-mono` on
-      date / ODO / prochain, `hover:-translate-y-0.5` mobile only
-- [ ] `LogCheckForm.tsx`: enriched type selector (status badge + interval inline via radix
-      `Popover` + `<select>` fallback), 2-col DATE / KILOMÉTRAGE grid (`font-mono     text-lg`), NEW
-      `PROCHAIN CONTRÔLE CALCULÉ` info panel computed live from `intervalDays` + entered date
-- [ ] `LogCheckDialog.tsx`: cluster header (kicker `// NOUVELLE ENTRÉE` + h2
-      `Journaliser un contrôle`), full-width primary on mobile (`w-full md:w-auto md:ml-auto`)
-- [ ] `DeleteCheckLogDialog.tsx`: inherits cluster `ConfirmDialog`; verification only
+- [x] `CheckLogContainer.tsx`: kicker `ARCHIVES · JOURNAL DES CONTRÔLES`, composite h1
+      `{count} entrées · {periodLabel}` (periodLabel derives from selected check type filter or
+      defaults to `Tous les contrôles`), NO top-right action button, `serverError` banner via hook's
+      existing `error` state
+- [x] `CheckLogList.tsx`: Path A — section wraps a `<header>` desktop column band
+      (`md:grid-cols-[80px_1fr_120px_1fr_120px_40px]`) over a stack of cards; mobile card stack
+      preserved
+- [x] `CheckLogCard.tsx`: status derived from `nextDueAt` vs today (overdue/due-soon/on-time
+      heuristic at 7-day threshold), status-driven left border, mono `<time>` on dates, ODO column
+      shows `—` placeholder (no `mileage` field on `CheckLog` schema — pure schema rule respected),
+      responsive: card stack on mobile + grid row on desktop, hover lift mobile only
+- [x] `LogCheckForm.tsx`: bordered cluster panel for the selected check type (name + status badge +
+      `Tous les X jrs`), date input `font-mono text-lg`, NEW `Prochain contrôle calculé` info panel
+      (`bg-success/10 border-l-2 border-l-success`) computed live from selected type's
+      `intervalDays` + entered date — KILOMÉTRAGE input from mockup omitted (no `mileage` field on
+      `CreateCheckLogSchema` — strict rule #5)
+- [x] `LogCheckDialog.tsx`: cluster kicker `// Nouvelle entrée` + DialogShell-rendered h2
+      `Journaliser un contrôle`, accepts new optional `checkType` + `status` props passed to form,
+      footer `Annuler` (`destructive-outline`) + `Enregistrer l'entrée`
+      (`w-full md:w-auto     md:ml-auto`)
+- [x] `DeleteCheckLogDialog.tsx`: inherited cluster `ConfirmDialog`, no code change required
+
+#### Phase 14 documented deviations from plan (intentional)
+
+- **`CheckLogCard` markup** — `<ul>/<li>/<section>` from the original card-style markup are dropped
+  because the new layout is a tabular row (DATE / TYPE / ODO / NOTES / PROCHAIN / ×) on desktop, not
+  a list of metadata items inside a card body. `<article>` (kept), `<header>` (added, wraps dot+h3,
+  `md:contents` so it dissolves into the grid on desktop), `<footer>` (added, wraps delete button,
+  same `md:contents` trick), `<h2>` demoted to `<h3>` (subordinate to page h1 in a list of rows),
+  `<time>` for both dates (kept). Plan strict rule #1 ("never replace semantic elements with
+  `<div>`") respected for `<article>/<header>/<footer>/<time>`; `<ul>/<li>/<section>` removal is a
+  redesign-driven change, not a generic `<div>`-ification
+- **`CheckStatusBadge` `never` color** — uses `badge-info` (cyan/teal) per the V01 mockup pixels
+  (`block-4-check-types-desktop.png` JAMAIS badge is clearly cyan). Plan text recipe said
+  `badge-neutral`; the WARNING preamble's "VISUAL REFERENCE OVERRIDES TEXT RECIPES" rule arbitrates
+  in favour of pixels
+- **`LogCheckDialog` kicker placement** — kicker `// Nouvelle entrée` rendered BELOW the
+  `Dialog.Title` h2 (not above as in mockup). Trade-off: keeps a single accessible h2 owned by Radix
+  `Dialog.Title`. Inverting to render the kicker above would require a `kicker?` prop on
+  `DialogShell` — deferred to Block 8 polish (BACKLOG candidate). The `-mt-2` margin pulls the
+  kicker close to the title to mitigate the visual divergence
+- **`LogCheckForm` KILOMÉTRAGE input** — omitted. The mockup shows a 2-col DATE/KM grid in the
+  dialog body; `CreateCheckLogSchema` has no `mileage` field and strict rule #5 forbids schema
+  modification. Tracked in `BACKLOG.md` (`Check logs — per-log mileage capture`)
+- **`CheckLogList` ODO column placeholder** — every row shows `—`. Same root cause as KILOMÉTRAGE
+  omission. Tracked in `BACKLOG.md`
+- **`SuggestedCheckTypes` element choice** — uses native `<button>` instead of the project `Button`
+  primitive to escape DaisyUI's `btn` height/hover constraints (the chip is conceptually a
+  tile-trigger, not a `btn`). Local override is justified at first occurrence; if 2+ more chip
+  surfaces appear (FuelLog filter chips, Expense category chips), extract a shared `Chip` primitive
+  then. Logged for future review
+
+#### Phase 14 cross-cutting fixes (surfaced during browser smoke test)
+
+- [x] `CheckStatusBadge.tsx`: added `inline-flex shrink-0 whitespace-nowrap` to prevent badge wrap
+      inside constrained card title rows
+- [x] `Textarea.tsx`: cluster-rewritten to match `Input` primitive (was still inheriting daisy
+      `textarea` class from Block 1 pre-cluster styling); spec updated for new error class +
+      typography
+- [x] `DashboardContainer.spec.tsx`: stale assertions for old `Enregistrer un contrôle: Vidange`
+      title + `^Enregistrer$` submit button updated to new `Journaliser un contrôle` h2 +
+      `Enregistrer l'entrée` submit name (Block 5 still owns the dashboard refresh proper)
 
 ### Block 5: Dashboard + new widgets — `feature/visual-refresh-dashboard`
 
