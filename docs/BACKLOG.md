@@ -84,6 +84,29 @@ shape are NOT listed here — they live in the shape.
       each update — no historical signal exists today. Defer until Visual Refresh ships
       (frontend-only contract per `docs/features/09-visual-refresh.md`).
 
+## Check logs — per-log mileage capture (post Visual Refresh)
+
+- [ ] **Add `mileage` field to `CheckLog`** — schema (Zod + DTO), Prisma migration, persistence, and
+      `CreateCheckLogSchema` form input. The V01 mockup for `/check-logs` shows an `ODO` column on
+      every row (`block-4-check-logs-history-desktop.png`) and a `KILOMÉTRAGE` input in the
+      `LogCheckDialog` (`block-4-check-log-dialog-desktop.png`). The Visual Refresh plan rule #5 (no
+      schema modifications) deliberately stopped at the frontend, so: - `CheckLogCard` ODO column
+      shows `—` placeholder - `LogCheckForm` omits the KILOMÉTRAGE input The backend pass to add the
+      field unlocks both surfaces. Coordinate with the parallel `MileageLog` feature (post Visual
+      Refresh) — both entities want to capture mileage at a point in time, decide whether to persist
+      via `CheckLog.mileage` (denormalised) or by writing a `MileageLog` row on each
+      `CheckLog.create` (normalised, one source of truth).
+
+## Layout — profile avatar dropdown outside-click (Block 1 follow-up)
+
+- [ ] **Profile avatar dropdown does not close on outside click** — desktop top-bar avatar menu in
+      `apps/web/src/layouts/Main.astro` opens on click but stays open when clicking elsewhere on the
+      page (or in empty space). Should close on outside click + on Escape, mirroring the pattern
+      used by Radix dialogs / DaisyUI dropdowns elsewhere. Surfaced during Block 4 (Checks) browser
+      smoke test on 2026-04-27. Scope: `Main.astro` script block — likely a missing document-level
+      listener or a daisy `dropdown` open-state hand-rolled instead of using `<details>` with
+      `summary` toggle. Quick fix branch suggested: `fix/profile-dropdown-outside-click`.
+
 ## UI / dialog button consistency (post Visual Refresh)
 
 - [ ] **`ConfirmDialog` action buttons full-width on mobile** — currently `Annuler` / confirm
