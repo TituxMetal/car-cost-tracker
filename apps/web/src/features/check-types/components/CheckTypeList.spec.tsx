@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, mock } from 'bun:test'
 
-import type { CheckStatus } from '~/features/check-logs/types'
+import type { CheckStatusSummary } from '~/features/check-logs/types'
 import { cleanup, fireEvent, render, screen } from '~/test-utils'
 
 import type { CheckType } from '../types'
@@ -77,11 +77,31 @@ describe('CheckTypeList', () => {
     })
   })
 
-  it('should forward statuses to cards as CheckStatusBadge', () => {
+  it('should forward summaries to cards as CheckStatusBadge', () => {
     const actions = mock(() => {})
-    const statuses = new Map<string, CheckStatus>([
-      ['ct-1', 'on-time'],
-      ['ct-2', 'overdue']
+    const summaries = new Map<string, CheckStatusSummary>([
+      [
+        'ct-1',
+        {
+          checkTypeId: 'ct-1',
+          checkTypeName: "Niveau d'huile",
+          intervalDays: 7,
+          lastCompletedAt: '2026-01-15T00:00:00.000Z',
+          nextDueAt: '2026-01-22T00:00:00.000Z',
+          status: 'on-time'
+        }
+      ],
+      [
+        'ct-2',
+        {
+          checkTypeId: 'ct-2',
+          checkTypeName: 'Pression des pneus',
+          intervalDays: 14,
+          lastCompletedAt: '2026-01-01T00:00:00.000Z',
+          nextDueAt: '2026-01-15T00:00:00.000Z',
+          status: 'overdue'
+        }
+      ]
     ])
 
     render(
@@ -89,7 +109,7 @@ describe('CheckTypeList', () => {
         checkTypes={mockCheckTypes}
         onEdit={actions}
         onDelete={actions}
-        statuses={statuses}
+        summaries={summaries}
       />
     )
 
@@ -97,7 +117,7 @@ describe('CheckTypeList', () => {
     expect(screen.getByText(/en retard/i)).toBeInTheDocument()
   })
 
-  it('should not render badges when statuses is not provided', () => {
+  it('should not render badges when summaries is not provided', () => {
     const actions = mock(() => {})
 
     render(<CheckTypeList checkTypes={mockCheckTypes} onEdit={actions} onDelete={actions} />)

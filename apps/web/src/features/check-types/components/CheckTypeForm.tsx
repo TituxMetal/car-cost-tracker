@@ -14,6 +14,7 @@ export const CheckTypeForm = ({ form }: CheckTypeFormProps) => (
     <Input
       label='Intervalle (jours)'
       type='number'
+      className='font-mono text-lg'
       {...form.register('intervalDays', { valueAsNumber: true })}
       error={form.formState.errors.intervalDays?.message}
     />

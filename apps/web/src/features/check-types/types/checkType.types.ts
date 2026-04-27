@@ -26,8 +26,28 @@ export const SUGGESTED_CHECK_TYPES: SuggestedCheckType[] = [
     intervalDays: 14
   },
   {
-    name: 'Niveau de liquide de refroidissement',
+    name: 'Niveau de liquide de frein',
+    description: 'Vérifier le niveau entre les repères min et max du bocal',
+    intervalDays: 30
+  },
+  {
+    name: 'Liquide de refroidissement',
     description: 'Vérifier le niveau entre les repères min et max, moteur froid',
     intervalDays: 30
+  },
+  {
+    name: 'Niveau de lave-glace',
+    description: 'Compléter le réservoir avec du liquide adapté à la saison',
+    intervalDays: 30
+  },
+  {
+    name: 'Éclairage complet',
+    description: 'Feux de croisement, route, clignotants, stop, plaque',
+    intervalDays: 30
+  },
+  {
+    name: 'Essuie-glaces',
+    description: 'État des balais avant et arrière',
+    intervalDays: 90
   }
 ]

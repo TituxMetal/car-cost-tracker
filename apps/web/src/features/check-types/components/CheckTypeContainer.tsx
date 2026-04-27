@@ -1,10 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ClipboardPlus, ListChecks, PencilLine, PlusCircle } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { Button, FormWrapper } from '~/components/ui'
-import type { CheckStatus } from '~/features/check-logs'
+import type { CheckStatusSummary } from '~/features/check-logs'
 import { LogCheckDialog, useCheckLogs } from '~/features/check-logs'
 import type { CreateCheckLogSchema } from '~/features/check-logs/schemas'
 import { useVehicle } from '~/features/vehicles'
@@ -176,43 +175,36 @@ export const CheckTypeContainer = () => {
     return <p>Chargement...</p>
   }
 
-  if (mode === 'create') {
-    return (
-      <section className='mx-auto max-w-2xl p-6'>
-        <h1 className='text-base-content mb-8 flex items-center justify-center gap-3 text-center text-4xl font-bold'>
-          <PlusCircle size={32} className='text-primary' />
-          Ajouter un type de contrôle
-        </h1>
-        <article className='card bg-base-200'>
-          <FormWrapper onSubmit={handleSubmit} error={serverError} className='card-body gap-4'>
-            <CheckTypeForm form={form} />
-            <footer className='card-actions mt-2 justify-between'>
-              <Button type='button' variant='destructive' onClick={onCancel}>
-                Annuler
-              </Button>
-              <Button type='submit'>Enregistrer</Button>
-            </footer>
-          </FormWrapper>
-        </article>
-      </section>
-    )
-  }
+  if (mode === 'create' || mode === 'edit') {
+    const kicker = mode === 'create' ? '// NOUVEAU TYPE' : '// MODIFICATION'
+    const heading =
+      mode === 'create' ? 'Ajouter un type de contrôle' : 'Modifier le type de contrôle'
 
-  if (mode === 'edit') {
     return (
-      <section className='mx-auto max-w-2xl p-6'>
-        <h1 className='text-base-content mb-8 flex items-center justify-center gap-3 text-center text-4xl font-bold'>
-          <PencilLine size={32} className='text-primary' />
-          Modifier le type de contrôle
-        </h1>
-        <article className='card bg-base-200'>
-          <FormWrapper onSubmit={handleSubmit} error={serverError} className='card-body gap-4'>
+      <section className='mx-auto w-full p-6 md:max-w-2xl'>
+        <header className='mb-6'>
+          <p className='font-display text-base-content/60 text-xs tracking-wider uppercase'>
+            {kicker}
+          </p>
+          <h1 className='font-display mt-1 text-3xl font-bold tracking-wider md:text-4xl'>
+            {heading}
+          </h1>
+        </header>
+        <article className='border-base-300 bg-base-200 border p-6'>
+          <FormWrapper onSubmit={handleSubmit} error={serverError} className='flex flex-col gap-4'>
             <CheckTypeForm form={form} />
-            <footer className='card-actions mt-2 justify-between'>
-              <Button type='button' variant='destructive' onClick={onCancel}>
+            <footer className='mt-2 flex flex-wrap justify-between gap-3'>
+              <Button
+                type='button'
+                variant='destructive-outline'
+                className='w-full md:w-auto'
+                onClick={onCancel}
+              >
                 Annuler
               </Button>
-              <Button type='submit'>Enregistrer</Button>
+              <Button type='submit' className='w-full md:w-auto'>
+                Enregistrer
+              </Button>
             </footer>
           </FormWrapper>
         </article>
@@ -224,48 +216,57 @@ export const CheckTypeContainer = () => {
     suggestion => !checkTypes.some(checkType => checkType.name === suggestion.name)
   )
 
-  const statusesMap = new Map<string, CheckStatus>(
-    statuses.map(statusMap => [statusMap.checkTypeId, statusMap.status])
+  const summariesMap = new Map<string, CheckStatusSummary>(
+    statuses.map(summary => [summary.checkTypeId, summary])
   )
+  const loggingSummary = loggingCheckType ? summariesMap.get(loggingCheckType.id) : undefined
 
   if (mode === 'list') {
     return (
       <section className='mx-auto max-w-6xl p-6'>
-        <header className='mb-6 flex items-center justify-between'>
-          <h1 className='text-base-content flex items-center gap-2 text-2xl font-bold'>
-            <ListChecks size={24} className='text-primary' />
-            Types de contrôle
-          </h1>
-          <Button onClick={() => setMode('create')}>Ajouter un contrôle</Button>
+        <header className='mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between'>
+          <div>
+            <p className='font-display text-base-content/60 text-xs tracking-wider uppercase'>
+              CONFIGURATION · TYPES DE CONTRÔLE
+            </p>
+            <h1 className='font-display mt-1 text-3xl font-bold tracking-wider md:text-4xl'>
+              {checkTypes.length} contrôles programmés
+            </h1>
+          </div>
+          <Button className='w-full md:w-auto' onClick={() => setMode('create')}>
+            + Nouveau type
+          </Button>
         </header>
         {serverError && (
-          <p className='alert alert-error mb-4' role='alert'>
+          <div className='alert alert-error mb-6' role='alert'>
             {serverError}
-          </p>
+          </div>
         )}
         {successMessage && (
-          <p className='alert alert-success mb-4' role='status'>
+          <div className='alert alert-success mb-6' role='status'>
             {successMessage}
-          </p>
+          </div>
         )}
         {remainingSuggestions.length > 0 && (
           <SuggestedCheckTypes suggestions={remainingSuggestions} onAdd={onAddSuggestion} />
         )}
-        {remainingSuggestions.length > 0 && hasCheckTypes && <hr className='divider my-4' />}
         {hasCheckTypes && (
-          <CheckTypeList
-            checkTypes={checkTypes}
-            onEdit={onEdit}
-            onDelete={onDelete}
-            statuses={statusesMap}
-            onLog={setLoggingCheckType}
-          />
+          <div className='grid gap-4 md:grid-cols-2 xl:grid-cols-3'>
+            <CheckTypeList
+              checkTypes={checkTypes}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              summaries={summariesMap}
+              onLog={setLoggingCheckType}
+            />
+          </div>
         )}
         {!hasCheckTypes && (
-          <section className='flex flex-col items-center gap-3 py-16 text-center'>
-            <ClipboardPlus size={48} className='text-base-content/30' />
-            <p className='text-base-content/70 text-lg font-medium'>Aucun type de contrôle</p>
-            <p className='text-base-content/60 max-w-sm text-sm'>
+          <section className='border-base-300 bg-base-200 border p-12 text-center'>
+            <p className='font-display text-base-content/70 text-lg font-medium tracking-wide'>
+              Aucun type de contrôle
+            </p>
+            <p className='text-base-content/60 mx-auto mt-2 max-w-sm font-mono text-xs'>
               Ajoutez votre premier contrôle ou utilisez les suggestions rapides ci-dessus
             </p>
           </section>
@@ -280,6 +281,8 @@ export const CheckTypeContainer = () => {
         {loggingCheckType && (
           <LogCheckDialog
             checkTypeName={loggingCheckType.name}
+            checkType={loggingCheckType}
+            status={loggingSummary?.status}
             onSubmit={handleLogSubmit}
             onCancel={() => setLoggingCheckType(null)}
           />

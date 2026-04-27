@@ -1,4 +1,4 @@
-import type { CheckStatus } from '~/features/check-logs/types'
+import type { CheckStatusSummary } from '~/features/check-logs/types'
 
 import type { CheckType } from '../types'
 
@@ -8,7 +8,7 @@ export interface CheckTypeListProps {
   checkTypes: CheckType[]
   onEdit: (checkType: CheckType) => void
   onDelete: (checkType: CheckType) => void
-  statuses?: Map<string, CheckStatus>
+  summaries?: Map<string, CheckStatusSummary>
   onLog?: (checkType: CheckType) => void
 }
 
@@ -16,19 +16,24 @@ export const CheckTypeList = ({
   checkTypes,
   onEdit,
   onDelete,
-  statuses,
+  summaries,
   onLog
 }: CheckTypeListProps) => (
-  <section className='grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3'>
-    {checkTypes.map(checkType => (
-      <CheckTypeCard
-        key={checkType.id}
-        checkType={checkType}
-        onEdit={onEdit}
-        onDelete={onDelete}
-        status={statuses?.get(checkType.id)}
-        onLog={onLog}
-      />
-    ))}
-  </section>
+  <>
+    {checkTypes.map(checkType => {
+      const summary = summaries?.get(checkType.id)
+      return (
+        <CheckTypeCard
+          key={checkType.id}
+          checkType={checkType}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          status={summary?.status}
+          lastCompletedAt={summary?.lastCompletedAt}
+          nextDueAt={summary?.nextDueAt}
+          onLog={onLog}
+        />
+      )
+    })}
+  </>
 )

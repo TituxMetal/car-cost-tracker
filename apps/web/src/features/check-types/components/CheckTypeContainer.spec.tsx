@@ -10,11 +10,12 @@ import {
   $vehicle,
   vehicleActions
 } from '~/features/vehicles/store'
-import { act, cleanup, fireEvent, render, screen, userEvent, waitFor } from '~/test-utils'
+import { act, cleanup, fireEvent, render, screen, userEvent, waitFor, within } from '~/test-utils'
 import * as navigationUtils from '~/utils/navigation'
 
 import { $checkTypes, $error, $isLoading, checkTypeActions } from '../store'
 import type { CheckType } from '../types'
+import { SUGGESTED_CHECK_TYPES } from '../types'
 
 import { CheckTypeContainer } from './CheckTypeContainer'
 
@@ -149,6 +150,33 @@ describe('CheckTypeContainer', () => {
       expect(screen.getByText('Pression des pneus')).toBeVisible()
     })
 
+    it('should render the configuration kicker and composite h1', async () => {
+      $vehicle.set(mockVehicle)
+      $checkTypes.set(mockCheckTypes)
+
+      await act(async () => {
+        render(<CheckTypeContainer />)
+      })
+
+      expect(screen.getByText('CONFIGURATION · TYPES DE CONTRÔLE')).toBeInTheDocument()
+      expect(
+        screen.getByRole('heading', { level: 1, name: '2 contrôles programmés' })
+      ).toBeInTheDocument()
+    })
+
+    it('should render server error banner with role=alert when set', async () => {
+      $vehicle.set(mockVehicle)
+      $checkTypes.set(mockCheckTypes)
+      const errorMessage = 'Failed to update check type'
+      updateSpy.mockRejectedValueOnce(new Error(errorMessage))
+
+      render(<CheckTypeContainer />)
+      fireEvent.click(screen.getAllByRole('button', { name: /modifier/i })[0])
+      fireEvent.click(screen.getByRole('button', { name: 'Enregistrer' }))
+
+      await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent(errorMessage))
+    })
+
     it('should show add button when no check types exist', async () => {
       $vehicle.set(mockVehicle)
       $checkTypes.set([])
@@ -157,7 +185,7 @@ describe('CheckTypeContainer', () => {
         render(<CheckTypeContainer />)
       })
 
-      expect(screen.getByRole('button', { name: 'Ajouter un contrôle' })).toBeVisible()
+      expect(screen.getByRole('button', { name: /nouveau type/i })).toBeVisible()
     })
   })
 
@@ -170,7 +198,7 @@ describe('CheckTypeContainer', () => {
       await act(async () => {
         render(<CheckTypeContainer />)
       })
-      fireEvent.click(screen.getByRole('button', { name: 'Ajouter un contrôle' }))
+      fireEvent.click(screen.getByRole('button', { name: /nouveau type/i }))
 
       expect(screen.getByLabelText('Nom')).toBeVisible()
       expect(screen.getByLabelText('Intervalle (jours)')).toBeVisible()
@@ -186,7 +214,7 @@ describe('CheckTypeContainer', () => {
       await act(async () => {
         render(<CheckTypeContainer />)
       })
-      fireEvent.click(screen.getByRole('button', { name: 'Ajouter un contrôle' }))
+      fireEvent.click(screen.getByRole('button', { name: /nouveau type/i }))
 
       await user.type(screen.getByLabelText('Nom'), 'Test Check Type')
       await user.type(screen.getByLabelText('Intervalle (jours)'), '30')
@@ -213,7 +241,7 @@ describe('CheckTypeContainer', () => {
       await act(async () => {
         render(<CheckTypeContainer />)
       })
-      fireEvent.click(screen.getByRole('button', { name: 'Ajouter un contrôle' }))
+      fireEvent.click(screen.getByRole('button', { name: /nouveau type/i }))
       fireEvent.click(screen.getByRole('button', { name: 'Annuler' }))
 
       expect(screen.getByText(`Niveau d'huile`)).toBeVisible()
@@ -232,7 +260,7 @@ describe('CheckTypeContainer', () => {
       await act(async () => {
         render(<CheckTypeContainer />)
       })
-      fireEvent.click(screen.getByRole('button', { name: 'Ajouter un contrôle' }))
+      fireEvent.click(screen.getByRole('button', { name: /nouveau type/i }))
 
       await user.type(screen.getByLabelText('Nom'), 'Test Check Type')
       await user.type(screen.getByLabelText('Intervalle (jours)'), '30')
@@ -402,7 +430,11 @@ describe('CheckTypeContainer', () => {
 
       expect(screen.getByText(`Niveau d'huile`)).toBeVisible()
       expect(screen.getByText('Pression des pneus')).toBeVisible()
-      expect(screen.getByText('Niveau de liquide de refroidissement')).toBeVisible()
+      expect(screen.getByText('Liquide de refroidissement')).toBeVisible()
+      expect(screen.getByText('Niveau de liquide de frein')).toBeVisible()
+      expect(screen.getByText('Niveau de lave-glace')).toBeVisible()
+      expect(screen.getByText('Éclairage complet')).toBeVisible()
+      expect(screen.getByText('Essuie-glaces')).toBeVisible()
     })
 
     it('should filter out suggestions that match existing check type names', async () => {
@@ -414,28 +446,28 @@ describe('CheckTypeContainer', () => {
         render(<CheckTypeContainer />)
       })
 
-      const addButtons = screen.getAllByRole('button', { name: /^\+/ })
-      expect(addButtons).toHaveLength(1)
+      const suggestionsNav = screen.getByRole('navigation')
+      const addButtons = within(suggestionsNav).getAllByRole('button', { name: /^\+/ })
+      expect(addButtons).toHaveLength(SUGGESTED_CHECK_TYPES.length - mockCheckTypes.length)
     })
 
     it('should not show suggestions when all have been added', async () => {
       $isLoading.set(false)
       $vehicle.set(mockVehicle)
-      $checkTypes.set([
-        ...mockCheckTypes,
-        {
+      $checkTypes.set(
+        SUGGESTED_CHECK_TYPES.map((suggestion, index) => ({
           ...mockCheckTypes[0],
-          id: 'ct-3',
-          name: 'Niveau de liquide de refroidissement',
-          intervalDays: 30
-        }
-      ])
+          id: `ct-${index + 100}`,
+          name: suggestion.name,
+          intervalDays: suggestion.intervalDays
+        }))
+      )
 
       await act(async () => {
         render(<CheckTypeContainer />)
       })
 
-      expect(screen.queryByRole('button', { name: /^\+/ })).not.toBeInTheDocument()
+      expect(screen.queryByRole('navigation')).not.toBeInTheDocument()
     })
 
     it('should call create with suggestion data when clicking add button', async () => {
@@ -447,14 +479,19 @@ describe('CheckTypeContainer', () => {
       await act(async () => {
         render(<CheckTypeContainer />)
       })
-      const addButtons = screen.getAllByRole('button', { name: /^\+/ })
+      const suggestionsNav = screen.getByRole('navigation')
+      const addButtons = within(suggestionsNav).getAllByRole('button', { name: /^\+/ })
       await user.click(addButtons[0])
+
+      const firstRemaining = SUGGESTED_CHECK_TYPES.find(
+        suggestion => !mockCheckTypes.some(checkType => checkType.name === suggestion.name)
+      )!
 
       await waitFor(() => {
         expect(createSpy).toHaveBeenCalledWith(mockVehicle.id, {
-          name: `Niveau de liquide de refroidissement`,
-          description: 'Vérifier le niveau entre les repères min et max, moteur froid',
-          intervalDays: 30
+          name: firstRemaining.name,
+          description: firstRemaining.description ?? undefined,
+          intervalDays: firstRemaining.intervalDays
         })
       })
     })
@@ -492,7 +529,7 @@ describe('CheckTypeContainer', () => {
         },
         {
           checkTypeId: 'ct-2',
-          checkTypeName: `Niveau de liquide de refroidissement`,
+          checkTypeName: `Liquide de refroidissement`,
           intervalDays: 7,
           lastCompletedAt: '2026-01-10T00:00:00.000Z',
           nextDueAt: '2026-01-17T00:00:00.000Z',
@@ -534,7 +571,9 @@ describe('CheckTypeContainer', () => {
       fireEvent.click(logButtons[0])
 
       await waitFor(() => {
-        expect(screen.getByText(/Enregistrer un contrôle/i)).toBeVisible()
+        expect(
+          screen.getByRole('heading', { level: 2, name: /Journaliser un contrôle/i })
+        ).toBeVisible()
       })
     })
 
@@ -551,10 +590,12 @@ describe('CheckTypeContainer', () => {
       fireEvent.click(logButtons[0])
 
       await waitFor(() => {
-        expect(screen.getByText(/Enregistrer un contrôle/i)).toBeVisible()
+        expect(
+          screen.getByRole('heading', { level: 2, name: /Journaliser un contrôle/i })
+        ).toBeVisible()
       })
 
-      fireEvent.click(screen.getByRole('button', { name: /^Enregistrer$/i }))
+      fireEvent.click(screen.getByRole('button', { name: /Enregistrer l'entrée/i }))
 
       await waitFor(() => expect(screen.getByText('Contrôle enregistré avec succès')).toBeVisible())
     })
