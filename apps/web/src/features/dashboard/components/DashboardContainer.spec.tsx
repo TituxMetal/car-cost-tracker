@@ -278,7 +278,9 @@ describe('DashboardContainer', () => {
     fireEvent.click(screen.getByRole('button', { name: /Enregistrer le contrôle Vidange/i }))
 
     await waitFor(() => {
-      expect(screen.getByText(/Enregistrer un contrôle: Vidange/i)).toBeVisible()
+      expect(
+        screen.getByRole('heading', { level: 2, name: /Journaliser un contrôle/i })
+      ).toBeVisible()
     })
   })
 
@@ -311,11 +313,13 @@ describe('DashboardContainer', () => {
     fireEvent.click(screen.getByRole('button', { name: /Enregistrer le contrôle Vidange/i }))
 
     await waitFor(() => {
-      expect(screen.getByText(/Enregistrer un contrôle: Vidange/i)).toBeVisible()
+      expect(
+        screen.getByRole('heading', { level: 2, name: /Journaliser un contrôle/i })
+      ).toBeVisible()
     })
 
     const submitButton = screen
-      .getAllByRole('button', { name: /^Enregistrer$/i })
+      .getAllByRole('button', { name: /Enregistrer l'entrée/i })
       .find(button => button.getAttribute('type') === 'submit')
 
     if (!submitButton) throw new Error('Submit button not found in dialog')
@@ -327,7 +331,9 @@ describe('DashboardContainer', () => {
     await waitFor(() => {
       expect(screen.getByText('Server unavailable')).toBeInTheDocument()
     })
-    expect(screen.getByText(/Enregistrer un contrôle: Vidange/i)).toBeVisible()
+    expect(
+      screen.getByRole('heading', { level: 2, name: /Journaliser un contrôle/i })
+    ).toBeVisible()
 
     createSpy.mockRestore()
   })
