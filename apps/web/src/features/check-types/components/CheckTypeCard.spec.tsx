@@ -11,7 +11,7 @@ const mockCheckType: CheckType = {
   vehicleId: 'v-1',
   name: `Niveau d'huile`,
   description: `Vérifier le niveau d'huile moteur`,
-  intervalDays: 7,
+  intervalDays: 14,
   createdAt: '2026-01-01T00:00:00.000Z',
   updatedAt: '2026-01-01T00:00:00.000Z'
 }
@@ -51,11 +51,123 @@ describe('CheckTypeCard', () => {
     expect(screen.queryByText(mockCheckType.description!)).toBeNull()
   })
 
-  it('should render the interval in French format', () => {
+  it('should render the INTERV/DERNIER/PROCHAIN mini-table kickers', () => {
     const actions = mock(() => {})
     render(<CheckTypeCard checkType={mockCheckType} onEdit={actions} onDelete={actions} />)
 
-    expect(screen.getByText(`Tous les ${mockCheckType.intervalDays} jours`)).toBeInTheDocument()
+    expect(screen.getByText('INTERV.')).toBeInTheDocument()
+    expect(screen.getByText('DERNIER')).toBeInTheDocument()
+    expect(screen.getByText('PROCHAIN')).toBeInTheDocument()
+  })
+
+  it('should render the interval as {N}j in the INTERV cell', () => {
+    const actions = mock(() => {})
+    render(<CheckTypeCard checkType={mockCheckType} onEdit={actions} onDelete={actions} />)
+
+    expect(screen.getByText('14j')).toBeInTheDocument()
+  })
+
+  it('should render dernier as DD.MM when lastCompletedAt is provided', () => {
+    const actions = mock(() => {})
+    render(
+      <CheckTypeCard
+        checkType={mockCheckType}
+        onEdit={actions}
+        onDelete={actions}
+        status='on-time'
+        lastCompletedAt='2026-03-02T08:00:00Z'
+        nextDueAt='2026-04-15T08:00:00Z'
+      />
+    )
+
+    expect(screen.getByText('02.03')).toBeInTheDocument()
+  })
+
+  it('should render dernier as em-dash when lastCompletedAt is null', () => {
+    const actions = mock(() => {})
+    const { container } = render(
+      <CheckTypeCard
+        checkType={mockCheckType}
+        onEdit={actions}
+        onDelete={actions}
+        status='never'
+        lastCompletedAt={null}
+        nextDueAt={null}
+      />
+    )
+
+    const dashes = container.querySelectorAll('dd.font-mono')
+
+    // intervalDays cell + 2 em-dash cells (dernier + prochain)
+    expect(Array.from(dashes).filter(el => el.textContent === '—').length).toBe(2)
+  })
+
+  it('should render prochain as +Nj when overdue', () => {
+    const actions = mock(() => {})
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const past = new Date(today.getTime() - 5 * 86_400_000)
+
+    render(
+      <CheckTypeCard
+        checkType={mockCheckType}
+        onEdit={actions}
+        onDelete={actions}
+        status='overdue'
+        lastCompletedAt='2026-01-15T08:00:00Z'
+        nextDueAt={past.toISOString()}
+      />
+    )
+
+    expect(screen.getByText('+5j')).toBeInTheDocument()
+  })
+
+  it('should render prochain as J-N when on-time', () => {
+    const actions = mock(() => {})
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const future = new Date(today.getTime() + 21 * 86_400_000)
+
+    render(
+      <CheckTypeCard
+        checkType={mockCheckType}
+        onEdit={actions}
+        onDelete={actions}
+        status='on-time'
+        lastCompletedAt='2026-01-15T08:00:00Z'
+        nextDueAt={future.toISOString()}
+      />
+    )
+
+    expect(screen.getByText('J-21')).toBeInTheDocument()
+  })
+
+  it('should apply status-driven left border class', () => {
+    const actions = mock(() => {})
+    const { container } = render(
+      <CheckTypeCard
+        checkType={mockCheckType}
+        onEdit={actions}
+        onDelete={actions}
+        status='overdue'
+      />
+    )
+
+    const article = container.querySelector('article')
+
+    expect(article).not.toBeNull()
+    expect(article).toHaveClass('border-l-error')
+  })
+
+  it('should apply neutral border when status is undefined', () => {
+    const actions = mock(() => {})
+    const { container } = render(
+      <CheckTypeCard checkType={mockCheckType} onEdit={actions} onDelete={actions} />
+    )
+
+    const article = container.querySelector('article')
+
+    expect(article).toHaveClass('border-l-base-content/30')
   })
 
   it('should render edit and delete buttons', () => {
