@@ -18,6 +18,21 @@ shape are NOT listed here — they live in the shape.
       Nest. Scope: API-wide refactor — blocks proper REST semantics once any feature relies on
       specific error codes. Flagged by Copilot on PR #49 (Budget backend).
 
+## Cross-cutting frontend — date-only `YYYY-MM-DD` timezone safety (low priority)
+
+- [ ] Unify date-only handling on the web app. JS parses `'YYYY-MM-DD'` strings as **UTC midnight**,
+      but most call sites read them back with local getters (`getDate`, `getMonth`, `getFullYear`,
+      `setHours(0,0,0,0)`), causing an off-by-one display in negative-offset timezones (Americas).
+      Invisible in `Europe/Paris` (UTC+1/+2) — observable for any user west of UTC. A correct helper
+      already exists at `apps/web/src/features/dashboard/utils/date.utils.ts::daysFromNow`
+      (UTC-based) but is not shared. Plan: create `apps/web/src/lib/date.ts` with `parseDateOnly` /
+      `formatDateOnly` / `formatDayMonth` / `addDays` (all UTC-safe), then migrate the affected
+      sites: `check-logs/CheckLogCard` (`formatDate`, `deriveStatus`), `check-types/CheckTypeCard`
+      (`formatDayMonth`, `computeProchain`), `check-logs/LogCheckForm` (`formatPanelDate`,
+      `computeNextDue`), plus `vehicles/utils/formatDate.ts`, `expenses/utils/date.utils.ts`,
+      `auth/SessionList`, `admin/UserManagement`. Flagged by Copilot on PR #55 (Visual Refresh —
+      Block 4 / Checks).
+
 ## From Feature 01 PR review (low priority)
 
 - [ ] `VehicleContainer`: add fallback `return null` at end for defensive rendering
