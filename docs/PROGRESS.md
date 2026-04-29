@@ -247,62 +247,82 @@ Current state only. Deferred items live in [`BACKLOG.md`](./BACKLOG.md).
       title + `^Enregistrer$` submit button updated to new `Journaliser un contrôle` h2 +
       `Enregistrer l'entrée` submit name (Block 5 still owns the dashboard refresh proper)
 
-### Block 5: Dashboard + new widgets — `feature/visual-refresh-dashboard`
+### Block 5: Dashboard + new widgets — `feature/visual-refresh-dashboard` ✅
+
+> **Naming**: planned `BudgetWidget` / `RecentExpensesWidget` shipped as `BudgetPanel` /
+> `RecentExpensesPanel` — `Panel` suffix matches the rest of the cluster surfaces.
+>
+> **Phase 18 layout deviation**: planned bottom-row `lg:grid-cols-2` containing both panels was
+> abandoned after browser test — the row left a visible gap below `LastEntryCard` in the sidebar
+> (the right column ran longer). Final layout: `BudgetPanel` lives at the bottom of the sidebar
+> after `LastEntryCard` (now showing both `Mensuel` and `Annuel` sections), `RecentExpensesPanel`
+> lives at the bottom of the main column after `RecentTimeline`. The two columns balance.
+>
+> **Category badges**: `RecentExpensesPanel` uses `CATEGORY_TINT_BASE` + `CATEGORY_TINT_CLASS`
+> (cluster palette: accent / primary / secondary / muted) from
+> `~/features/expenses/utils/expenseCategory.utils.ts`. Legacy `CATEGORY_BADGE_CLASS` remains for
+> the un-refreshed `ExpenseCard` / `ExpensesHeader`; Block 6 will switch them over.
 
 #### Phase 15: Restructure dashboard layout + 8 cluster surfaces
 
-- [ ] `DashboardContainer.tsx`: new layout `lg:grid-cols-[360px_1fr]` with sidebar
+- [x] `DashboardContainer.tsx`: new layout `lg:grid-cols-[360px_1fr]` with sidebar
       (`VehicleActivePanel` → `TelltaleGrid` → `LastEntryCard`) + main (`HealthSummary` →
       `UpcomingChecksGrid` → `RecentTimeline`); mobile-only `ActionItemsList` banner above the grid;
       `sr-only` h1; loading/error/empty banners preserved; LogCheckDialog wiring preserved
-- [ ] `VehicleSummaryCard.tsx` → **rename to** `VehicleActivePanel.tsx`: kicker `VÉHICULE ACTIF` +
+- [x] `VehicleSummaryCard.tsx` → **renamed to** `VehicleActivePanel.tsx`: kicker `VÉHICULE ACTIF` +
       h2 `{make} {model}` + sub mono `{year} · {engineType}` + dl ODO / + DEPUIS (mono mileage +
       delta from `useMileageHistory`) + CTA `+ Mettre à jour kilométrage` (warning outline)
-- [ ] `TelltaleGrid.tsx`: NEW — 2-col grid of `TelltaleLight` (Block-1 primitive) for top-6
-      worst-status check-types, dimmed when status is `on-time` or `never`
-- [ ] `RecentActivityList.tsx` → **rename to** `LastEntryCard.tsx`: single most-recent log preview
+- [x] `TelltaleGrid.tsx`: NEW — 1-col grid of dot+label rows for top-6 worst-status check-types
+      (hand-rolled markup; `TelltaleLight` primitive's API didn't fit `CheckStatus` enum + lucide
+      icon requirement), dimmed when status is `on-time` or `never`. Plan called for `grid-cols-2`
+      but the 360px sidebar wraps labels awkwardly in 2-col — single column matches the rendered
+      reality on both desktop sidebar and mobile full-width
+- [x] `RecentActivityList.tsx` → **renamed to** `LastEntryCard.tsx`: single most-recent log preview
       (date · ODO em-dash · type · notes), `Aucune entrée pour le moment.` fallback
-- [ ] `StatusOverview.tsx` → **rename to** `HealthSummary.tsx`: huge mono `{score}/100` + 4 inline
+- [x] `StatusOverview.tsx` → **renamed to** `HealthSummary.tsx`: huge mono `{score}/100` + 4 inline
       stats (EN RETARD/BIENTÔT/À JOUR/JAMAIS) + 40-segment bar (status-coloured) + `.sr-only`
       narration
-- [ ] `UpcomingChecksGrid.tsx`: NEW — 4-col `Gauge` grid (Block-1 primitive) per check-type, header
+- [x] `UpcomingChecksGrid.tsx`: NEW — 4-col `Gauge` grid (Block-1 primitive) per check-type, header
       kicker + `Journaliser →` action that opens `LogCheckDialog` with no preselected type
-- [ ] `RecentTimeline.tsx`: NEW — scatter timeline of logs in [-30, +30] days window, axis + labels
+- [x] `RecentTimeline.tsx`: NEW — scatter timeline of logs in [-30, +30] days window, axis + labels
       `J-30 · AUJ. · J+30`, status-coloured dots
-- [ ] `ActionItemsList.tsx`: cluster refresh, mobile-only (`lg:hidden`), kicker
+- [x] `ActionItemsList.tsx`: cluster refresh, mobile-only (`lg:hidden`), kicker
       `À TRAITER · {N} ENTRÉES`
-- [ ] `ActionItemCard.tsx`: cluster row pattern (status-coloured circle + h3 + status sub +
+- [x] `ActionItemCard.tsx`: cluster row pattern (status-coloured circle + h3 + status sub +
       ChevronRight), full-width button
-- [ ] `DashboardEmptyState.tsx`: cluster panel restyle, lucide icon + h2 display + sub mono +
+- [x] `DashboardEmptyState.tsx`: cluster panel restyle, lucide icon + h2 display + sub mono +
       warning outline CTA
-- [ ] `useDashboard.ts` (+ spec): expose `healthScore` (`100 - 15·overdue - 8·dueSoon - 3·never`,
+- [x] `useDashboard.ts` (+ spec): expose `healthScore` (`100 - 15·overdue - 8·dueSoon - 3·never`,
       clamped [0,100]) and `tellTaleSummaries` (top-6 sorted by status priority)
-- [ ] `components/index.ts`: drop renamed exports, add the 3 new components
+- [x] `components/index.ts`: drop renamed exports, add the 3 new components
 
-#### Phase 16: New `BudgetWidget` component + spec
+#### Phase 16: New `BudgetPanel` component + spec
 
-- [ ] `BudgetWidget.tsx` (+ spec): composes `useBudget` from `~/features/budget` barrel, renders
-      nothing if `!hasBudget`, otherwise cluster card with kicker (`BUDGET MENSUEL` /
-      `BUDGET ANNUEL` per period) + spent/target in `font-mono` + DaisyUI `<progress>` status-
-      coloured + `.sr-only` narration + `Modifier →` link to `/budget`. Visual design produced via
-      `/frontend-design:frontend-design` at impl time
+- [x] `BudgetPanel.tsx` (+ spec): composes `useBudget` from `~/features/budget` barrel, renders
+      nothing if `!hasBudget`. Top-level kicker `Budget` + single `Modifier →` link to `/budget`,
+      then two stacked sections (`Mensuel` + `Annuel`) each with spent/target in `font-mono` +
+      DaisyUI `<progress>` status-coloured + `.sr-only` narration. Both sections always render — the
+      two views give the user mensuel vs annuel context at a glance
 
-#### Phase 17: New `RecentExpensesWidget` component + spec
+#### Phase 17: New `RecentExpensesPanel` component + spec
 
-- [ ] `RecentExpensesWidget.tsx` (+ spec): composes `useExpenses` + `$spentThisMonthCents` directly
+- [x] `RecentExpensesPanel.tsx` (+ spec): composes `useExpenses` + `$spentThisMonthCents` directly
       via `useStore`, renders nothing if `!hasExpenses`, otherwise cluster card with kicker
-      `DÉPENSES RÉCENTES` + total mois + 3 most recent rows (reuse `ExpenseCard` if density fits;
-      bare rows otherwise) + `Toutes les dépenses →` link to `/expenses`. Visual design produced via
-      `/frontend-design:frontend-design` at impl time
+      `Dépenses récentes` + total mois + 3 most recent rows (bare inline rows; `ExpenseCard` density
+      didn't fit) + cluster-tinted category badges + `Voir tout →` link to `/expenses` (consistent
+      with `LastEntryCard` / `MileageHistoryCard` and avoids the `DÉPENSES` redundancy with the
+      kicker on narrow viewports)
 
-#### Phase 18: Wire both widgets into `DashboardContainer` + spec update
+#### Phase 18: Wire both panels into `DashboardContainer` + spec update
 
-- [ ] `DashboardContainer.tsx`: render `<div className='grid gap-6 lg:grid-cols-2'>` with both
-      widgets immediately after the main `lg:grid-cols-[360px_1fr]` grid, inside the
-      `vehicle && hasCheckTypes` branch
-- [ ] `DashboardContainer.spec.tsx`: mock both widgets to predictable shells, add 2 assertions for
-      their presence
-- [ ] `components/index.ts`: export `BudgetWidget` + `RecentExpensesWidget`
+- [x] `DashboardContainer.tsx`: `BudgetPanel` rendered at the bottom of the sidebar after
+      `LastEntryCard`, `RecentExpensesPanel` rendered at the bottom of the main column after
+      `RecentTimeline` (deviation from the planned `lg:grid-cols-2` bottom row — see block header
+      note); `window.location.assign('/vehicle')` swapped for `redirect('/vehicle')` from
+      `~/utils/navigation`
+- [x] `DashboardContainer.spec.tsx`: assertions for `BudgetPanel` (sidebar) + `RecentExpensesPanel`
+      (main column) presence
+- [x] `components/index.ts`: exports `BudgetPanel` + `RecentExpensesPanel`
 
 ### Block 6: Expenses — `feature/visual-refresh-expenses`
 
