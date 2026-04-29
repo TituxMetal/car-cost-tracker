@@ -40,6 +40,14 @@ const { title } = Astro.props
     }
   </head>
   <body class='min-h-screen'>
+    <header
+      class='border-base-300 bg-base-100 border-b px-5 py-3 lg:hidden'
+      aria-label="Retour à l'accueil"
+    >
+      <a href='/' class='font-display text-base font-bold tracking-[0.15em]'>
+        COST<span class='text-primary'>.LOG</span>
+      </a>
+    </header>
     <slot />
   </body>
 </html>
