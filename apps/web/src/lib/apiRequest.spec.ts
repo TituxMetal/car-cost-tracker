@@ -151,6 +151,21 @@ describe('apiRequest', () => {
     expect(headers.get('Content-Type')).toBe('application/json')
   })
 
+  it('should not set Content-Type on safe methods to keep them simple CORS requests', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({ ok: true })
+    } as Response)
+
+    await api.get('/users/me')
+
+    const call = mockFetch.mock.calls[0] as unknown as [string, RequestInit]
+    const headers = call[1].headers as Headers
+    expect(call[1].method).toBe('GET')
+    expect(headers.get('Content-Type')).toBeNull()
+  })
+
   it('should extract message from a JSON error response', async () => {
     mockFetch.mockResolvedValueOnce({
       ok: false,
