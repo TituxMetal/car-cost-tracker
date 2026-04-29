@@ -144,6 +144,12 @@ describe('AuthContainer', () => {
       expect(panel).toHaveTextContent(/better auth/i)
       expect(panel).toHaveTextContent(/prisma/i)
     })
+
+    it('should not show the alpha-private notice in login mode', () => {
+      render(<AuthContainer mode='login' />)
+
+      expect(screen.queryByRole('note')).not.toBeInTheDocument()
+    })
   })
 
   describe('Signup Mode', () => {
@@ -238,6 +244,19 @@ describe('AuthContainer', () => {
       render(<AuthContainer mode='signup' />)
 
       expect(screen.getByRole('status', { name: /état système/i })).toBeInTheDocument()
+    })
+
+    it('should show the alpha-private notice with a mailto link in signup mode', () => {
+      render(<AuthContainer mode='signup' />)
+
+      const notice = screen.getByRole('note')
+      expect(notice).toHaveTextContent(/alpha privée/i)
+      expect(notice).toHaveTextContent(/validée à la main/i)
+
+      const link = screen.getByRole('link', { name: 'pre-launch@lgdweb.fr' })
+      const href = link.getAttribute('href') ?? ''
+      expect(href.startsWith('mailto:pre-launch@lgdweb.fr')).toBe(true)
+      expect(decodeURIComponent(href)).toContain('Activation de compte')
     })
   })
 

@@ -24,6 +24,14 @@ const switchLinkClasses =
   'text-base-content/60 block text-center font-mono text-[11px] tracking-wider'
 const switchLinkAccentClasses = 'text-primary hover:underline'
 
+const noticeBoxClasses =
+  'border border-info bg-base-200 px-4 py-4 font-mono text-xs leading-relaxed tracking-wide grid gap-2'
+const noticeLabelClasses = 'text-info font-mono text-[10px] tracking-[0.2em] uppercase'
+const noticeLinkClasses = 'text-primary underline underline-offset-2 hover:no-underline'
+
+const ADMIN_EMAIL = 'pre-launch@lgdweb.fr'
+const SIGNUP_NOTICE_MAILTO = `mailto:${ADMIN_EMAIL}?subject=${encodeURIComponent('Cost Log - Activation de compte')}`
+
 const HEADING_ID = 'auth-heading'
 
 export const AuthContainer = ({ mode = 'login', redirectPath }: AuthContainerProps) => {
@@ -115,6 +123,21 @@ export const AuthContainer = ({ mode = 'login', redirectPath }: AuthContainerPro
   return (
     <AuthShell headingId={HEADING_ID}>
       <AuthHeader kicker='// NOUVEAU PILOTE' heading='Inscription' headingId={HEADING_ID} />
+
+      <div className={noticeBoxClasses} role='note'>
+        <p className={noticeLabelClasses}>ALPHA PRIVÉE</p>
+        <p className='text-base-content'>
+          Cost Log est en accès restreint — chaque inscription est validée à la main par
+          l'administrateur après création de compte.
+        </p>
+        <p className='text-base-content'>
+          Une fois le formulaire envoyé, contacte{' '}
+          <a href={SIGNUP_NOTICE_MAILTO} className={noticeLinkClasses}>
+            {ADMIN_EMAIL}
+          </a>{' '}
+          en précisant ton email d'inscription, je t'active dès que possible.
+        </p>
+      </div>
 
       <FormWrapper onSubmit={handleSignupSubmit} error={serverError}>
         <Input
