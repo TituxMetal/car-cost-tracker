@@ -182,15 +182,89 @@ describe('useDashboard', () => {
       expect(result.current.actionItems[0]?.daysLabel).toMatch(/jours? de retard/)
     })
 
-    it('returns the first 5 logs from the store as recentLogs', () => {
+    it('exposes the full logs array as recentLogs (no slice cap)', () => {
       const logs = Array.from({ length: 8 }, (_, index) => mockLog({ id: `cl${index + 1}` }))
       $checkLogs.set(logs)
 
       const { result } = renderHook(() => useDashboard())
 
-      expect(result.current.recentLogs).toHaveLength(5)
+      expect(result.current.recentLogs).toHaveLength(8)
       expect(result.current.recentLogs[0]?.id).toBe('cl1')
-      expect(result.current.recentLogs[4]?.id).toBe('cl5')
+      expect(result.current.recentLogs[7]?.id).toBe('cl8')
+    })
+
+    it('exposes the full statuses array', () => {
+      const statuses = [
+        mockStatus({ checkTypeId: 'a', status: 'on-time' }),
+        mockStatus({ checkTypeId: 'b', status: 'overdue' })
+      ]
+      $checkStatuses.set(statuses)
+
+      const { result } = renderHook(() => useDashboard())
+
+      expect(result.current.statuses).toHaveLength(2)
+      expect(result.current.statuses[0]?.checkTypeId).toBe('a')
+    })
+
+    it('returns healthScore=100 when no statuses are present', () => {
+      const { result } = renderHook(() => useDashboard())
+
+      expect(result.current.healthScore).toBe(100)
+    })
+
+    it('computes healthScore via the 100 - 15·overdue - 8·dueSoon - 3·never formula', () => {
+      $checkStatuses.set([
+        mockStatus({ checkTypeId: 'a', status: 'overdue' }),
+        mockStatus({ checkTypeId: 'b', status: 'due-soon' }),
+        mockStatus({ checkTypeId: 'c', status: 'on-time' }),
+        mockStatus({ checkTypeId: 'd', status: 'on-time' }),
+        mockStatus({ checkTypeId: 'e', status: 'on-time' }),
+        mockStatus({ checkTypeId: 'f', status: 'on-time' }),
+        mockStatus({ checkTypeId: 'g', status: 'on-time' }),
+        mockStatus({ checkTypeId: 'h', status: 'on-time' })
+      ])
+
+      const { result } = renderHook(() => useDashboard())
+
+      expect(result.current.healthScore).toBe(100 - 15 - 8)
+    })
+
+    it('clamps healthScore to 0 in worst-case fixtures', () => {
+      $checkStatuses.set(
+        Array.from({ length: 12 }, (_, index) =>
+          mockStatus({ checkTypeId: `o${index}`, status: 'overdue' })
+        )
+      )
+
+      const { result } = renderHook(() => useDashboard())
+
+      expect(result.current.healthScore).toBe(0)
+    })
+
+    it('caps tellTaleSummaries at 6 entries and sorts by status priority', () => {
+      $checkStatuses.set([
+        mockStatus({ checkTypeId: 'a', checkTypeName: 'A', status: 'on-time' }),
+        mockStatus({ checkTypeId: 'b', checkTypeName: 'B', status: 'overdue' }),
+        mockStatus({ checkTypeId: 'c', checkTypeName: 'C', status: 'never', nextDueAt: null }),
+        mockStatus({ checkTypeId: 'd', checkTypeName: 'D', status: 'due-soon' }),
+        mockStatus({ checkTypeId: 'e', checkTypeName: 'E', status: 'on-time' }),
+        mockStatus({ checkTypeId: 'f', checkTypeName: 'F', status: 'overdue' }),
+        mockStatus({ checkTypeId: 'g', checkTypeName: 'G', status: 'due-soon' }),
+        mockStatus({ checkTypeId: 'h', checkTypeName: 'H', status: 'on-time' })
+      ])
+
+      const { result } = renderHook(() => useDashboard())
+
+      expect(result.current.tellTaleSummaries).toHaveLength(6)
+      expect(result.current.tellTaleSummaries.map(summary => summary.status)).toEqual([
+        'overdue',
+        'overdue',
+        'due-soon',
+        'due-soon',
+        'never',
+        'on-time'
+      ])
+      expect(result.current.tellTaleSummaries[0]?.name).toBe('B')
     })
   })
 

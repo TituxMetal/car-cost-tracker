@@ -1,4 +1,4 @@
-import type { CheckStatusSummary } from '~/features/check-logs'
+import type { CheckStatus, CheckStatusSummary } from '~/features/check-logs'
 
 export interface StatusCounts {
   onTime: number
@@ -9,4 +9,10 @@ export interface StatusCounts {
 
 export interface ActionItem extends CheckStatusSummary {
   daysLabel: string
+}
+
+export interface TelltaleSummary {
+  checkTypeId: string
+  name: string
+  status: CheckStatus
 }

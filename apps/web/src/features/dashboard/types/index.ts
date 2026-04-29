@@ -1,1 +1,1 @@
-export type { ActionItem, StatusCounts } from './dashboard.types'
+export type { ActionItem, StatusCounts, TelltaleSummary } from './dashboard.types'
