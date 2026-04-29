@@ -35,7 +35,7 @@ const getCookie = (name: string): string | null => {
 const prepareHeaders = (options: RequestInit): Headers => {
   const headers = new Headers(options.headers)
 
-  if (options.body && !headers.get('Content-Type')) {
+  if (!headers.get('Content-Type')) {
     headers.set('Content-Type', 'application/json')
   }
 
@@ -50,14 +50,16 @@ const prepareHeaders = (options: RequestInit): Headers => {
 }
 
 const parseErrorResponse = async (response: Response): Promise<string> => {
+  const text = await response.text()
+
+  if (!text) return `HTTP ${response.status}`
+
   try {
-    const errorData = await response.json()
+    const errorData = JSON.parse(text)
 
     return errorData.message || `HTTP ${response.status}`
   } catch {
-    const errorText = await response.text()
-
-    return errorText || `HTTP ${response.status}`
+    return text
   }
 }
 
