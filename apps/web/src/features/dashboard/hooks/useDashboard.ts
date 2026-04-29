@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import type { CheckLog, CheckStatusSummary } from '~/features/check-logs'
+import type { CheckLog, CheckStatus, CheckStatusSummary } from '~/features/check-logs'
 import { useCheckLogs } from '~/features/check-logs'
 import type { CreateCheckLogSchema } from '~/features/check-logs/schemas'
 import { useCheckTypes } from '~/features/check-types'
@@ -8,7 +8,7 @@ import { useVehicle } from '~/features/vehicles'
 import type { Vehicle } from '~/features/vehicles'
 import { $vehicle as $vehicleStore } from '~/features/vehicles/store'
 
-import type { ActionItem, StatusCounts } from '../types'
+import type { ActionItem, StatusCounts, TelltaleSummary } from '../types'
 import { daysFromNow, formatDaysLabel } from '../utils'
 
 export interface UseDashboardReturn {
@@ -20,13 +20,14 @@ export interface UseDashboardReturn {
   statusCounts: StatusCounts
   actionItems: ActionItem[]
   recentLogs: CheckLog[]
+  statuses: CheckStatusSummary[]
+  healthScore: number
+  tellTaleSummaries: TelltaleSummary[]
   fetchVehicle: () => Promise<void>
   fetchAll: (vehicleId: string) => Promise<void>
   initialize: () => Promise<void>
   logCheck: (vehicleId: string, checkTypeId: string, data: CreateCheckLogSchema) => Promise<void>
 }
-
-const RECENT_LOGS_LIMIT = 5
 
 const computeStatusCounts = (statuses: CheckStatusSummary[]): StatusCounts => {
   const counts: StatusCounts = { onTime: 0, dueSoon: 0, overdue: 0, never: 0 }
@@ -58,6 +59,33 @@ const computeActionItems = (statuses: CheckStatusSummary[]): ActionItem[] =>
 
       return aDays - bDays
     })
+
+const TELLTALE_PRIORITY: Record<CheckStatus, number> = {
+  overdue: 0,
+  'due-soon': 1,
+  never: 2,
+  'on-time': 3
+}
+
+const TELLTALE_LIMIT = 6
+
+const computeTellTaleSummaries = (statuses: CheckStatusSummary[]): TelltaleSummary[] =>
+  [...statuses]
+    .sort((a, b) => TELLTALE_PRIORITY[a.status] - TELLTALE_PRIORITY[b.status])
+    .slice(0, TELLTALE_LIMIT)
+    .map(summary => ({
+      checkTypeId: summary.checkTypeId,
+      name: summary.checkTypeName,
+      status: summary.status
+    }))
+
+const computeHealthScore = (counts: StatusCounts, total: number): number => {
+  if (total === 0) return 100
+
+  const raw = 100 - counts.overdue * 15 - counts.dueSoon * 8 - counts.never * 3
+
+  return Math.max(0, Math.min(100, raw))
+}
 
 export const useDashboard = (): UseDashboardReturn => {
   const {
@@ -110,15 +138,20 @@ export const useDashboard = (): UseDashboardReturn => {
     [createLog, fetchLogs]
   )
 
+  const statusCounts = computeStatusCounts(statuses)
+
   return {
     isLoading: vehicleLoading || logsLoading || checkTypesLoading,
     error: vehicleError ?? logsError ?? checkTypesError,
     vehicle,
     hasVehicle,
     hasCheckTypes,
-    statusCounts: computeStatusCounts(statuses),
+    statusCounts,
     actionItems: computeActionItems(statuses),
-    recentLogs: logs.slice(0, RECENT_LOGS_LIMIT),
+    recentLogs: logs,
+    statuses,
+    healthScore: computeHealthScore(statusCounts, statuses.length),
+    tellTaleSummaries: computeTellTaleSummaries(statuses),
     fetchVehicle,
     fetchAll,
     initialize,
