@@ -18,10 +18,10 @@ const mockCheckType: CheckType = {
 const renderDialog = async (props: Partial<Parameters<typeof LogCheckDialog>[0]> = {}) => {
   const result = render(
     <LogCheckDialog
-      checkTypeName={props.checkTypeName ?? 'Vidange'}
       onSubmit={props.onSubmit ?? (() => {})}
       onCancel={props.onCancel ?? (() => {})}
-      checkType={props.checkType}
+      checkType={props.checkType ?? mockCheckType}
+      checkTypes={props.checkTypes}
       status={props.status}
     />
   )
@@ -94,8 +94,63 @@ describe('LogCheckDialog', () => {
   it('should render the type panel and PROCHAIN panel when checkType is provided', async () => {
     await renderDialog({ checkType: mockCheckType, status: 'overdue' })
 
-    expect(screen.getByLabelText('Type de contrôle')).toBeInTheDocument()
+    expect(screen.getAllByText(/Type de contrôle/i).length).toBeGreaterThan(0)
     expect(screen.getByText('Tous les 14 jrs')).toBeInTheDocument()
     expect(screen.getByText('Prochain contrôle calculé')).toBeInTheDocument()
+  })
+
+  describe('picker mode', () => {
+    const otherCheckType: CheckType = {
+      ...mockCheckType,
+      id: 'ct-2',
+      name: 'Pression pneus',
+      intervalDays: 7
+    }
+
+    it('renders a type picker when checkTypes is provided without a preselected checkType', async () => {
+      const onSubmit = mock((_data: unknown, _id?: string) => {})
+
+      render(
+        <LogCheckDialog
+          onSubmit={onSubmit}
+          onCancel={() => {}}
+          checkTypes={[mockCheckType, otherCheckType]}
+        />
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      expect(screen.getByLabelText('Type de contrôle')).toBeInTheDocument()
+      expect(screen.queryByLabelText('Date du contrôle')).toBeNull()
+      expect(screen.getByRole('button', { name: /Enregistrer/i })).toBeDisabled()
+    })
+
+    it('reveals the form once a type is picked and submits with the picked id', async () => {
+      const onSubmit = mock((_data: unknown, _id?: string) => {})
+
+      render(
+        <LogCheckDialog
+          onSubmit={onSubmit}
+          onCancel={() => {}}
+          checkTypes={[mockCheckType, otherCheckType]}
+        />
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      fireEvent.change(screen.getByLabelText('Type de contrôle'), {
+        target: { value: 'ct-2' }
+      })
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('Date du contrôle')).toBeInTheDocument()
+      })
+      expect(screen.getByText('Tous les 7 jrs')).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /Enregistrer/i })).not.toBeDisabled()
+    })
   })
 })
