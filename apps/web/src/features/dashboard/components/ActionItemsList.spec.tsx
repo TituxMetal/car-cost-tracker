@@ -33,23 +33,24 @@ describe('ActionItemsList', () => {
     document.body.innerHTML = ''
   })
 
-  it('renders the all-clear empty state when no items are provided', () => {
-    render(<ActionItemsList items={[]} onLog={mock(() => {})} />)
-
-    expect(screen.getByText('Tous les contrôles sont à jour !')).toBeInTheDocument()
-  })
-
-  it('renders one action item per entry in the list', () => {
+  it('renders inside a labelled region with the cluster kicker and entry count', () => {
     render(<ActionItemsList items={items} onLog={mock(() => {})} />)
 
-    expect(screen.getByRole('heading', { name: /Vidange/i })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /Pression pneus/i })).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: /à traiter/i })).toBeInTheDocument()
+    expect(screen.getByText(/à traiter · 2 entrées/i)).toBeInTheDocument()
   })
 
-  it('renders inside a labelled region for accessibility', () => {
+  it('renders one row per action item', () => {
     render(<ActionItemsList items={items} onLog={mock(() => {})} />)
 
-    expect(screen.getByRole('region', { name: /À faire/i })).toBeInTheDocument()
+    expect(screen.getByText('Vidange')).toBeInTheDocument()
+    expect(screen.getByText('Pression pneus')).toBeInTheDocument()
+  })
+
+  it('hides the section on lg+ via the lg:hidden modifier', () => {
+    const { container } = render(<ActionItemsList items={items} onLog={mock(() => {})} />)
+
+    expect(container.querySelector('section')?.className).toContain('lg:hidden')
   })
 
   it('forwards onLog clicks with the correct checkTypeId', () => {
@@ -59,5 +60,11 @@ describe('ActionItemsList', () => {
     screen.getByRole('button', { name: /Enregistrer le contrôle Pression pneus/i }).click()
 
     expect(onLog).toHaveBeenCalledWith('ct2')
+  })
+
+  it('shows the singular suffix when there is exactly one entry', () => {
+    render(<ActionItemsList items={[items[0]!]} onLog={mock(() => {})} />)
+
+    expect(screen.getByText(/à traiter · 1 entrée/i)).toBeInTheDocument()
   })
 })

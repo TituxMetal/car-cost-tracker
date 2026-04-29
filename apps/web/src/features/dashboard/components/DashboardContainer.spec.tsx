@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, spyOn } from 'bun:test'
 
+import { $budget, budgetActions } from '~/features/budget/store'
 import {
   $checkLogs,
   $checkStatuses,
@@ -14,6 +15,7 @@ import {
   checkTypeActions
 } from '~/features/check-types/store'
 import type { CheckType } from '~/features/check-types/types'
+import { $expenses, expenseActions } from '~/features/expenses/store'
 import type { Vehicle } from '~/features/vehicles'
 import {
   $error as $vehicleError,
@@ -62,6 +64,8 @@ const resetStores = () => {
   $checkTypes.set([])
   $checkTypesLoading.set(false)
   $checkTypesError.set(null)
+  $budget.set(null)
+  $expenses.set([])
 }
 
 const renderContainer = async () => {
@@ -75,6 +79,8 @@ describe('DashboardContainer', () => {
   let fetchByVehicleSpy: ReturnType<typeof spyOn<typeof checkTypeActions, 'fetchByVehicle'>>
   let fetchStatusesSpy: ReturnType<typeof spyOn<typeof checkLogActions, 'fetchStatuses'>>
   let fetchLogsSpy: ReturnType<typeof spyOn<typeof checkLogActions, 'fetchLogs'>>
+  let fetchBudgetSpy: ReturnType<typeof spyOn<typeof budgetActions, 'fetchBudget'>>
+  let fetchExpensesSpy: ReturnType<typeof spyOn<typeof expenseActions, 'fetchExpenses'>>
 
   beforeEach(() => {
     cleanup()
@@ -84,6 +90,8 @@ describe('DashboardContainer', () => {
     fetchByVehicleSpy = spyOn(checkTypeActions, 'fetchByVehicle').mockResolvedValue(undefined)
     fetchStatusesSpy = spyOn(checkLogActions, 'fetchStatuses').mockResolvedValue(undefined)
     fetchLogsSpy = spyOn(checkLogActions, 'fetchLogs').mockResolvedValue(undefined)
+    fetchBudgetSpy = spyOn(budgetActions, 'fetchBudget').mockResolvedValue(null)
+    fetchExpensesSpy = spyOn(expenseActions, 'fetchExpenses').mockResolvedValue(undefined)
   })
 
   afterEach(() => {
@@ -92,9 +100,11 @@ describe('DashboardContainer', () => {
     fetchByVehicleSpy.mockRestore()
     fetchStatusesSpy.mockRestore()
     fetchLogsSpy.mockRestore()
+    fetchBudgetSpy.mockRestore()
+    fetchExpensesSpy.mockRestore()
   })
 
-  it('renders the dashboard heading immediately', async () => {
+  it('renders the sr-only dashboard heading', async () => {
     await renderContainer()
 
     expect(screen.getByRole('heading', { name: /Tableau de bord/i, level: 1 })).toBeInTheDocument()
@@ -136,10 +146,6 @@ describe('DashboardContainer', () => {
     await waitFor(() => {
       expect(screen.getByText('Aucun type de contrôle défini')).toBeInTheDocument()
     })
-    expect(screen.getByRole('link', { name: /Créer un type de contrôle/i })).toHaveAttribute(
-      'href',
-      '/check-types'
-    )
   })
 
   it('shows an error alert with a retry button when an error occurs', async () => {
@@ -163,9 +169,6 @@ describe('DashboardContainer', () => {
     })
 
     fetchVehicleSpy.mockClear()
-    fetchByVehicleSpy.mockClear()
-    fetchStatusesSpy.mockClear()
-    fetchLogsSpy.mockClear()
 
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: /Réessayer/i }))
@@ -174,19 +177,65 @@ describe('DashboardContainer', () => {
     expect(fetchVehicleSpy).toHaveBeenCalled()
   })
 
-  it('renders the vehicle summary card when a vehicle is loaded', async () => {
+  it('renders the cluster sidebar (VehicleActivePanel + TelltaleGrid + LastEntryCard)', async () => {
     $vehicle.set(mockVehicle)
     $checkTypes.set([mockCheckType])
 
     await renderContainer()
 
     await waitFor(() => {
-      expect(screen.getByRole('heading', { name: /Peugeot 205 GTI/i })).toBeInTheDocument()
+      expect(
+        screen.getByRole('heading', { level: 2, name: /Peugeot 205 GTI/i })
+      ).toBeInTheDocument()
     })
-    expect(screen.getByRole('link', { name: /Détails/i })).toHaveAttribute('href', '/vehicle')
+    expect(screen.getByRole('region', { name: /voyants actifs/i })).toBeInTheDocument()
+    expect(screen.getByText(/dernière entrée/i)).toBeInTheDocument()
   })
 
-  it('renders the status overview with the derived counts', async () => {
+  it('renders the BudgetPanel in the sidebar when a budget exists', async () => {
+    $vehicle.set(mockVehicle)
+    $checkTypes.set([mockCheckType])
+    $budget.set({
+      id: 'b1',
+      vehicleId: 'v1',
+      amountCents: 30000,
+      period: 'MONTHLY',
+      createdAt: '2026-04-01T00:00:00.000Z',
+      updatedAt: '2026-04-01T00:00:00.000Z'
+    })
+
+    await renderContainer()
+
+    await waitFor(() => {
+      expect(screen.getByRole('region', { name: 'Mensuel' })).toBeInTheDocument()
+    })
+    expect(screen.getByRole('region', { name: 'Annuel' })).toBeInTheDocument()
+  })
+
+  it('renders the RecentExpensesPanel in the main column when expenses exist', async () => {
+    $vehicle.set(mockVehicle)
+    $checkTypes.set([mockCheckType])
+    $expenses.set([
+      {
+        id: 'e1',
+        vehicleId: 'v1',
+        occurredAt: '2026-04-15',
+        amountCents: 5000,
+        category: 'SERVICE',
+        description: null,
+        createdAt: '2026-04-15T00:00:00.000Z',
+        updatedAt: '2026-04-15T00:00:00.000Z'
+      }
+    ])
+
+    await renderContainer()
+
+    await waitFor(() => {
+      expect(screen.getByTestId('recent-expenses-panel')).toBeInTheDocument()
+    })
+  })
+
+  it('renders the cluster main column (HealthSummary + UpcomingChecksGrid + RecentTimeline)', async () => {
     $vehicle.set(mockVehicle)
     $checkTypes.set([mockCheckType])
     $checkStatuses.set([
@@ -203,12 +252,13 @@ describe('DashboardContainer', () => {
     await renderContainer()
 
     await waitFor(() => {
-      expect(screen.getByRole('region', { name: /Statut des contrôles/i })).toBeInTheDocument()
+      expect(screen.getByRole('region', { name: /santé globale/i })).toBeInTheDocument()
     })
-    expect(screen.getByText('À jour').parentElement).toHaveTextContent('1')
+    expect(screen.getByRole('region', { name: /prochains contrôles/i })).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: /timeline 30 derniers jours/i })).toBeInTheDocument()
   })
 
-  it('renders the action items list when overdue or due-soon statuses exist', async () => {
+  it('renders the mobile-only ActionItemsList when overdue or due-soon statuses exist', async () => {
     $vehicle.set(mockVehicle)
     $checkTypes.set([mockCheckType])
     $checkStatuses.set([
@@ -225,35 +275,33 @@ describe('DashboardContainer', () => {
     await renderContainer()
 
     await waitFor(() => {
-      expect(screen.getByRole('region', { name: /À faire/i })).toBeInTheDocument()
+      expect(screen.getByRole('region', { name: /à traiter/i })).toBeInTheDocument()
     })
-    expect(screen.getByRole('heading', { name: /Vidange/i, level: 3 })).toBeInTheDocument()
   })
 
-  it('renders the recent activity section when a vehicle and check types exist', async () => {
+  it('does not render the ActionItemsList when no actionable statuses exist', async () => {
     $vehicle.set(mockVehicle)
     $checkTypes.set([mockCheckType])
-    $checkLogs.set([
+    $checkStatuses.set([
       {
-        id: 'cl1',
         checkTypeId: 'ct1',
         checkTypeName: 'Vidange',
-        completedAt: '2026-04-01',
-        notes: null,
-        nextDueAt: '2026-05-01',
-        createdAt: '2026-04-01T10:00:00.000Z'
+        intervalDays: 30,
+        lastCompletedAt: '2026-04-01',
+        nextDueAt: '2099-05-01',
+        status: 'on-time'
       }
     ])
 
     await renderContainer()
 
     await waitFor(() => {
-      expect(screen.getByRole('region', { name: /Activité récente/i })).toBeInTheDocument()
+      expect(screen.getByRole('region', { name: /santé globale/i })).toBeInTheDocument()
     })
-    expect(screen.getByRole('link', { name: /Voir tout/i })).toHaveAttribute('href', '/check-logs')
+    expect(screen.queryByRole('region', { name: /à traiter/i })).toBeNull()
   })
 
-  it('opens the LogCheckDialog when an action item quick-log button is clicked', async () => {
+  it('opens the LogCheckDialog (single-type) when an action item row is clicked', async () => {
     $vehicle.set(mockVehicle)
     $checkTypes.set([mockCheckType])
     $checkStatuses.set([
@@ -282,6 +330,34 @@ describe('DashboardContainer', () => {
         screen.getByRole('heading', { level: 2, name: /Journaliser un contrôle/i })
       ).toBeVisible()
     })
+  })
+
+  it('opens the LogCheckDialog in picker mode from the UpcomingChecksGrid CTA', async () => {
+    $vehicle.set(mockVehicle)
+    $checkTypes.set([mockCheckType])
+    $checkStatuses.set([
+      {
+        checkTypeId: 'ct1',
+        checkTypeName: 'Vidange',
+        intervalDays: 30,
+        lastCompletedAt: '2026-04-01',
+        nextDueAt: '2099-05-01',
+        status: 'on-time'
+      }
+    ])
+
+    await renderContainer()
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /journaliser/i })).toBeInTheDocument()
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: /journaliser/i }))
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Type de contrôle')).toBeInTheDocument()
+    })
+    expect(screen.queryByLabelText('Date du contrôle')).toBeNull()
   })
 
   it('shows an alert and keeps the dialog open when logCheck fails', async () => {
