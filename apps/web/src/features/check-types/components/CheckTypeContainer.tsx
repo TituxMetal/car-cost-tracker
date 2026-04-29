@@ -108,14 +108,14 @@ export const CheckTypeContainer = () => {
     }
   })
 
-  const handleLogSubmit = async (data: CreateCheckLogSchema) => {
-    if (!vehicle || !loggingCheckType) return
+  const handleLogSubmit = async (data: CreateCheckLogSchema, checkTypeId: string) => {
+    if (!vehicle) return
 
     setServerError(null)
     setSuccessMessage(null)
 
     try {
-      await createLog(vehicle.id, loggingCheckType.id, data)
+      await createLog(vehicle.id, checkTypeId, data)
       setLoggingCheckType(null)
       setSuccessMessage('Contrôle enregistré avec succès')
       if (successTimeoutRef.current) clearTimeout(successTimeoutRef.current)
