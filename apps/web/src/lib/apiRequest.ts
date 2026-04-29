@@ -32,10 +32,15 @@ const getCookie = (name: string): string | null => {
   return null
 }
 
+const STATE_CHANGING_METHODS = ['POST', 'PUT', 'PATCH', 'DELETE']
+
 const prepareHeaders = (options: RequestInit): Headers => {
   const headers = new Headers(options.headers)
 
-  if (!headers.get('Content-Type')) {
+  const method = (options.method || 'GET').toUpperCase()
+  const isStateChanging = STATE_CHANGING_METHODS.includes(method)
+
+  if (isStateChanging && !headers.get('Content-Type')) {
     headers.set('Content-Type', 'application/json')
   }
 
