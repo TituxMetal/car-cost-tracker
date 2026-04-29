@@ -56,7 +56,7 @@ export const UpcomingChecksGrid = ({ summaries, onLog }: UpcomingChecksGridProps
                 label={summary.checkTypeName}
                 centerLabel={
                   <span className='flex items-baseline gap-1'>
-                    <span>{daysRemaining}</span>
+                    <span>{value}</span>
                     <span className='text-base-content/60 text-[10px] tracking-wider uppercase'>
                       /{summary.intervalDays} jrs
                     </span>
