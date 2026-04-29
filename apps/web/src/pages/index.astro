@@ -22,6 +22,21 @@ const features = [
       </section>
     ) : (
       <section class='flex flex-col gap-12 py-8 lg:py-16'>
+        <aside
+          class='border-info bg-base-200 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 border px-6 py-3 text-center font-mono text-[10px] tracking-[0.2em] uppercase sm:text-[11px]'
+          role='note'
+        >
+          <span class='text-info'>// ALPHA PRIVÉE</span>
+          <span class='text-base-content/40' aria-hidden='true'>
+            ·
+          </span>
+          <span class='text-base-content'>INSCRIPTIONS OUVERTES</span>
+          <span class='text-base-content/40' aria-hidden='true'>
+            ·
+          </span>
+          <span class='text-base-content'>ACTIVATION MANUELLE</span>
+        </aside>
+
         <header class='text-center'>
           <div class='mb-6 flex justify-center' aria-hidden='true'>
             <span class='bg-primary inline-flex h-16 w-16 items-center justify-center rounded-md'>
@@ -36,11 +51,14 @@ const features = [
           </p>
         </header>
 
-        <p class='text-base-content/80 mx-auto max-w-2xl text-center leading-relaxed'>
-          <strong class='text-base-content'>COST.LOG</strong> suit chaque kilomètre, chaque dépense
-          et chaque contrôle de votre véhicule. Conçu pour comprendre exactement combien votre
-          voiture coûte, mois après mois.
-        </p>
+        <div class='text-base-content/80 mx-auto grid max-w-2xl gap-3 text-center leading-relaxed'>
+          <p>
+            <strong class='text-base-content'>COST.LOG</strong> suit chaque dépense, chaque
+            contrôle, chaque entretien de votre véhicule.
+          </p>
+          <p>Tout ce que vous y entrez devient le journal de bord de votre voiture.</p>
+          <p>Pour que la mécanique vous parle avant que la facture ne s'envole.</p>
+        </div>
 
         <ul class='grid gap-4 sm:grid-cols-2 lg:grid-cols-3' aria-label='Fonctionnalités'>
           {features.map(({ label, desc }) => (
@@ -53,9 +71,18 @@ const features = [
           ))}
         </ul>
 
-        <div class='text-center'>
-          <a href='/auth' class='btn btn-primary btn-lg font-display tracking-wider uppercase'>
-            Se connecter
+        <div class='flex flex-col items-center gap-4'>
+          <a
+            href='/auth?mode=signup'
+            class='btn btn-primary btn-lg font-display tracking-wider uppercase'
+          >
+            Tester COST.LOG →
+          </a>
+          <a
+            href='/auth?mode=login'
+            class='text-base-content/60 hover:text-primary font-mono text-[11px] tracking-wider transition-colors'
+          >
+            J'ai déjà un compte
           </a>
         </div>
       </section>
