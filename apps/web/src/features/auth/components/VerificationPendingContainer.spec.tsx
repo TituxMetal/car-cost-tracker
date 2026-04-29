@@ -17,11 +17,23 @@ describe('VerificationPendingContainer', () => {
     mock.restore()
   })
 
-  it('should render the cluster heading and email notice', () => {
+  it('should render the activation heading and email notice', () => {
     render(<VerificationPendingContainer email='test@example.com' />)
 
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/vérifiez votre email/i)
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+      /activation manuelle requise/i
+    )
     expect(screen.getByText('test@example.com')).toBeInTheDocument()
+  })
+
+  it('should expose a mailto link to the admin with a pre-filled subject', () => {
+    render(<VerificationPendingContainer email='test@example.com' />)
+
+    const link = screen.getByRole('link', { name: /écrire à l'admin/i })
+    const href = link.getAttribute('href') ?? ''
+
+    expect(href.startsWith('mailto:pre-launch@lgdweb.fr')).toBe(true)
+    expect(decodeURIComponent(href)).toContain('Activation de compte')
   })
 
   it('should show generic placeholder when email is null', () => {

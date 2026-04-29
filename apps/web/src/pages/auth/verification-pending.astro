@@ -5,6 +5,6 @@ import Auth from '~/layouts/Auth.astro'
 const email = Astro.url.searchParams.get('email')
 ---
 
-<Auth title='Vérifiez votre email'>
+<Auth title='Activation manuelle requise'>
   <VerificationPendingContainer client:load email={email} />
 </Auth>

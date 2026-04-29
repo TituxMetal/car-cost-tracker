@@ -18,11 +18,19 @@ const fullWidthButtonClasses =
   'h-auto min-h-0 w-full justify-center py-4 text-[13px] font-bold tracking-[0.2em]'
 
 const HEADING_ID = 'pending-heading'
+const ADMIN_EMAIL = 'pre-launch@lgdweb.fr'
+
+const buildMailto = () => {
+  const subject = 'Cost Log - Activation de compte'
+  return `mailto:${ADMIN_EMAIL}?subject=${encodeURIComponent(subject)}`
+}
 
 export const VerificationPendingContainer = ({ email }: VerificationPendingContainerProps) => {
   const [isResending, setIsResending] = useState(false)
   const [resendStatus, setResendStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+  const mailtoHref = buildMailto()
 
   const handleResend = async () => {
     if (!email) return
@@ -46,14 +54,28 @@ export const VerificationPendingContainer = ({ email }: VerificationPendingConta
 
   return (
     <AuthShell headingId={HEADING_ID}>
-      <AuthHeader kicker='// EN ATTENTE' heading='Vérifiez votre email' headingId={HEADING_ID} />
+      <AuthHeader
+        kicker='// ACCÈS RESTREINT'
+        heading='Activation manuelle requise'
+        headingId={HEADING_ID}
+      />
 
-      <div className={`${noticeBoxClasses} border-info/50 bg-info/10 text-info`} role='note'>
-        <p className={`text-info ${noticeLabelClasses}`}>LIEN ENVOYÉ</p>
-        <p className='text-base-content/70'>
-          Un lien de vérification a été envoyé à{' '}
-          <strong className='text-primary'>{email ?? 'votre email'}</strong>. Ouvrez votre boîte de
-          réception et cliquez sur le lien pour valider votre compte.
+      <div className={`${noticeBoxClasses} border-info bg-base-200`} role='note'>
+        <p className={`text-info ${noticeLabelClasses}`}>ALPHA PRIVÉE</p>
+        <p className='text-base-content'>
+          Le compte <strong className='text-primary'>{email ?? 'votre email'}</strong> a bien été
+          créé, mais Cost Log est en alpha privée — chaque inscription est validée à la main par
+          l'administrateur.
+        </p>
+        <p className='text-base-content'>
+          Contacte{' '}
+          <a
+            href={mailtoHref}
+            className='text-primary underline underline-offset-2 hover:no-underline'
+          >
+            {ADMIN_EMAIL}
+          </a>{' '}
+          en précisant ton email d'inscription, je t'active dès que possible.
         </p>
       </div>
 
@@ -76,11 +98,16 @@ export const VerificationPendingContainer = ({ email }: VerificationPendingConta
       )}
 
       <div className='grid gap-3'>
+        <Button as='a' href={mailtoHref} className={fullWidthButtonClasses}>
+          Écrire à l'admin →
+        </Button>
+
         {email && (
           <Button
             type='button'
             onClick={handleResend}
             disabled={isResending}
+            variant='ghost'
             className={fullWidthButtonClasses}
           >
             {isResending ? 'Envoi…' : 'Renvoyer le lien →'}
