@@ -20,11 +20,13 @@ describe('DashboardEmptyState', () => {
       ).toBeInTheDocument()
     })
 
-    it('renders a CTA link pointing to /vehicle', () => {
+    it('renders a warning-outline CTA pointing to /vehicle', () => {
       render(<DashboardEmptyState variant='no-vehicle' />)
 
       const cta = screen.getByRole('link', { name: /Ajouter un véhicule/i })
       expect(cta).toHaveAttribute('href', '/vehicle')
+      expect(cta.className).toContain('btn-warning')
+      expect(cta.className).toContain('btn-outline')
     })
   })
 
@@ -35,25 +37,12 @@ describe('DashboardEmptyState', () => {
       expect(screen.getByText('Aucun type de contrôle défini')).toBeInTheDocument()
     })
 
-    it('renders a CTA link pointing to /check-types', () => {
+    it('renders a warning-outline CTA pointing to /check-types', () => {
       render(<DashboardEmptyState variant='no-check-types' />)
 
       const cta = screen.getByRole('link', { name: /Créer un type de contrôle/i })
       expect(cta).toHaveAttribute('href', '/check-types')
-    })
-  })
-
-  describe('variant="no-action-items"', () => {
-    it('renders the positive all-clear message', () => {
-      render(<DashboardEmptyState variant='no-action-items' />)
-
-      expect(screen.getByText('Tous les contrôles sont à jour !')).toBeInTheDocument()
-    })
-
-    it('does not render any CTA link', () => {
-      render(<DashboardEmptyState variant='no-action-items' />)
-
-      expect(screen.queryByRole('link')).not.toBeInTheDocument()
+      expect(cta.className).toContain('btn-warning')
     })
   })
 })

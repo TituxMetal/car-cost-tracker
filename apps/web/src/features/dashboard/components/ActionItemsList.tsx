@@ -1,30 +1,21 @@
 import type { ActionItem } from '../types'
 
 import { ActionItemCard } from './ActionItemCard'
-import { DashboardEmptyState } from './DashboardEmptyState'
 
 export interface ActionItemsListProps {
   items: ActionItem[]
   onLog: (checkTypeId: string) => void
 }
 
-export const ActionItemsList = ({ items, onLog }: ActionItemsListProps) => {
-  if (items.length === 0) {
-    return <DashboardEmptyState variant='no-action-items' />
-  }
-
-  return (
-    <section aria-labelledby='dashboard-action-items-title' className='flex flex-col gap-3'>
-      <h2 id='dashboard-action-items-title' className='text-base-content text-xl font-bold'>
-        À faire
-      </h2>
-      <ul className='flex flex-col gap-3'>
-        {items.map(item => (
-          <li key={item.checkTypeId}>
-            <ActionItemCard item={item} onLog={onLog} />
-          </li>
-        ))}
-      </ul>
-    </section>
-  )
-}
+export const ActionItemsList = ({ items, onLog }: ActionItemsListProps) => (
+  <section aria-label='À traiter' className='border-base-300 bg-base-200 border p-4 lg:hidden'>
+    <p className='font-display text-base-content/60 text-[10px] tracking-wider uppercase'>
+      À traiter · {items.length} entrée{items.length > 1 ? 's' : ''}
+    </p>
+    <ul className='mt-3 space-y-2'>
+      {items.map(item => (
+        <ActionItemCard key={item.checkTypeId} item={item} onLog={onLog} />
+      ))}
+    </ul>
+  </section>
+)
