@@ -33,6 +33,26 @@ shape are NOT listed here — they live in the shape.
       `auth/SessionList`, `admin/UserManagement`. Flagged by Copilot on PR #55 (Visual Refresh —
       Block 4 / Checks).
 
+## Cross-cutting frontend — date display format harmonisation (medium priority)
+
+- [ ] **Pick one canonical date format per context and migrate every surface to it.** The product
+      currently ships at least 5 distinct date renderings across 5 components, with no shared
+      decision behind any of them:
+  - `LastEntryCard.formatLogDate` → `YYYY.MM.DD` (dots, ISO order)
+  - `VehicleActivePanel.formatRecordedAt` → `DD.MM.YYYY` (dots, French order)
+  - `RecentExpensesPanel` → raw `YYYY-MM-DD` (dashes, ISO order)
+  - `SystemStatusPanel` / `SessionList` → `DD/MM/YYYY` via `toLocaleDateString('fr-FR')` (slashes,
+    French order)
+  - `UserManagement` → `toLocaleDateString()` default (browser-locale dependent — different format
+    per visitor)
+
+  Plan: decide on **two** formats only — one machine-readable ISO `YYYY-MM-DD` for technical
+  surfaces (logs, debug, sort keys), one human-readable `DD MMM YYYY` (e.g. `18 avr. 2026`) for
+  every UX surface; expose them from the planned `apps/web/src/lib/date.ts` (already scheduled in
+  the timezone-safety entry above) so the migration unifies correctness _and_ presentation in one
+  pass. Side-benefit: the human-readable format saves 4-5 characters vs ISO, which would give
+  `RecentExpensesPanel` rows breathing room on narrow viewports.
+
 ## From Feature 01 PR review (low priority)
 
 - [ ] `VehicleContainer`: add fallback `return null` at end for defensive rendering
@@ -121,6 +141,15 @@ shape are NOT listed here — they live in the shape.
       smoke test on 2026-04-27. Scope: `Main.astro` script block — likely a missing document-level
       listener or a daisy `dropdown` open-state hand-rolled instead of using `<details>` with
       `summary` toggle. Quick fix branch suggested: `fix/profile-dropdown-outside-click`.
+
+## Dashboard — fold `/budget` page into the BudgetPanel (post Visual Refresh)
+
+- [ ] **Consolidate `/budget` page into the dashboard `BudgetPanel`** — Phase 16 of Feature 09 ships
+      `BudgetPanel` as a read-only KPI card in the dashboard sidebar (mensuel + annuel sections,
+      `Modifier →` link out to `/budget`). The longer-term plan is to fold `/budget` page CRUD
+      capabilities (create / edit / delete) into the panel itself so the dedicated route can go
+      away. Decision deferred until the user sees the shipped panel in production context. Source:
+      `~/.claude/plans/car-cost-tracker-09-visual-refresh.md:1727-1732`.
 
 ## UI / dialog button consistency (post Visual Refresh)
 
