@@ -135,6 +135,53 @@ describe('apiRequest', () => {
 
     expect(result.success).toBe(true)
   })
+
+  it('should set Content-Type on bodyless requests so Astro checkOrigin allows them', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      status: 204,
+      text: async () => ''
+    } as Response)
+
+    await api.delete('/check-logs/abc')
+
+    const call = mockFetch.mock.calls[0] as unknown as [string, RequestInit]
+    const headers = call[1].headers as Headers
+    expect(call[1].method).toBe('DELETE')
+    expect(headers.get('Content-Type')).toBe('application/json')
+  })
+
+  it('should extract message from a JSON error response', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: false,
+      status: 422,
+      text: async () => JSON.stringify({ message: 'Validation failed' })
+    } as Response)
+
+    const result = await apiRequest('/users')
+
+    expect(result).toEqual({
+      success: false,
+      message: 'Validation failed',
+      status: 422
+    })
+  })
+
+  it('should fall back to HTTP status when error body is empty', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: false,
+      status: 500,
+      text: async () => ''
+    } as Response)
+
+    const result = await apiRequest('/users')
+
+    expect(result).toEqual({
+      success: false,
+      message: 'HTTP 500',
+      status: 500
+    })
+  })
 })
 
 describe('api helpers', () => {
