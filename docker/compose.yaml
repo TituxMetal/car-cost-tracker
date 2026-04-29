@@ -1,26 +1,26 @@
 services:
   car-cost-tracker-api:
-    image: ghcr.io/tituxmetal/car-cost-tracker-api:prod
+    image: lgdweb/car-cost-tracker-api:latest
     container_name: car-cost-tracker-api
     environment:
+      TZ: Europe/Paris
       DATABASE_URL: ${DATABASE_URL}
-      JWT_SECRET: ${JWT_SECRET}
-      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
-      SESSION_TTL: ${SESSION_TTL}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL}
+      FRONTEND_URL: ${FRONTEND_URL}
       RUN_MIGRATIONS: 'true'
     volumes:
       - data:/data
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
     networks:
       - reverse-proxy-nw
       - default-nw
     restart: unless-stopped
 
   car-cost-tracker-web:
-    image: ghcr.io/tituxmetal/car-cost-tracker-web:prod
+    image: lgdweb/car-cost-tracker-web:latest
     container_name: car-cost-tracker-web
     environment:
+      TZ: Europe/Paris
       API_URL: ${API_URL}
       PUBLIC_API_URL: ${PUBLIC_API_URL}
     networks:

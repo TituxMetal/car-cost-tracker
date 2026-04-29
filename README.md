@@ -273,7 +273,10 @@ For production deployment, you'll need these environment variables:
 **API Environment Variables:**
 
 ```env
-DATABASE_URL="file:./dev.db"
+# Prisma SQLite database location (use a persistent volume in production) or just ./dev.db for local development
+DATABASE_URL="file:/data/db-name.db"
+# Better Auth configuration
+# Generate a secure secret for production with: openssl rand -hex 32
 BETTER_AUTH_SECRET="your-production-secret"
 BETTER_AUTH_URL="https://api.yourdomain.com"
 FRONTEND_URL="https://yourdomain.com"
@@ -283,7 +286,9 @@ FRONTEND_URL="https://yourdomain.com"
 
 ```env
 # API URL for Better Auth client
-PUBLIC_API_URL=http://localhost:3000
+# Use internal Docker network name for API in production,
+# or https://api.yourdomain.com in production and http://localhost:3000 for local development
+API_URL=http://docker-container-name:3000
 ```
 
 ### Deployment
